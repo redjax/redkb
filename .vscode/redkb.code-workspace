@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "..",
+			"name": "Git Root"
+		},
+		{
+			"path": "../docs",
+			"name": "MkDocs Root"
+		}
+	],
+	"settings": {}
+}
