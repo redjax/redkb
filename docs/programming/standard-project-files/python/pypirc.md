@@ -1,4 +1,4 @@
-# Saving pypi auth in a ~/.pypirc file
+# The ~/.pypirc file
 
 * Create file `~/.pypirc`
     * Set chmod to `600`
