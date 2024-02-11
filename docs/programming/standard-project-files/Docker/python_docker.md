@@ -5,7 +5,7 @@ Building/running a Python app in a Dockerfile can be accomplished many different
 One thing you will commonly see in my Python Dockerfiles are a set of `ENV` variables in the `base` layer. Below is a list of the `ENV` variables I commonly set in Dockerfiles, and what they do:
 
 !!!note
-    In some Dockerfiles, you will see `ENV` variables declared with an equal sign, and others without. These are equivalent, you can declare/set these variables either way and they will product the same result. For example, the following 2 `ENV` variable declarations are equivalent:
+    In some Dockerfiles, you will see `ENV` variables declared with an equal sign, and others without. These are equivalent, you can declare/set these variables either way and they will produce the same result. For example, the following 2 `ENV` variable declarations are equivalent:
 
     `PYTHONUNBUFFERED 1`
 
