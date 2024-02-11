@@ -7,7 +7,7 @@ I use 2 `ruff.toml` files normally:
 - `ruff.toml`
   - The "main" configuration, used by the `ruff` command and VSCode
 - `ruff.ci.toml`
-  - In my [`noxfile.py`](/programming/standard-project-files/python/nox/#noxfilepy-base), I have a `lint` section.
+  - In my [`noxfile.py`](../nox/#noxfilepy-base), I have a `lint` section.
   - This file is more permissive than `ruff.toml` to avoid pipeline errors for things that don't matter like docstring warnings and other rules I find overly strict.
 
 ## ruff.toml
