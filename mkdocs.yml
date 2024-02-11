@@ -1,0 +1,82 @@
+site_name: RedKB
+site_description: My personal knowledgebase
+# site_url: https://github.com/redjax/red-utils
+
+repo_name: redjax/redkb
+repo_url: https://github.com/redjax/redkb
+
+exclude_docs: |
+  drafts/
+
+theme:
+  name: material
+  highlightjs: true
+  icon:
+    repo: fontawesome/brands/git
+  font:
+    text: Open Sans
+
+  palette:
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: red
+      accent: amber
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+      primary: red
+      accent: amber
+
+  features:
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - navigation.indexes
+    - navigation.path
+    - content.code.annotate
+    - content.code.copy
+    - content.code.select
+    - navigation.tabs
+
+plugins:
+  - search
+  # - gen-files:
+  #     scripts:
+  #     - docs/gen_ref_pages.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  # - mkdocstrings:
+  #     default_handler: python
+  #     handlers:
+  #       python:
+  #         paths: [src]
+          # options:
+          #   allow_inspection: true
+          #   show_bases: true
+          #   show_source: false
+          #   show_object_full_path: false
+          #   show_category_heading: true
+          #   show_symbol_type_heading: false
+  - section-index
+
+markdown_extensions:
+  - admonition
+  - markdown_include.include:
+      base_path: .
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      use_pygments: true
+      pygments_lang_class: true
