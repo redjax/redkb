@@ -8,6 +8,8 @@ repo_url: https://github.com/redjax/redkb
 exclude_docs: |
   drafts/
 
+use_directory_urls: false
+
 theme:
   name: material
   highlightjs: true
