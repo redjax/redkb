@@ -8,10 +8,10 @@ Below are snippets of custom code I add to my alembic `env.py` file.
 
 Provide database connection URL to alembic.
 
-TODO: 
+!!!TODO
 
-- [ ] Use `dynaconf` to load database connection values from environment.
-- [ ] Describe where to put this code in `env.py`
+    - [ ] Use `dynaconf` to load database connection values from environment.
+    - [ ] Describe where to put this code in `env.py`
 
 ```py title="env.py: DB_URI"
 DB_URI: sa.URL = sa.URL.create(
@@ -28,9 +28,9 @@ DB_URI: sa.URL = sa.URL.create(
 
 Instead of hardcording the database connection string in `alembic.ini`, load it from [`DB_URI`](#db_uri).
 
-TODO:
+!!!TODO
 
-- [ ] Describe where to push this code in `env.py`
+    - [ ] Describe where to push this code in `env.py`
 
 ```py title="env.py: alembic config 'sqlalchemy.url'"
 ## Set config's sqlalchemy.url value, after "if config.config_filename is not None:"
