@@ -34,3 +34,4 @@ dev = [
 [tool.pdm.scripts]
 
 mkdocs-deploy = { cmd = "mkdocs gh-deploy" }
+mkdocs-serve = { cmd = "mkdocs serve --dev-addr 0.0.0.0:8000" }
