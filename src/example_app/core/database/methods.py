@@ -3,6 +3,7 @@ from __future__ import annotations
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
+
 def get_db_uri(
     drivername: str = "sqlite+pysqlite",
     username: str | None = None,

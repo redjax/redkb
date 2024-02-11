@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from dataclasses import dataclass, field
+
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-
-from dataclasses import dataclass, field
 
 
 @dataclass
