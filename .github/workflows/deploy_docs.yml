@@ -2,12 +2,9 @@
 name: Build & Deploy MkDocs site
 
 on:
-  push:
-    branches:
-      - gh-pages
   pull_request:
     branches:
-      - gh-pages
+      - main
 
 jobs:
   deploy-mkdocs:
