@@ -1,6 +1,6 @@
 # RedKB
 
-My personal knowledgebase.
+My personal knowledgebase. Use the sections along the top (i.e. [`Programming`](./programming/)) to navigate areas of the KB.
 
 ## Quick Links
 
