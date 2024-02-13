@@ -190,8 +190,8 @@ def run_pre_commit_all(session: nox.Session):
 def run_pre_commit_autoupdate(session: nox.Session):
     session.install(f"pre-commit")
 
-    print("Running pre-commit update hook")
-    session.run("pre-commit", "run", "pre-commit-update")
+    print("Running pre-commit autoupdate")
+    session.run("pre-commit", "autoupdate")
 
 
 @nox.session(python=PY_VERSIONS, name="pre-commit-nbstripout")
