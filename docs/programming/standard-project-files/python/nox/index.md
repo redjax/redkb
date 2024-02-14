@@ -1,3 +1,10 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - nox
+---
+
 # Nox
 
 I am still deciding between [`tox`](https://tox.wiki/en/stable/) and [`nox`](https://nox.thea.codes/en/stable/) as my preferred task runner, but I've been leaning more towards `nox` for the simple reason that it's nice to be able to write Python code for things like `try/except` and creating directories that don't exist yet.

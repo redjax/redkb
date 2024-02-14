@@ -1,3 +1,10 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - sqlalchemy
+---
+
 # SQLAlchemy
 
 !!!TODO

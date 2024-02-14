@@ -1,3 +1,10 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - docker
+---
+
 # Python Dockerfiles
 
 Building/running a Python app in a Dockerfile can be accomplished many different ways. The example(s) below are my personal approach, meant to serve as a starting point/example of Docker's capabilities.

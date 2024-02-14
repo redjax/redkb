@@ -1,3 +1,10 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - git
+---
+
 # Base Python .gitignore
 
 ``` title=".gitignore" linenums="1"

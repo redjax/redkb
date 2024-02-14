@@ -1,3 +1,10 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - configuration
+---
+
 # The ~/.pypirc file
 
 * Create file `~/.pypirc`

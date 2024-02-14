@@ -1,3 +1,10 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - alembic
+---
+
 # Alembic env.py file
 
 After initializing alembic (i.e. `alembic init alembic`), a file `alembic/env.py` will be created. This file can be edited to include your project's models and SQLAlchemy `Base`.
