@@ -1,3 +1,9 @@
+---
+tags:
+    - standard-project-files
+    - pre-commit
+---
+
 # pre-commit hooks
 
 Some [`pre-commit`](pre-commit.com/) hooks I use frequently.

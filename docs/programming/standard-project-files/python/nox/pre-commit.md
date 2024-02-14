@@ -1,3 +1,10 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - nox
+---
+
 # pre-commit nox sessions
 
 Code snippets for `nox` sessions

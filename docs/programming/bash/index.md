@@ -25,9 +25,7 @@
       - [ ] String substitution
       - [ ] Args
     - [ ] Document ssh
-        - [ ] Keyfiles
-        - [ ] scp
-        - [ ] sshpass
+        - [ ] Link to utilities/ssh
     - [ ] Document helpful commands
       - [ ] tail
       - [ ] less

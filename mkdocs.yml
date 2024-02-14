@@ -71,6 +71,8 @@ plugins:
   - section-index
   ## For better image support
   - glightbox
+  - tags:
+      tags_file: tags.md
 
 markdown_extensions:
   - admonition
