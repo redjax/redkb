@@ -69,6 +69,8 @@ plugins:
           #   show_category_heading: true
           #   show_symbol_type_heading: false
   - section-index
+  ## For better image support
+  - glightbox
 
 markdown_extensions:
   - admonition
@@ -82,3 +84,10 @@ markdown_extensions:
       line_spans: __span
       use_pygments: true
       pygments_lang_class: true
+  ## Enable markdown checklists, - [ ] / - [x]
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  ## Handle images
+  - attr_list
+  - md_in_html

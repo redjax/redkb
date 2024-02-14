@@ -29,6 +29,7 @@ dev = [
     "nox>=2023.4.22",
     "pre-commit>=3.6.1",
     "pdm-bump>=0.7.3",
+    "mkdocs-glightbox>=0.3.7",
 ]
 
 [tool.pdm.scripts]
