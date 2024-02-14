@@ -1,3 +1,10 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - pdm
+---
+
 ## PDM - Python Dependency Manager
 
 I use [`pdm`](pdm-project.org/) to manage most of my Python projects. It's a fantastic tool for managing environments, dependencies, builds, and package publishing. PDM is similar in functionality to [`poetry`](https://python-poetry.org), which I have also used and liked. My main reasons for preferring `pdm` over `poetry` are:

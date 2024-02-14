@@ -1,3 +1,10 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - alembic
+---
+
 # Alembic Notes
 
 * Install `alembic` with `pip install alembic` (or some equivalent package install command)

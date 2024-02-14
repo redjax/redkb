@@ -1,3 +1,10 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - ruff
+---
+
 # Ruff
 
 [`Ruff`](https://github.com/astral-sh/ruff)...is...awesome! It's hard to summarize, Ruff describes itself as "An extremely fast Python linter and code formatter, written in Rust." It has replaced `isort`, `flake8`, and is on its way to replacing `black` in my environments.

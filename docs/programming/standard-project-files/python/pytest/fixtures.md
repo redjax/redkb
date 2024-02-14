@@ -1,3 +1,10 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - pytest
+---
+
 # Pytest fixture templates
 
 Some templates/example of `pytest` [`fixtures`](https://docs.pytest.org/en/stable/how-to/fixtures.html)
