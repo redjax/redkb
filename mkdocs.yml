@@ -23,7 +23,7 @@ theme:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: red
+      primary: black
       accent: amber
       toggle:
         icon: material/weather-night
@@ -35,7 +35,7 @@ theme:
       toggle:
         icon: material/weather-sunny
         name: Switch to light mode
-      primary: red
+      primary: black
       accent: amber
 
   features:
