@@ -1,3 +1,11 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - pdm
+---
+
+
 # pyproject.toml scripts
 
 In your `pyproject.toml` file, add a section `[tool.pdm.scripts]`, then copy/paste whichever scripts you want to add to your project.

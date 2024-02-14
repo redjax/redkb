@@ -1,3 +1,10 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - dynaconf
+---
+
 # Dynaconf base files
 
 I use [`Dynaconf`](https://dynaconf.com) frequently to manage loading my project's settings from a local file (`config/settings.local.toml`) during development, and environment variables when running in a container. `Dynaconf` allows for overriding configurations by setting environment variables.
