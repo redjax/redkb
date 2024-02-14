@@ -14,6 +14,7 @@ dependencies = [
     "mkdocs-literate-nav>=0.6.1",
     "mkdocstrings[python]>=0.24.0",
     "mkdocs-rss-plugin>=1.12.0",
+    "mkdocs-glightbox>=0.3.7",
 ]
 requires-python = "==3.11.*"
 readme = "README.md"
@@ -30,7 +31,6 @@ dev = [
     "nox>=2023.4.22",
     "pre-commit>=3.6.1",
     "pdm-bump>=0.7.3",
-    "mkdocs-glightbox>=0.3.7",
 ]
 
 [tool.pdm.scripts]
