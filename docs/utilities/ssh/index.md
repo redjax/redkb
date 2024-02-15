@@ -21,7 +21,7 @@ tags:
 
 I had a hard time understanding what to do with my private/public keys when I was learning SSH. I don't know why it was a difficult concept for me, but I have worked with enough other people who were confused in the same way I was that I think it's worth it to just spell out what to do with each key.
 
-Your private key (default name is `id_rsa`) should **NEVER** leave the server it was created on, and should not be accessible to any other user (`chmod 600`).
+Your private key (default name is `id_rsa`) should **NEVER** leave the server it was created on, and should not be accessible to any other user (`chmod 600`). There are exceptions to this, such as when uploading a keypair to an Azure or Hashicorp vault, or providing to a Docker container. But in general, when creating SSH tunnels between machines, the private key is meant to stay on the machine it was created on.
 
 Your public key is like your swipe card; when using the `ssh` command with `-f /path/to/id_rsa.pub` and the correct `user@server` combo, you will not need to enter a password to authenticate.
 
