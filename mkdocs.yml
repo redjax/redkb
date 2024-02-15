@@ -51,23 +51,8 @@ theme:
 
 plugins:
   - search
-  # - gen-files:
-  #     scripts:
-  #     - docs/gen_ref_pages.py
   - literate-nav:
       nav_file: SUMMARY.md
-  # - mkdocstrings:
-  #     default_handler: python
-  #     handlers:
-  #       python:
-  #         paths: [src]
-          # options:
-          #   allow_inspection: true
-          #   show_bases: true
-          #   show_source: false
-          #   show_object_full_path: false
-          #   show_category_heading: true
-          #   show_symbol_type_heading: false
   - section-index
   ## For better image support
   - glightbox
@@ -86,7 +71,7 @@ markdown_extensions:
       line_spans: __span
       use_pygments: true
       pygments_lang_class: true
-  ## Enable markdown checklists, - [ ] / - [x]
+  ## Enable markdown checklists, - [ ]/- [x]
   - def_list
   - pymdownx.tasklist:
       custom_checkbox: true
