@@ -29,7 +29,7 @@ line-length = 88
 
 ## Enable pycodestyle ("E") and Pyflakes ("F") codes by default
 #  # Docs: https://beta.ruff.rs/docs/rules/
-select = [
+lint.select = [
     "D",    ## pydocstyle
     "E",    ## pycodestyle
     "F401", ## remove unused imports
@@ -43,7 +43,7 @@ select = [
 #  line in ignore list will stop Ruff from
 #  ignoring that check. When the line is
 #  uncommented, the check will be run.
-ignore = [
+lint.ignore = [
     "D100", ## missing-docstring-in-public-module
     "D101", ## missing-docstring-in-public-class
     "D102", ## missing-docstring-in-public-method
@@ -61,7 +61,7 @@ ignore = [
 ## Allow autofix for all enabled rules (when "--fix") is provided.
 #  NOTE: Leaving these commented until I know what they do
 #  Docs: https://beta.ruff.rs/docs/rules/
-fixable = [
+lint.fixable = [
     # "A",  ## flake8-builtins
     # "B",  ## flake8-bugbear
     "C",
@@ -125,16 +125,16 @@ exclude = [
     "*.pyc",
 ]
 
-[per-file-ignores]
+[lint.per-file-ignores]
 "__init__.py" = ["D104"]
 
 ## Allow unused variables when underscore-prefixed.
 # dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
-[mccabe]
+[lint.mccabe]
 max-complexity = 10
 
-[isort]
+[lint.isort]
 combine-as-imports = true
 force-sort-within-sections = true
 force-wrap-aliases = true
@@ -171,7 +171,7 @@ line-length = 88
 
 ## Enable pycodestyle ("E") and Pyflakes ("F") codes by default
 #  # Docs: https://beta.ruff.rs/docs/rules/
-select = [
+lint.select = [
     "D",    ## pydocstyle
     "E",    ## pycodestyle
     "F401", ## remove unused imports
@@ -185,13 +185,14 @@ select = [
 #  line in ignore list will stop Ruff from
 #  ignoring that check. When the line is
 #  uncommented, the check will be run.
-ignore = [
+lint.ignore = [
     "D100", ## missing-docstring-in-public-module
     "D101", ## missing-docstring-in-public-class
     "D102", ## missing-docstring-in-public-method
     "D103", ## Missing docstring in public function
     "D105", ## Missing docstring in magic method
     "D106", ## missing-docstring-in-public-nested-class
+    "D107", ## Missing docstring in __init__
     "D200", ## One-line docstring should fit on one line
     "D203", ## one-blank-line-before-class
     "D205", ## 1 blank line required between summary line and description
@@ -210,7 +211,7 @@ ignore = [
 ## Allow autofix for all enabled rules (when "--fix") is provided.
 #  NOTE: Leaving these commented until I know what they do
 #  Docs: https://beta.ruff.rs/docs/rules/
-fixable = [
+lint.fixable = [
     # "A",  ## flake8-builtins
     # "B",  ## flake8-bugbear
     "C",
@@ -273,16 +274,16 @@ exclude = [
     "*.pyc",
 ]
 
-[per-file-ignores]
+[lint.per-file-ignores]
 "__init__.py" = ["D104"]
 
 ## Allow unused variables when underscore-prefixed.
 # dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
-[mccabe]
+[lint.mccabe]
 max-complexity = 10
 
-[isort]
+[lint.isort]
 combine-as-imports = true
 force-sort-within-sections = true
 force-wrap-aliases = true
