@@ -23,7 +23,7 @@ See the [Install pyenv](#install-pyenv) section for OS-specific installation ins
 
     If you skip the installation instructions, make sure you add `pyenv` to your `PATH`. If you need help setting `PATH` variables, please read the [Install pyenv](#install-pyenv) section.
 
-    - Linux:
+    - Linux/WSL:
         - Edit `~/.bashrc`, add this to the bottom of the file (if in a terminal environment, use an editor like `$ nano ~.bashrc`):
 
     ```shell title="Add pyenv to PATH" linenums="1"
@@ -35,7 +35,7 @@ See the [Install pyenv](#install-pyenv) section for OS-specific installation ins
     ```
 
     - Windows:
-      - Edit the user's `PATH` variable, add these 2 paths:
+        - Edit the user's `PATH` variable, add these 2 paths:
     
     ```cmd title="Add pyenv to the Windows path" linenums="1"
 
