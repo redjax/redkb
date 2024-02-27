@@ -11,11 +11,11 @@ Notes, links, & reference code for Docker/Docker Compose.
     - [ ] Add sections for things that took me entirely too long to learn/understand
         - [x] Multistage builds
             - [x] How to target specific layers, i.e. `dev` vs `prod`
-        - [ ] Common Docker commands, how to interpret/modify them
-            - [ ] Docker build
-            - [ ] Docker run
-        - [ ] `ENV` vs `ARG`
-        - [ ] `EXPOSE`
+        - [x] Common Docker commands, how to interpret/modify them
+            - [x] Docker build
+            - [x] Docker run
+        - [x] `ENV` vs `ARG`
+        - [x] `EXPOSE`
         - [ ] `CMD` vs `ENTRYPOINT` vs `RUN`
     - [ ] Add section(s) for Docker Compose
         - [ ] Add an example `docker-compose.yml`
@@ -225,11 +225,23 @@ The example `docker-compose.yml` file above demonstrates targeting the `dev` lay
 
 ### ENV vs ARG in a Dockerfile
 
-The `ENV` and `ARG` commands sound similar when explained, but in practice function very differently. An `ENV` line sets an environment variable in a Dockerfile, and that environment variable is carried through the build stages. An environment variable declared with `ENV` in the base layer is present in the `build` and `run` (or `dev`/`prod`) layers.
+The `ENV` and `ARG` commands in a Dockerfile can be used to control how an image is built and how it functions when live. The differences between an `ENV` and an `ARG` are outlined below.
 
-Meanwhile, `ARG` lines represent build args, and must be set at each new layer. An `ARG` declared in the `base` stage is cleared/blanked when the `build` layer is reached. To make the same `ARG` available in 2 layers, it must be declared twice.
+!!! note
 
-Another important distinction is that the `ARG` lines are build args, meaning they are only available during the build stage. `ENV` variables are "baked into" the Dockerfile, making them available once the container is built.
+    This list is **not** a complete comparison between `ENV` and `ARG`. For more information, please check the [`Docker build documentation`](https://docs.docker.com/reference/dockerfile/) guide.
+
+- `ENV`
+    - Define environment variables for the container.
+    - Can be accessed the same way you would on a host, with `$ENV_VAR_NAME`.
+    - Can be set/overridden with `docker build -e`, or the `environment:` stanza in a `docker-compose.yml` file.
+    - Available during both the `build` and `run` phases when building a container.
+        - When building a container (`docker build` or `docker compose build`), `ENV` variables will always use the value declared in the `Dockerfile`.
+        - At runtime (i.e. when running `docker run` or `docker compose up`), the values can be overridden with `docker run -e/--env` or the `environment:` stanza in a `docker-compose.yml` file.
+- `ARG`
+    - Define environment variables that are only available at build time.
+    - Values may be overridden *while building*, i.e. between layers or after a command runs.
+    - Can be set/overridden with `docker build --build-arg ARG_NAME=value`, or the `build: args:` stanza in a `docker-compose.yml` file
 
 Example:
 
@@ -240,8 +252,126 @@ FROM python:3.11-slim AS base
 ## This env variable will be available in the build layer
 ENV PYTHONDONTWRITEBYTECODE 1
 
-## This arg will need to be re-set/declared again in the build layer
-ARG 
+## Define a required ARG, without setting its value. The build will fail if this arg is not passed
+ARG SOME_VAR
+## Define an ARG and set a default value
+ARG SOME_OTHER_VAR_ARG=1.0
+
+## Set an ENV value, using an ARG's value, to make it available throughout the rest of the build
+ENV SOME_OTHER_VAR $SOME_OTHER_VAR_ARG
 
 FROM base AS build
+
+## Re-define SOME_OTHER_VAR_ARG from the SOME_OTHER_VAR ENV variable.
+#  The ENV variable carries into the build layer, but the ARG defined
+#  in the base layer is not.
+ARG SOME_OTHER_VAR_ARG=$SOME_OTHER_VAR
+
 ```
+
+Build `ARGS` are useful for setting things like a software version number, i.e. when downloading a specific software release from `Github`. You can set a build arg for the release version, i.e. `ARG RELEASE_VER`, and provide it at buildtime with `docker build --build-arg RELEASE_VER=1.2.3`, or in a `docker-compose.yml` file like:
+
+```yml title="Example build arg stanza" linenums="1"
+
+...
+
+services:
+
+    service1:
+        build:
+            context: .
+            args:
+                RELEASE_VER: 1.2.3
+
+...
+
+```
+
+`ENV` variables, meanwhile, can store things like a database password or some other secret, or configurations for the app.
+
+```yml title="Example ENV vars stanza" linenums="1"
+
+...
+
+services:
+
+    service1:
+        container_name: service1
+        restart: unless-stopped
+        build:
+            ...
+        ...
+        environment:
+            ## Load $RELEASE_VERSION from the host's environment or a .env file
+            RELEASE_VER: ${RELEASE_VERSION:-1.2.3}
+
+...
+
+```
+
+### Exposing container ports
+
+In previous examples you have seen the `EXPOSE` line in a Dockerfile. This command exposes a network port from within the container to the host. This is useful if your containerized application utilizes network ports (i.e. running a web frontend on port `8000`), and you are running the container directly with `docker run` instead of through an orchestrator like Docker Compose or Kubernetes.
+
+!!! note
+
+    When using an orchestrator like `docker-compose`, `kubernetes`, `hashicorp nomad`, etc, it is not necessary (and often counterproductive) to
+    define `EXPOSE` lines in a Dockerfile. It is better to define port binds between the host and container using the orchestrator's capabilities,
+    i.e. the `ports:` stanza of a `docker-compose.yml` file.
+
+    When building & running a container image locally or without an orchestrator, you can add these sections to a Dockerfile so when you run the built
+    container image, you can bind ports with `docker run -p $HOST_PORT:$CONTAINER_PORT`.
+
+Example:
+
+```dockerfile title="Example EXPOSE syntax" linenums="1"
+
+...
+
+FROM build AS run
+
+...
+
+## Expose port 8000 in the container to the host running this container image
+EXPOSE 8000
+
+## Start a Uvicorn server inside the container. The web server runs on port 8000 (by default)
+CMD ["uvicorn", "main:app", "--reload"]
+
+
+```
+
+After building this container, you can run it and bind to a port on the host (i.e. port `80`) with `docker run -rm -p 80:8000 ...`, or by specifying the port binding in a `docker-compose.yml` file 
+
+!!!warning
+
+    If you are using Docker Compose, comment/remove the `EXPOSE` and `CMD` lines in your container and pass the values in through Docker Compose
+
+```yml title="Docker compose port binds" linenums="1"
+
+...
+
+services:
+
+    service1:
+        ...
+        ## Set the container startup command here, instead of with RUN in the Dockerfile
+        command: uvicorn main:app --reload
+        ports:
+            ## Serve the container application running on port 8000 in the container
+            #  over port 80 on the host.
+            - 80:8000
+
+```
+
+### CMD vs RUN vs ENTRYPOINT
+
+!!! note
+
+    TODO:
+
+    - [ ] Overview of each command
+       - [ ] `CMD`
+       - [ ] `RUN`
+       - [ ] `ENTRYPOINT`
+    - [ ] Schenarios you would use each
