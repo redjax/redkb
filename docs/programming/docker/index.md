@@ -8,7 +8,7 @@ Notes, links, & reference code for Docker/Docker Compose.
 
 !!!TODO
 
-    - [ ] Add sections for things that took me entirely too long to learn/understand
+    - [x] Add sections for things that took me entirely too long to learn/understand
         - [x] Multistage builds
             - [x] How to target specific layers, i.e. `dev` vs `prod`
         - [x] Common Docker commands, how to interpret/modify them
