@@ -16,7 +16,7 @@ Notes, links, & reference code for Docker/Docker Compose.
             - [x] Docker run
         - [x] `ENV` vs `ARG`
         - [x] `EXPOSE`
-        - [ ] `CMD` vs `ENTRYPOINT` vs `RUN`
+        - [x] `CMD` vs `ENTRYPOINT` vs `RUN`
     - [ ] Add section(s) for Docker Compose
         - [ ] Add an example `docker-compose.yml`
         - [ ] Detail required vs optional sections (i.e. `version` (required) and `volumes` (optional))
@@ -366,12 +366,20 @@ services:
 
 ### CMD vs RUN vs ENTRYPOINT
 
-!!! note
-
-    TODO:
-
-    - [ ] Overview of each command
-       - [ ] `CMD`
-       - [ ] `RUN`
-       - [ ] `ENTRYPOINT`
-    - [ ] Schenarios you would use each
+- `RUN`
+    - Execute when an image is built. The command defined with `RUN` is executed on top of the current base image.
+        - Example: Installing the `neovim` container inside of a Dockerfile built on top of `ubuntu:latest` image: `RUN apt-get update -y && apt-get install -y neovim`
+        - Commands defined with `RUN` show their output in the console as the container is built, but are not executed when the built container image is run with `docker run` or `docker compose up`
+- `CMD`
+    - Execute when the container is starting.
+    - Commands defined with `CMD` execute when you run the container with `docker run` or `docker compose up`
+    - These commands *do not* execute if a different command is passed, i.e. with `docker run myimage cat log.txt`
+        - The `cat log.txt` command overrides the `CMD` defined in the container
+    - **IMPORTANT**: Only the last `CMD` defined in your image is executed. If you specify more than one, all but the last `CMD` will execute.
+    - The `CMD` command supersedes `ENTRYPOINT`, and should almost always be used instead of `ENTRYPOINT`.
+- `ENTRYPOINT`
+    - `ENTRYPOINT` functions almost the same way as `CMD`, but should be used only when extending an existing image (i.e. `nginx`, `tomcat`, etc)
+    - Providing an `ENTRYPOINT` to an existing container will change the way that container executes, running the underlying Dockerfile logic with an ad-hoc command you provide.
+    - The entrypoint for a container can be overridden with `docker run --entrypoint`
+    - If you define a `CMD` and an `ENTRYPOINT`, the `CMD` line will be provided as arguments to the `ENTRYPOINT`, meaning you can do things like `cat` a file with a `CMD`, then "pipe" the command's output into an `ENTRYPOINT`
+    - In general, it is best practice to use `CMD` in your Dockerfiles, unless you are aware of and fully understand a reason to use `ENTRYPOINT` instead.
