@@ -138,12 +138,12 @@ Installing `pyenv` varies between OSes. On Windows, you use the `pyenv-win` pack
 
 ⤴️ [*back to `TL;DR`*](#tldr)
 
-- Install dependencies (assumes Debian/Ubuntu)
+- Install dependencies
 
-```shell title="install pyenv dependencies" linenums="1"
+```shell title="install pyenv dependencies (Debian/Ubuntu)" linenums="1"
 
 sudo apt-get install -y \
-	git \
+  git \
   gcc \
   make \
   openssl \
@@ -161,6 +161,27 @@ sudo apt-get install -y \
   libssl-dev \
   openssl \
   libffi-dev
+
+```
+
+```shell title="install pyenv dependencies (RedHat/Fedora)" linenums="1"
+
+sudo dnf install -y \
+  git \
+  gcc \
+  make \
+  openssl \
+  openssl-devel \
+  bzip2-devel \
+  zlib-devel \
+  readline-devel \
+  soci-sqlite3-devel \
+  ncurses-devel \
+  gdbm \
+  glibc-devel \
+  tk-devel \
+  libffi-devel
+
 ```
 
 - Install `pyenv` with the convenience script
