@@ -4,6 +4,7 @@
 
     Jump right to a section:
 
+    - [Pyenv commands cheat-sheet](#pyenv-cheat-sheet)
     - [Install pyenv](#install-pyenv)
       - [Windows instructions](#install-pyenv-in-windows)
       - [Linux/WSL instructions](#install-pyenv-in-linuxwsl)
@@ -76,6 +77,24 @@ $ pyenv install 3.12.1
     - Setting a `local` version will override the `global` setting
 - Set `local` to multiple versions, `3.12.1` + `3.11.8`: `$ pyenv local 3.12.1 3.11.8`
 - Set `shell` version to `3.
+
+---
+
+## Pyenv cheat sheet
+
+| Command                    | Description                                                       | Notes                                                                                                                                                                                                                                                                                                            |
+| -------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pyenv commands`           | List available pyenv commands                                     | Useful as a quick reference if you forget a command name. Does not include help/man text. To see available help for a command, run it without any parameters, i.e. `pyenv whence`                                                                                                                                |
+| `pyenv update`             | Refresh pyenv's repository                                        | Updates the `pyenv` utility, fetches new available Python versions, etc. Run this command occasionally to keep everything up to date.                                                                                                                                                                            |
+| `pyenv install 3.xx.xx`    | Install a version of Python                                       | If you don't see the version you want, run `pyenv update`                                                                                                                                                                                                                                                        |
+| `pyenv uninstall 3.xx.xx`  | Uninstall a version of Python that was installed with `pyenv`.    | You can uninstall multiple versions at a time with `pyenv uninstall 3.11.2 3.11.4`                                                                                                                                                                                                                               |
+| `pyenv global 3.xx.xx`     | Set the global/default Python version to use.                     | You can set multiple versions like `pyenv global 3.11.4 3.11.6 3.12.2`. Run without any args to print the current global Python interpreter(s).                                                                                                                                                                  |
+| `pyenv local 3.xx.xx`      | Set the local Python interpreter.                                 | Creates a file in the current directory `.python-version`, which `pyenv` will detect and will set your interpreter to the version specified. Like `pyenv global`, you can set multiple versions with `pyenv local 3.11.4 3.11.6 3.12.2`. Run without any args to print the current global Python interpreter(s). |
+| `pyenv shell 3.xx.xx`      | Set the Python interpreter for the current shell session.         | Resets when session exits. Like `pyenv global`, you can set multiple versions with `pyenv shell 3.11.4 3.11.6 3.12.2`. Run without any args to print the current global Python interpreter(s).                                                                                                                   |
+| `pyenv versions`           | List versions of Python installed with Pyenv & available for use. | Versions will be printed as a list of Python version numbers, and may include interpreter paths.                                                                                                                                                                                                                 |
+| `pyenv which <executable>` | Print the path to a pyenv-installed executable, i.e. `pip`        | Helps with troubleshooting unexpected behavior. If you suspect `pyenv` is using the wrong interpreter, check the path with `pyenv which python`, for example.                                                                                                                                                    |
+| `pyenv rehash`             | Rehash pyenv shims.                                               | Run this after switching Python versions with `pyenv` if you're getting unexpected outputs.                                                                                                                                                                                                                      |
+
 
 ---
 
