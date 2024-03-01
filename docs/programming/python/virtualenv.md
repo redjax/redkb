@@ -1,5 +1,10 @@
 # Use virtualenv to manage dependencies
 
+!!! TODO
+
+    - [ ] Finish the "Common virtualenv troubleshooting" section
+    - [ ] Finish the "Alternatives to virtualenv" section
+
 !!! ToC
 
     Jump right to a section:
