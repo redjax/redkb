@@ -19,7 +19,6 @@ theme:
     text: Open Sans
 
   palette:
-
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
@@ -78,3 +77,5 @@ markdown_extensions:
   ## Handle images
   - attr_list
   - md_in_html
+  ## Render Markdown tables
+  - tables
