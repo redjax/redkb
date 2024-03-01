@@ -20,5 +20,6 @@
 
 ## What is PDM?
 
-[PDM official site](https://pdm-project.org/latest/)
-[PDM GitHub](https://github.com/pdm-project/pdm)
+🔗 [PDM official site](https://pdm-project.org/latest/)
+
+🔗 [PDM GitHub](https://github.com/pdm-project/pdm)
