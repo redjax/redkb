@@ -29,7 +29,9 @@
 
 [RealPython: Virtualenv Primer](https://realpython.com/python-virtual-environments-a-primer/)
 
-`virtualenv` is a tool for creating virtual Python environments. The `virtualenv` tool has been part of the base Python install since version `These environments are stored in a directory, usually `./.venv`, and can be "activated" when you are developing a Python project. Virtual environments can also be used as Jupyter kernels if you install the `ipykernel` package.
+`virtualenv` is a tool for creating virtual Python environments. The `virtualenv` tool is sometimes installed with the "system" Python, but you may need to install it yourself (see the warning below).
+
+These virtual environments are stored in a directory, usually `./.venv`, and can be "activated" when you are developing a Python project. Virtual environments can also be used as Jupyter kernels if you install the `ipykernel` package.
 
 !!! warning
 
