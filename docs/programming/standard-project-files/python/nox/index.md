@@ -1,3 +1,39 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - nox
+---
+
+# Nox
+
+I am still deciding between [`tox`](https://tox.wiki/en/stable/) and [`nox`](https://nox.thea.codes/en/stable/) as my preferred task runner, but I've been leaning more towards `nox` for the simple reason that it's nice to be able to write Python code for things like `try/except` and creating directories that don't exist yet.
+
+## noxfile.py base
+
+The basis for most/all of my projects' `noxfile.py`. 
+
+!!!note
+
+    The following are commented because they require additional setup, or may not be used in every project:
+    
+    - `INIT_COPY_FILES`
+      - A list of dicts defining a file `src` and a `dest` to copy it to
+      - This is useful for copying files like `config/.secrets.example.toml` -> `config/.secrets.toml`
+    - The `init-setup` Nox session
+      - Leave this session commented unless/until you've modified the default `INIT_COPY_FILES` variable
+
+!!!note
+
+    If running all sessions with `$ nox`, only the sessions defined in `nox.sessions` will be executed. The list of sessions is conservative to start in order to maintain as generic a `nox` environment as possible.
+
+    Enabled sessions:
+
+    - lint
+    - export
+    - tests
+
+```py title="noxfile.py" linenums="1"
 from __future__ import annotations
 
 from pathlib import Path
@@ -194,3 +230,5 @@ def run_pre_commit_nbstripout(session: nox.Session):
 #                         f"Unhandled exception copying file from '{src}' to '{dest}'. Details: {exc}"
 #                     )
 #                     print(f"[ERROR] {msg}")
+
+```
