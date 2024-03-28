@@ -5,9 +5,12 @@ on:
   pull_request:
     branches:
       - main
+    types: [ labeled ]
+
 
 jobs:
   deploy-mkdocs:
+    if: ${{ github.event.label.name == 'publish' }}
     runs-on: ubuntu-latest
   
     steps:
