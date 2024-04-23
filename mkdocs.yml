@@ -7,6 +7,7 @@ repo_url: https://github.com/redjax/redkb
 
 exclude_docs: |
   drafts/
+  **/drafts/
 
 use_directory_urls: false
 
