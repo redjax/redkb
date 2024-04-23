@@ -149,6 +149,51 @@ person = Person(name="Alice", age=25)
 json.dumps(person, cls=DataclassEncoder)  # Returns '{"name": "Alice", "age": 25}'
 ```
 
+## Validating a Dataclass
+
+Python dataclasses do not have built-in validation, like a `Pydantic` class. You can still use type hints to define variables, like `name: str = None`, but it has no actual effect on the dataclass.
+
+You can use the `__post_init__(self)` method of a dataclass to perform data validation. A few examples below:
+
+```py title="Dataclass validation" linenums="1"
+from dataclasses import dataclass
+import typing as t
+from pathlib import Path
+
+
+def validate_path(p: t.Union[str, Path] = None) -> Path:
+    assert p, ValueError("Missing an input path to validate.")
+    assert isinstance(p, str) or isinstance(p, Path), TypeError(f"p must be a str or Path. Got type: ({type(p)})")
+    
+    p: Path = Path(f"{p}")
+    if "~" in f"{p}":
+        p = p.expanduser()
+
+    return p
+
+
+@dataclass
+class ComputerDirectory:
+    ## Use | None in the annotation to denote an optional value
+    dir_name: str | None = None
+    dir_path: t.Union[str, Path] = None
+
+    def __post_init__(self):
+        if self.dir_name is None:
+            ## self.dir_name is allowed to be None
+            pass
+        else:
+            if not isinstance(self.dir_name, str):
+                raise TypeError("dir_name should be a string.")
+
+        if self.dir_path is None:
+            raise ValueError("Missing required parameter: dir_path")
+        else:
+            ## Validate self.dir_path with the validate_path() function
+            self.dir_path = validate_path(p=self.dir_path)
+
+```
+
 ## Links & Extra Reading
 
 - [Python docs: dataclasses](https://docs.python.org/3/library/dataclasses.html)
