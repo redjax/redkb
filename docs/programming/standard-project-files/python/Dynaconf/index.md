@@ -37,6 +37,20 @@ env = "prod"
 container_env = false
 log_level = "INFO"
 
+[dev]
+
+env = "dev"
+log_level = "DEBUG"
+
+[prod]
+
+```
+
+## db/settings.toml
+
+```toml
+[default]
+
 ############
 # Database #
 ############
@@ -52,10 +66,6 @@ log_level = "INFO"
 # db_echo = false
 
 [dev]
-
-env = "dev"
-log_level = "DEBUG"
-
 ############
 # Database #
 ############
