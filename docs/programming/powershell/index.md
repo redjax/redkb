@@ -1,3 +1,9 @@
+---
+tags:
+    - windows
+    - powershell
+---
+
 # Powershell
 
 !!!warning

@@ -1,3 +1,10 @@
+---
+tags:
+    - windows
+    - powershell
+    - ref
+---
+
 # Powershell Quick References
 
 Concepts & code snippets I want to document, ideas I don't want to forget, things I've found useful, etc.

@@ -1,3 +1,9 @@
+---
+tags:
+    - docker
+    - portainer
+---
+
 # Portainer
 
 - [Portainer docs site](https://docs.portainer.io)

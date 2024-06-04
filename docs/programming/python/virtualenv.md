@@ -1,3 +1,10 @@
+---
+tags:
+    - python
+    - virtualenv
+---
+
+
 # Use virtualenv to manage dependencies
 
 !!! TODO

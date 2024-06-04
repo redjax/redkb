@@ -1,3 +1,9 @@
+---
+tags:
+    - python
+    - pdm
+---
+
 # Use PDM to manage your Python projects & dependencies
 
 !!! TODO

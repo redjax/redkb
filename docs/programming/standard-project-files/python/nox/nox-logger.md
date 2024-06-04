@@ -3,6 +3,7 @@ tags:
     - standard-project-files
     - python
     - nox
+    - logging
 ---
 
 # configuring a logging.Logger for nox
