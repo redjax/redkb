@@ -1,3 +1,9 @@
+---
+tags:
+    - python
+    - fastapi
+---
+
 # FastAPI
 
 ...

@@ -1,3 +1,10 @@
+---
+tags:
+    - windows
+    - powershell
+    - snippets
+---
+
 # Snippets
 
 Code snippets with little-to-no explanation. Some pages may link to a more in-depth article in the [`Powershell Reference` page](./Reference/powershell-ref.md)

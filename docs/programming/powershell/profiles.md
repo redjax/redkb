@@ -1,3 +1,10 @@
+---
+tags:
+    - windows
+    - powershell
+    - configuration
+---
+
 # Powershell Profiles
 
 !!! TODO

@@ -1,3 +1,8 @@
+---
+tags:
+    - python
+---
+
 # Python project structure
 
 !!!TODO
