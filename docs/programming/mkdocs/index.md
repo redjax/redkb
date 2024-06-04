@@ -1,3 +1,9 @@
+---
+tags:
+    - python
+    - mkdocs
+---
+
 # mkdocs
 
 !!!warning

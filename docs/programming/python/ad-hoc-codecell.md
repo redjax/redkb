@@ -1,3 +1,10 @@
+---
+tags:
+    - python
+    - jupyter
+    - snippet
+---
+
 # Ad-Hoc, Jupyter-like code "cells"
 
 !!! note

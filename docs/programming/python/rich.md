@@ -1,3 +1,10 @@
+---
+tags:
+    - python
+    - rich
+---
+
+
 # Using rich to enhance your console output
 
 The [`rich`](https://github.com/Textualize/rich) package helps make console/terminal output look nicer. It has colorization, animations, and more.

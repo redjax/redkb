@@ -3,6 +3,7 @@ tags:
     - standard-project-files
     - python
     - configuration
+    - pypi
 ---
 
 # The ~/.pypirc file

@@ -1,3 +1,11 @@
+---
+tags:
+    - python
+    - pyenv
+    - environment
+---
+
+
 # Use pyenv for easier Python version management
 
 !!! ToC

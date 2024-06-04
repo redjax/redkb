@@ -1,3 +1,9 @@
+---
+tags:
+    - linux
+    - bash
+---
+
 # Bash
 
 !!!warning

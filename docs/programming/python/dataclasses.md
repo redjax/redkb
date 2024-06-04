@@ -1,3 +1,10 @@
+---
+tags:
+    - python
+    - stdlib
+    - dataclasses
+---
+
 # Dataclasses
 
 !!! note
