@@ -1,3 +1,9 @@
+---
+tags:
+    - python
+    - context-managers
+---
+
 # Context Managers
 
 !!! TODO

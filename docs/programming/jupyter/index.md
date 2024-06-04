@@ -1,3 +1,9 @@
+---
+tags:
+    - python
+    - jupyter
+---
+
 # Jupyter
 
 !!!warning

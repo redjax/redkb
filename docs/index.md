@@ -10,6 +10,7 @@ My personal knowledgebase. Use the sections along the top (i.e. [`Programming`](
         - [`ruff`](./programming/standard-project-files/python/ruff/)
         - [`python .gitignore`](./programming/standard-project-files/python/gitignore.md)
         - [`dynaconf`](./programming/standard-project-files/python/Dynaconf/)
+        - [`nox`](./programming/standard-project-files/python/nox/)
 
 - 🅿️ Powershell
     - ['Powershell Profiles`](./programming/powershell/profiles.md)
