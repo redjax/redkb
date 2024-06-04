@@ -27,7 +27,7 @@ To load configurations from the environment, you can:
 ##
 # My standard Dynaconf settings.toml file.
 #
-# I normally put this file in a directory like src/config/settings.toml, then update my config.py, adding
+# I normally put this file in a directory like config/settings.toml, then update my config.py, adding
 # root_path="config" to the Dynaconf instance.
 ##
 
@@ -46,62 +46,7 @@ log_level = "DEBUG"
 
 ```
 
-## db/settings.toml
-
-```toml
-[default]
-
-############
-# Database #
-############
-
-# db_type = "sqlite"
-# db_drivername = "sqlite+pysqlite"
-# db_username = ""
-# # Set in .secrets.toml
-# db_password = ""
-# db_host = ""
-# db_port = ""
-# db_database = ".data/app.sqlite"
-# db_echo = false
-
-[dev]
-############
-# Database #
-############
-
-# db_type = "sqlite"
-# db_drivername = "sqlite+pysqlite"
-# db_username = ""
-# # Set in .secrets.toml
-# db_password = ""
-# db_host = ""
-# db_port = ""
-# db_database = ".data/app-dev.sqlite"
-# db_echo = true
-
-[prod]
-
-############
-# Database #
-############
-
-# db_type = "sqlite"
-# db_drivername = "sqlite+pysqlite"
-# db_username = ""
-# # Set in .secrets.toml
-# db_password = ""
-# db_host = ""
-# db_port = ""
-# db_database = ".data/app.sqlite"
-# db_echo = false
-
-```
-
 ## .secrets.toml base
-
-!!!note
-    The `Database` section is commented below because not all projects will start with a database. This file can still be copy/pasted to `config/.secrets.toml` as a base/starting point.
 
 ```toml title="config/.secrets.toml" linenums="1"
 ##
@@ -110,27 +55,67 @@ log_level = "DEBUG"
 
 [default]
 
-############
-# Database #
-############
-
-# db_password = ""
-
 [dev]
-
-############
-# Database #
-############
-
-# db_password = ""
 
 [prod]
 
-############
-# Database #
-############
+```
 
+## db/settings.toml
+
+```toml title="config/db/settings.toml" linenums="1"
+[default]
+
+db_type = "sqlite"
+db_drivername = "sqlite+pysqlite"
+db_username = ""
+# Set in db/.secrets.toml
 # db_password = ""
+db_host = ""
+db_port = ""
+db_database = ".data/app.sqlite"
+db_echo = false
+
+[dev]
+
+db_type = "sqlite"
+db_drivername = "sqlite+pysqlite"
+db_username = ""
+# Set in db/.secrets.toml
+# db_password = ""
+db_host = ""
+db_port = ""
+db_database = ".data/app-dev.sqlite"
+db_echo = true
+
+[prod]
+
+db_type = "sqlite"
+db_drivername = "sqlite+pysqlite"
+db_username = ""
+# Set in db/.secrets.toml
+# db_password = ""
+db_host = ""
+db_port = ""
+db_database = ".data/app.sqlite"
+db_echo = false
+
+```
+
+## .secrets.toml base
+
+```toml title="config/db/.secrets.toml" linenums="1"
+[default]
+
+db_password = ""
+
+[dev]
+
+db_password = ""
+
+[prod]
+
+db_password = ""
 
 ```
 
