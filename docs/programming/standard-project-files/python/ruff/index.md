@@ -7,7 +7,7 @@ tags:
 
 # Ruff
 
-[`Ruff`](https://github.com/astral-sh/ruff)...is...awesome! It's hard to summarize, Ruff describes itself as "An extremely fast Python linter and code formatter, written in Rust." It has replaced `isort`, `flake8`, and is on its way to replacing `black` in my environments.
+[`Ruff`](https://github.com/astral-sh/ruff)...is...awesome! It's hard to summarize, Ruff describes itself as "An extremely fast Python linter and code formatter, written in Rust." It has replaced `isort`, `flake8`, and `black` in my environments.
 
 I use 2 `ruff.toml` files normally:
 
@@ -17,10 +17,17 @@ I use 2 `ruff.toml` files normally:
   - In my [`noxfile.py`](../nox/index.md#noxfilepy-base), I have a `lint` section.
   - This file is more permissive than `ruff.toml` to avoid pipeline errors for things that don't matter like docstring warnings and other rules I find overly strict.
 
+!!! note
+    
+    You can tell `ruff` to use a specific config file with the `--config` arg.
+
+    ```bash title="ruff custom config" linenums="1"
+    $> ruff --config path/to/ruff.custom.toml path/ --fix
+    ```
+
 ## ruff.toml
 
 ```toml title="ruff.toml" linenums="1"
-
 ## Set assumed Python version
 target-version = "py311"
 
@@ -48,13 +55,21 @@ lint.ignore = [
     "D101", ## missing-docstring-in-public-class
     "D102", ## missing-docstring-in-public-method
     "D103", ## Missing docstring in public function
+    "D105", ## Missing docstring in magic method
     "D106", ## missing-docstring-in-public-nested-class
+    "D107", ## Missing docstring in __init__
+    "D200", ## One-line docstring should fit on one line
     "D203", ## one-blank-line-before-class
+    "D205", ## 1 blank line required between summary line and description
     "D213", ## multi-line-summary-second-line
+    "D401", ## First line of docstring should be in imperative mood
+    "E402", ## Module level import not at top of file
     "D406", ## Section name should end with a newline
     "D407", ## Missing dashed underline after section
+    "D414", ## Section has no content
+    "D417", ## Missing argument descriptions in the docstring for [variables]
     "E501", ## Line too long
-    "E402", ## Module level import not at top of file
+    "E722", ## Do note use bare `except`
     "F401", ## imported but unused
 ]
 
@@ -68,7 +83,6 @@ lint.fixable = [
     "D",    ## pydocstyle
     "E",    ## pycodestyle-error
     "E402", ## Module level import not at top of file
-    "E501", ## Line too long
     # "F",  ## pyflakes
     "F401", ## unused imports
     # "G",  ## flake8-logging-format
