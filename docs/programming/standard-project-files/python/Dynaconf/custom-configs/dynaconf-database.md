@@ -67,6 +67,8 @@ db_password = ""
 ### Pydantic db_config.py
 
 ```python title="db_config.py" linenums="1"
+from typing import Union
+
 from dynaconf import Dynaconf
 from pydantic import Field, field_validator, ValidationError
 from pydantic_settings import BaseSettings
@@ -76,7 +78,7 @@ import sqlalchemy.orm as so
 
 valid_db_types: list[str] = ["sqlite", "postgres", "mssql"]
 
-DYNACONF_SETTINGS  = Dynaconf(
+DYNACONF_DB_SETTINGS  = Dynaconf(
     environments=True,
     envvar_prefix="DB",
     settings_files=["db/settings.toml", "db/.secrets.toml"]
@@ -88,7 +90,8 @@ class DBSettings(BaseSettings):
     drivername: str = Field(
         default=DYNACONF_DB_SETTINGS.DB_DRIVERNAME, env="DB_DRIVERNAME"
     )
-    user: str | None = Field(
+    ## If DBSettings is using your Windows/Unix username, try changing 'user' -> 'username' or vice-versa.
+    username: str | None = Field(
         default=DYNACONF_DB_SETTINGS.DB_USERNAME, env="DB_USERNAME"
     )
     password: str | None = Field(
