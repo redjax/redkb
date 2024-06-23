@@ -4,6 +4,8 @@ You can configure VSCode settings per-project using either a `settings.json` or 
 
 Your settings/workspace files should exist in a directory at the project's root, called `.vscode/`.
 
+A `settings.json` file takes precedence, meaning if you set 2 different values for a single configuration, one in `settings.json` and one in a `.code-workspace` file, the option in `settings.json` will take precedence and be applied.
+
 ## settings.json configuration
 
 If a file `.vscode/settings.json` exists at the project root, VSCode will load its configuration from that file.
