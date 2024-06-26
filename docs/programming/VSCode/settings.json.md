@@ -232,11 +232,10 @@ VSCode will read files in `.vscode/` (at the project's root) with a file extensi
         // Python Configurations
         // =====================
         "python.terminal.activateEnvironment": true,
-        "python.formatting.provider": "black",
         "[python]": {
             "editor.insertSpaces": true,
             "editor.tabSize": 4,
-            "editor.formatOnSave": false,
+            "editor.formatOnSave": true,
             "editor.wordBasedSuggestions": "off"
         },
         "workbench.editor.tabActionLocation": "left"
