@@ -67,26 +67,50 @@ db_password = ""
 ### Pydantic db_config.py
 
 ```python title="db_config.py" linenums="1"
+from __future__ import annotations
+
 from typing import Union
 
 from dynaconf import Dynaconf
-from pydantic import Field, field_validator, ValidationError
+from pydantic import Field, ValidationError, field_validator
 from pydantic_settings import BaseSettings
-
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
+## Supported databases
 valid_db_types: list[str] = ["sqlite", "postgres", "mssql"]
 
+## Load database settings from environment
 DYNACONF_DB_SETTINGS  = Dynaconf(
     environments=True,
+    ## If you aren't using [dev] and [prod] envs,
+    #  uncomment line below and add a [db] section to your settings.local.toml
+    # env="db",
     envvar_prefix="DB",
-    settings_files=["db/settings.toml", "db/.secrets.toml"]
+    settings_files=["settings.toml", ".secrets.toml"]
 )
 
 
 class DBSettings(BaseSettings):
-    type: str = Field(default=DYNACONF_SETTINGS.DB_TYPE, env="DB_TYPE")
+    """Store database configuration.
+
+    Params:
+        type (str): [required] The type of database backend, i.e. `sqlite`, `postgres`, `mysql`, etc.
+        drivername (str): [required] The SQLAlchemy drivername string. Examples:
+            `['sqlite+pysqlite', 'postgresql+psycopg2', 'mysql+pymysql', 'mssql+pyodbc']`
+        username (str): The database user's username.
+            **Note**: Some OSes will use the logged-in user's $USERNAME, even when this value is `None`. If you have
+            unexpected results, try changing this to `user`. YOU MUST UPDATE THIS EVERYWHERE, in any function that
+            references `DBSettings.username`.
+        password (str): The database user's password.
+        host (str): The host address/IP/FQDN of the database server.
+        port (int): The port where the database is listening on the remote server.
+        database (str): The database name (or path, if using `SQLite`). Example:
+            (assumes sqlite) `./path/to/app.sqlite`
+        echo (bool): When `True`, the SQLAlchemy `Engine` will print its output to the console.
+    """
+
+    type: str = Field(default=DYNACONF_DB_SETTINGS.DB_TYPE, env="DB_TYPE")
     drivername: str = Field(
         default=DYNACONF_DB_SETTINGS.DB_DRIVERNAME, env="DB_DRIVERNAME"
     )
@@ -116,10 +140,16 @@ class DBSettings(BaseSettings):
             raise ValidationError
 
     def get_db_uri(self) -> sa.URL:
+        """Build SQLAlchemy database URI.
+
+        Returns:
+            (sqlalchemy.URL): A formatted SQLAlchemy `URL` class instance.
+
+        """
         try:
             _uri: sa.URL = sa.URL.create(
                 drivername=self.drivername,
-                username=self.user,
+                username=self.username,
                 password=self.password,
                 host=self.host,
                 port=self.port,
@@ -135,9 +165,15 @@ class DBSettings(BaseSettings):
             raise msg
 
     def get_engine(self) -> sa.Engine:
+        """Build a SQLAlchemy `Engine` object.
+
+        Returns:
+            (sqlalchemy.Engine): An initialized `Engine` object.
+
+        """
         assert self.get_db_uri() is not None, ValueError("db_uri is not None")
         assert isinstance(self.get_db_uri(), sa.URL), TypeError(
-            f"db_uri must be of type sqlalchemy.URL. Got type: ({type(self.db_uri)})"
+            f"db_uri must be of type sqlalchemy.URL. Got type: ({type(self.get_db_uri())})"
         )
 
         try:
@@ -155,6 +191,16 @@ class DBSettings(BaseSettings):
             raise msg
 
     def get_session_pool(self) -> so.sessionmaker[so.Session]:
+        """Build a SQLAlchemy `Session` pool.
+
+        Usage:
+            Create a variable, like `session_pool = DBSettings.get_session_pool()`. Then, call the session
+            pool as a context manager like: `with sesion_pool() as session: ...`
+
+        Returns:
+            (sqlalchemy.orm.sessionmaker[sqlalchemy.orm.Session]): An initialized pool of database sessions.
+
+        """
         engine: sa.Engine = self.get_engine()
         assert engine is not None, ValueError("engine cannot be None")
         assert isinstance(engine, sa.Engine), TypeError(
@@ -164,6 +210,9 @@ class DBSettings(BaseSettings):
         session_pool: so.sessionmaker[so.Session] = so.sessionmaker(bind=engine)
 
         return session_pool
+    
+    
+db_settings: DBSettings = DBSettings()
 
 ```
 
