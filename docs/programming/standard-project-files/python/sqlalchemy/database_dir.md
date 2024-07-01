@@ -3,6 +3,7 @@ tags:
     - standard-project-files
     - python
     - sqlalchemy
+    - database
 ---
 
 # app/core/database
