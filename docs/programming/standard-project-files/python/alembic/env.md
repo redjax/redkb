@@ -3,6 +3,7 @@ tags:
     - standard-project-files
     - python
     - alembic
+    - database
 ---
 
 # Alembic env.py file
