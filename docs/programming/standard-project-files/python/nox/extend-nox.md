@@ -1,3 +1,10 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - nox
+---
+
 # Extend Nox with importable sessions
 
 You can import extra `nox` sessions from a module/file, moving some code out of the `noxfile.py` for extensibility and making your `nox` sessions more modular.
