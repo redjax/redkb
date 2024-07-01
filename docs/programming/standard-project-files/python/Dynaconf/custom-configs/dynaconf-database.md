@@ -1,3 +1,11 @@
+---
+tags:
+    - standard-project-files
+    - python
+    - dynaconf
+    - database
+---
+
 # Dynaconf database configuration
 
 This is the basis I use for configuring a database for use with SQLAlchemy. The settings classes and Dynaconf expect configurations to live at `config/db/*.toml`, if you put them somewhere else, make sure to update the Dynaconf `settings_files` path(s).
