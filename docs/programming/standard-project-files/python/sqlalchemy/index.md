@@ -11,6 +11,4 @@ tags:
 
     - [ ] Describe my SQLAlchemy setup
 
-See my full `database` directory (meant to be copied to either `core/database` or `modules/database`):
-
-[core/database on Github](https://github.com/redjax/redkb/tree/main/src/example_app/core/database)
+My [`red_utils` module](https://github.com/redjax/red-utils) has a [`sqlalchemy_utils package`](https://red-utils.readthedocs.io/en/stable/reference/red_utils/ext/sqlalchemy_utils/__init__/) you can browse for some example code to help get set up with SQLAlchemy.
