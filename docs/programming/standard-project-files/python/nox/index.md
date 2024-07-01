@@ -315,3 +315,7 @@ def run_pre_commit_nbstripout(session: nox.Session):
 #                     log.error(msg)
 
 ```
+
+## Extending the noxfile
+
+Check the [extend-nox page](./extend-nox.md) for information on extending `nox` with custom sessions.
