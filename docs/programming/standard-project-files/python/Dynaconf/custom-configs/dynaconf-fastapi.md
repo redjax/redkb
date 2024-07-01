@@ -67,18 +67,23 @@ from pathlib import Path
 import typing as t
 
 from dynaconf import Dynaconf
-from loguru import logger as log
 from pydantic import ConfigDict, Field, ValidationError, computed_field, field_validator
 from pydantic_settings import BaseSettings
 
+## Load API settings from environment
 DYNACONF_API_SETTINGS: Dynaconf = Dynaconf(
     environments=True,
+    ## If you aren't using [dev] and [prod] envs,
+    #  uncomment line below and add an [api] section to your settings.local.toml
+    # env="api",
     envvar_prefix="FASTAPI",
     settings_files=["fastapi/settings.toml", "fastapi/.secrets.toml"],
 )
 
 
 class APISettings(BaseSettings):
+    """Store FastAPI configuration."""
+
     debug: bool = Field(
         default=DYNACONF_API_SETTINGS.FASTAPI_DEBUG, env="FASTAPI_DEBUG"
     )
@@ -137,6 +142,6 @@ class APISettings(BaseSettings):
         raise ValidationError
 
 
+## Initialize an APISettings object
 api_settings: APISettings = APISettings()
-
 ```
