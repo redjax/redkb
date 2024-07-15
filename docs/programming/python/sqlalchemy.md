@@ -162,6 +162,8 @@ class Base(so.DeclarativeBase):
 ### DBConfig settings class
 
 ```python title="DBConfig settings" linenums="1"
+from __future__ import annotations
+
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -169,7 +171,6 @@ import typing as t
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-
 
 @dataclass
 class DBSettings:
@@ -278,7 +279,7 @@ class DBSettings:
         """
         assert self.get_db_uri() is not None, ValueError("db_uri is not None")
         assert isinstance(self.get_db_uri(), sa.URL), TypeError(
-            f"db_uri must be of type sqlalchemy.URL. Got type: ({type(self.db_uri)})"
+            f"db_uri must be of type sqlalchemy.URL. Got type: ({type(self.get_db_uri)})"
         )
 
         if echo_override is not None:
@@ -332,7 +333,8 @@ class DBSettings:
             all = repo.get_all()
         ```
         """
-        db: so.Session = self.get_session_pool()
+        SESSION_POOL: so.sessionmaker[so.Session] = self.get_session_pool()
+        db: so.Session = SESSION_POOL()
 
         try:
             yield db
