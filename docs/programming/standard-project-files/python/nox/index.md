@@ -121,15 +121,15 @@ nox.sessions = ["lint", "export", "tests"]
 
 ## Define versions to test
 PY_VERSIONS: list[str] = ["3.12", "3.11"]
-## Set PDM version to install throughout
-PDM_VER: str = "2.15.4"
-## Set paths to lint with the lint session
-LINT_PATHS: list[str] = ["src", "tests"]
-
 ## Get tuple of Python ver ('maj', 'min', 'mic')
 PY_VER_TUPLE: tuple[str, str, str] = platform.python_version_tuple()
 ## Dynamically set Python version
 DEFAULT_PYTHON: str = f"{PY_VER_TUPLE[0]}.{PY_VER_TUPLE[1]}"
+
+## Set PDM version to install throughout
+PDM_VER: str = "2.15.4"
+## Set paths to lint with the lint session
+LINT_PATHS: list[str] = ["src", "tests"]
 
 ## Set directory for requirements.txt file output
 REQUIREMENTS_OUTPUT_DIR: Path = Path("./requirements")
@@ -178,10 +178,11 @@ def run_linter(session: nox.Session):
             log.info(f"Running ruff imports sort on '{d}'")
             session.run(
                 "ruff",
+                "check",
+                lint_path,
                 "--select",
                 "I",
                 "--fix",
-                lint_path,
             )
 
             # log.info(f"Formatting '{d}' with Black")
@@ -194,8 +195,6 @@ def run_linter(session: nox.Session):
             session.run(
                 "ruff",
                 "check",
-                # "--config",
-                # "ruff.ci.toml",
                 lint_path,
                 "--fix",
             )
@@ -204,8 +203,6 @@ def run_linter(session: nox.Session):
     session.run(
         "ruff",
         "check",
-        # "--config",
-        # "ruff.ci.toml",
         f"{Path('./noxfile.py')}",
         "--fix",
     )
@@ -235,17 +232,6 @@ def export_requirements(session: nox.Session, pdm_ver: str):
         f"{REQUIREMENTS_OUTPUT_DIR}/requirements.dev.txt",
         "--without-hashes",
     )
-
-    # log.info("Exporting CI requirements")
-    # session.run(
-    #     "pdm",
-    #     "export",
-    #     "--group",
-    #     "ci",
-    #     "-o",
-    #     f"{REQUIREMENTS_OUTPUT_DIR}/requirements.ci.txt",
-    #     "--without-hashes",
-    # )
 
 
 @nox.session(python=PY_VERSIONS, name="tests")
