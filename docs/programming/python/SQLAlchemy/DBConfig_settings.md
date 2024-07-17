@@ -1,3 +1,9 @@
+---
+tags:
+    - python
+    - sqlalchemy
+---
+
 # DBConfig settings class
 
 I use a Python `dataclass` to store my database settings. The `DBSettings` class below accepts SQLAlchemy parameters for a database connection, and handles getting session pools, engines, and more using class methods.

@@ -1,3 +1,9 @@
+---
+tags:
+    - python
+    - sqlalchemy
+---
+
 # Validators
 
 ## Valid DB types
