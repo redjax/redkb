@@ -155,7 +155,7 @@ force-wrap-aliases = true
 ## Use a single line after each import block.
 lines-after-imports = 1
 ## Use a single line between direct and from import
-lines-between-types = 1
+# lines-between-types = 1
 ## Order imports by type, which is determined by case,
 #  in addition to alphabetically.
 order-by-type = true

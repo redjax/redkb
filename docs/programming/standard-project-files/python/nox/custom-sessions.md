@@ -4,13 +4,15 @@ tags:
     - python
     - nox
     - pre-commit
+    - jupyter
+    - pytest
 ---
 
-# pre-commit nox sessions
+# Custom nox sessions
 
-Code snippets for `nox` sessions
+## pre-commit
 
-## Run all pre-commit hooks
+### Run all pre-commit hooks
 
 ```py title="noxfile.py" linenums="1"
 ## Run all pre-commit hooks
@@ -24,7 +26,7 @@ def run_pre_commit_all(session: nox.Session):
 
 ```
 
-## Automatically update pre-commit hooks on new revisions
+### Automatically update pre-commit hooks on new revisions
 
 ```py title="noxfile.py" linenums="1"
 ## Automatically update pre-commit hooks on new revisions
@@ -36,7 +38,9 @@ def run_pre_commit_autoupdate(session: nox.Session):
     session.run("pre-commit", "run", "pre-commit-update")
 ```
 
-## Run pytests with xdist
+## pytest
+
+### Run pytests with xdist
 
 `pytest-xdist` runs tests concurrently, significantly improving test execution speed.
 
@@ -61,7 +65,7 @@ def run_tests(session: nox.Session, pdm_ver: str):
     )
 ```
 
-## Run pytests
+### Run pytests
 
 ```py title="noxfile.py" linenums="1"
 ## Run pytest
@@ -80,4 +84,25 @@ def run_tests(session: nox.Session, pdm_ver: str):
         "-v",
         "-rsXxfP",
     )
+```
+
+## nbstripout
+
+### Strip notebook output
+
+```python title="noxfile.py" linenums="1"
+@nox.session(
+    python=[DEFAULT_PYTHON], name="strip-notebooks", tags=["jupyter", "cleanup"]
+)
+def clear_notebook_output(session: nox.Session):
+    session.install("nbstripout")
+
+    log.info("Gathering all Jupyter .ipynb files")
+    ## Find all Jupyter notebooks in the project
+    notebooks = Path(".").rglob("*.ipynb")
+
+    ## Clear the output of each notebook
+    for notebook in notebooks:
+        log.info(f"Stripping output from notebook '{notebook}'")
+        session.run("nbstripout", str(notebook))
 ```
