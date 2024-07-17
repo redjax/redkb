@@ -1,3 +1,9 @@
+---
+tags:
+    - python
+    - sqlalchemy
+---
+
 # SQLAlchemy Base class
 
 ## SQLAlchemy Base
