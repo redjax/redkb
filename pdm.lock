@@ -4,8 +4,8 @@
 [metadata]
 groups = ["default", "dev"]
 strategy = ["cross_platform"]
-lock_version = "4.4.2"
-content_hash = "sha256:597a8c7eeced2f72491b3654faffa9423fc11782ad92aead85fbd05cc4c003be"
+lock_version = "4.4.1"
+content_hash = "sha256:055c2f79632f44774a97adec0ff57bdeca47596495373f26d1ecdccf601133ed"
 
 [[package]]
 name = "argcomplete"
@@ -382,6 +382,22 @@ files = [
 ]
 
 [[package]]
+name = "mkdocs-git-revision-date-localized-plugin"
+version = "1.2.6"
+requires_python = ">=3.8"
+summary = "Mkdocs plugin that enables displaying the localized date of the last git modification of a markdown file."
+dependencies = [
+    "GitPython",
+    "babel>=2.7.0",
+    "mkdocs>=1.0",
+    "pytz",
+]
+files = [
+    {file = "mkdocs_git_revision_date_localized_plugin-1.2.6-py3-none-any.whl", hash = "sha256:f015cb0f3894a39b33447b18e270ae391c4e25275cac5a626e80b243784e2692"},
+    {file = "mkdocs_git_revision_date_localized_plugin-1.2.6.tar.gz", hash = "sha256:e432942ce4ee8aa9b9f4493e993dee9d2cc08b3ea2b40a3d6b03ca0f2a4bcaa2"},
+]
+
+[[package]]
 name = "mkdocs-glightbox"
 version = "0.4.0"
 summary = "MkDocs plugin supports image lightbox with GLightbox."
@@ -661,6 +677,15 @@ dependencies = [
 files = [
     {file = "python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3"},
     {file = "python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427"},
+]
+
+[[package]]
+name = "pytz"
+version = "2024.1"
+summary = "World timezone definitions, modern and historical"
+files = [
+    {file = "pytz-2024.1-py2.py3-none-any.whl", hash = "sha256:328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319"},
+    {file = "pytz-2024.1.tar.gz", hash = "sha256:2a29735ea9c18baf14b448846bde5a48030ed267578472d8955cd0e7443a9812"},
 ]
 
 [[package]]
