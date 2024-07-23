@@ -1,29 +1,3 @@
----
-tags:
-    - standard-project-files
-    - python
-    - nox
----
-
-# Nox
-
-I am still deciding between [`tox`](https://tox.wiki/en/stable/) and [`nox`](https://nox.thea.codes/en/stable/) as my preferred task runner, but I've been leaning more towards `nox` for the simple reason that it's nice to be able to write Python code for things like `try/except` and creating directories that don't exist yet.
-
-## noxfile.py base
-
-The basis for most/all of my projects' `noxfile.py`. 
-
-!!!note
-
-    If running all sessions with `$ nox`, only the sessions defined in `nox.sessions` will be executed. The list of sessions is conservative to start in order to maintain as generic a `nox` environment as possible.
-
-    Enabled sessions:
-
-    - lint
-    - export
-    - tests
-
-```py title="noxfile.py" linenums="1"
 from __future__ import annotations
 
 import logging
@@ -33,8 +7,19 @@ import os
 from pathlib import Path
 import platform
 import shutil
+import typing as t
 
 import nox
+
+## Set nox options
+nox.options.default_venv_backend = "uv|virtualenv"
+nox.options.reuse_existing_virtualenvs = True
+nox.options.error_on_external_run = False
+nox.options.error_on_missing_interpreters = False
+# nox.options.report = True
+
+## Define sessions to run when no session is specified
+nox.sessions = ["lint", "export", "tests"]
 
 ## Detect container env, or default to False
 if "CONTAINER_ENV" in os.environ:
@@ -91,6 +76,26 @@ def setup_nox_logging(
     for _logger in disable_loggers:
         logging.getLogger(_logger).setLevel(logging.WARNING)
 
+def append_lint_paths(search_patterns: str | list[str] = None, lint_paths: list[str] = None):
+    if lint_paths is None:
+        lint_paths = []
+
+    if search_patterns is None:
+        return lint_paths
+
+    if isinstance(search_patterns, str):
+        search_patterns = [search_patterns]
+
+    for pattern in search_patterns:
+        for path in Path('.').rglob(pattern):
+            relative_path = Path('.').joinpath(path).resolve().relative_to(Path('.').resolve())
+            
+            if f"{relative_path}" not in lint_paths:
+                lint_paths.append(f"./{relative_path}")
+
+    log.debug(f"Lint paths: {lint_paths}")
+    return lint_paths
+    
 
 setup_nox_logging()
 
@@ -98,16 +103,6 @@ setup_nox_logging()
 log: logging.Logger = logging.getLogger("nox")
 
 log.info(f"[container_env:{CONTAINER_ENV}]")
-
-## Set nox options
-nox.options.default_venv_backend = "venv"
-nox.options.reuse_existing_virtualenvs = True
-nox.options.error_on_external_run = False
-nox.options.error_on_missing_interpreters = False
-# nox.options.report = True
-
-## Define sessions to run when no session is specified
-nox.sessions = ["lint", "export", "tests"]
 
 ## Define versions to test
 PY_VERSIONS: list[str] = ["3.12", "3.11"]
@@ -119,7 +114,9 @@ DEFAULT_PYTHON: str = f"{PY_VER_TUPLE[0]}.{PY_VER_TUPLE[1]}"
 ## Set PDM version to install throughout
 PDM_VER: str = "2.15.4"
 ## Set paths to lint with the lint session
-LINT_PATHS: list[str] = ["src", "tests"]
+LINT_PATHS: list[str] = ["./src", "./tests", "./noxfile.py"]
+## Use search patterns to add more files to list of paths to lint.
+LINT_PATHS:list[str] = append_lint_paths(search_patterns="*.ipynb", lint_paths=LINT_PATHS)
 
 ## Set directory for requirements.txt file output
 REQUIREMENTS_OUTPUT_DIR: Path = Path("./requirements")
@@ -136,10 +133,10 @@ if not REQUIREMENTS_OUTPUT_DIR.exists():
 
         REQUIREMENTS_OUTPUT_DIR: Path = Path(".")
 
-# INIT_COPY_FILES: list[dict[str, str]] = [
-#     {"src": "config/.secrets.example.toml", "dest": "config/.secrets.toml"},
-#     {"src": "config/settings.toml", "dest": "config/settings.local.toml"},
-# ]
+## Set file src/dest pairs for copying in init-setup session.
+#  Leave empty to skip.
+#  Example: {"src": "config/settings.toml", "dest": "config/settings.local.toml"}
+INIT_COPY_FILES: list[dict[str, str]] = []
 
 
 @nox.session(python=PY_VERSIONS, name="build-env")
@@ -243,55 +240,39 @@ def run_tests(session: nox.Session, pdm_ver: str):
     )
 
 
-@nox.session(python=PY_VERSIONS, name="pre-commit-all")
-def run_pre_commit_all(session: nox.Session):
-    session.install("pre-commit")
-    session.run("pre-commit")
+@nox.session(python=[PY_VER_TUPLE], name="init-setup")
+def run_initial_setup(session: nox.Session):
+    log.info(f"Running initial setup.")
+    if INIT_COPY_FILES is None or isinstance(INIT_COPY_FILES, list) and len(INIT_COPY_FILES) == 0:
+        log.warning(f"INIT_COPY_FILES is empty. Skipping")
+        pass
 
-    log.info("Running all pre-commit hooks")
-    session.run("pre-commit", "run")
+    else:
 
+        for pair_dict in INIT_COPY_FILES:
+            src = Path(pair_dict["src"])
+            dest = Path(pair_dict["dest"])
+            if not dest.exists():
+                log.info(f"Copying {src} to {dest}")
+                try:
+                    shutil.copy(src, dest)
+                except Exception as exc:
+                    msg = Exception(
+                        f"Unhandled exception copying file from '{src}' to '{dest}'. Details: {exc}"
+                    )
+                    log.error(msg)
 
-@nox.session(python=PY_VERSIONS, name="pre-commit-update")
-def run_pre_commit_autoupdate(session: nox.Session):
-    session.install(f"pre-commit")
+@nox.session(
+    python=[DEFAULT_PYTHON], name="nb-strip", tags=["jupyter", "cleanup"]
+)
+def clear_notebook_output(session: nox.Session):
+    session.install("nbstripout")
 
-    log.info("Running pre-commit autoupdate")
-    session.run("pre-commit", "autoupdate")
+    log.info("Gathering all Jupyter .ipynb files")
+    ## Find all Jupyter notebooks in the project
+    notebooks: t.Generator[Path, None, None] = Path(".").rglob("*.ipynb")
 
-
-@nox.session(python=PY_VERSIONS, name="pre-commit-nbstripout")
-def run_pre_commit_nbstripout(session: nox.Session):
-    session.install(f"pre-commit")
-
-    log.info("Running nbstripout pre-commit hook")
-    session.run("pre-commit", "run", "nbstripout")
-
-
-# @nox.session(python=[PY_VER_TUPLE], name="init-setup")
-# def run_initial_setup(session: nox.Session):
-#     log.info(f"Running initial setup.")
-#     if INIT_COPY_FILES is None:
-#         log.warning(f"INIT_COPY_FILES is empty. Skipping")
-#         pass
-
-#     else:
-
-#         for pair_dict in INIT_COPY_FILES:
-#             src = Path(pair_dict["src"])
-#             dest = Path(pair_dict["dest"])
-#             if not dest.exists():
-#                 log.info(f"Copying {src} to {dest}")
-#                 try:
-#                     shutil.copy(src, dest)
-#                 except Exception as exc:
-#                     msg = Exception(
-#                         f"Unhandled exception copying file from '{src}' to '{dest}'. Details: {exc}"
-#                     )
-#                     log.error(msg)
-
-```
-
-## Extending the noxfile
-
-Check the [extend-nox page](./extend-nox.md) for information on extending `nox` with custom sessions.
+    ## Clear the output of each notebook
+    for notebook in notebooks:
+        log.info(f"Stripping output from notebook '{notebook}'")
+        session.run("nbstripout", str(notebook))
