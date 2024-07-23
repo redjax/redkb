@@ -6,14 +6,49 @@ import logging.handlers
 import os
 from pathlib import Path
 import platform
+import shutil
 
 import nox
+
+## Create logger for this module
+log: logging.Logger = logging.getLogger("nox")
 
 ## Detect container env, or default to False
 if "CONTAINER_ENV" in os.environ:
     CONTAINER_ENV: bool = os.environ["CONTAINER_ENV"]
 else:
     CONTAINER_ENV: bool = False
+
+## Set nox options
+nox.options.default_venv_backend = "uv|virtualenv"
+nox.options.reuse_existing_virtualenvs = True
+nox.options.error_on_external_run = False
+nox.options.error_on_missing_interpreters = False
+# nox.options.report = True
+
+## Define sessions to run when no session is specified
+nox.sessions = ["lint", "export", "tests"]
+
+## Define versions to test
+PY_VERSIONS: list[str] = ["3.12", "3.11"]
+## Set PDM version to install throughout
+PDM_VER: str = "2.15.4"
+
+## Get tuple of Python ver ('maj', 'min', 'mic')
+PY_VER_TUPLE = platform.python_version_tuple()
+## Dynamically set Python version
+DEFAULT_PYTHON: str = f"{PY_VER_TUPLE[0]}.{PY_VER_TUPLE[1]}"
+
+## Set paths to lint with the lint session
+LINT_PATHS: list[str] = ["src", "tests"]
+
+## Set directory for requirements.txt file output
+REQUIREMENTS_OUTPUT_DIR: Path = Path("./requirements")
+
+## Set file src/dest pairs for copying in init-setup session.
+#  Leave empty to skip.
+#  Example: {"src": "config/settings.toml", "dest": "config/settings.local.toml"}
+INIT_COPY_FILES: list[dict[str, str]] = []
 
 
 def setup_nox_logging(
@@ -67,39 +102,8 @@ def setup_nox_logging(
 
 setup_nox_logging()
 
-## Create logger for this module
-log: logging.Logger = logging.getLogger("nox")
-
 log.info(f"[container_env:{CONTAINER_ENV}]")
 
-## Set nox options
-nox.options.default_venv_backend = "venv"
-nox.options.reuse_existing_virtualenvs = True
-nox.options.error_on_external_run = False
-nox.options.error_on_missing_interpreters = False
-# nox.options.report = True
-
-## Define sessions to run when no session is specified
-nox.sessions = ["lint", "export", "tests"]
-
-# INIT_COPY_FILES: list[dict[str, str]] = [
-#     {"src": "config/.secrets.example.toml", "dest": "config/.secrets.toml"},
-#     {"src": "config/settings.toml", "dest": "config/settings.local.toml"},
-# ]
-## Define versions to test
-PY_VERSIONS: list[str] = ["3.12", "3.11"]
-## Set PDM version to install throughout
-PDM_VER: str = "2.15.4"
-## Set paths to lint with the lint session
-LINT_PATHS: list[str] = ["src", "tests"]
-
-## Get tuple of Python ver ('maj', 'min', 'mic')
-PY_VER_TUPLE = platform.python_version_tuple()
-## Dynamically set Python version
-DEFAULT_PYTHON: str = f"{PY_VER_TUPLE[0]}.{PY_VER_TUPLE[1]}"
-
-## Set directory for requirements.txt file output
-REQUIREMENTS_OUTPUT_DIR: Path = Path("./requirements")
 ## Ensure REQUIREMENTS_OUTPUT_DIR path exists
 if not REQUIREMENTS_OUTPUT_DIR.exists():
     try:
@@ -111,11 +115,6 @@ if not REQUIREMENTS_OUTPUT_DIR.exists():
         print(msg)
 
         REQUIREMENTS_OUTPUT_DIR: Path = Path(".")
-
-# INIT_COPY_FILES: list[dict[str, str]] = [
-#     {"src": "config/.secrets.example.toml", "dest": "config/.secrets.toml"},
-#     {"src": "config/settings.toml", "dest": "config/settings.local.toml"},
-# ]
 
 
 @nox.session(python=PY_VERSIONS, name="build-env")
@@ -151,29 +150,28 @@ def run_linter(session: nox.Session):
                 "--fix",
             )
 
-            # log.info(f"Formatting '{d}' with Black")
-            # session.run(
-            #     "black",
-            #     lint_path,
-            # )
+            log.info(f"Formatting '{d}' with Black")
+            session.run(
+                "black",
+                lint_path,
+            )
 
             log.info(f"Running ruff checks on '{d}' with --fix")
             session.run(
                 "ruff",
                 "check",
-                # "--config",
-                # "ruff.ci.toml",
                 lint_path,
                 "--fix",
             )
 
-    log.info("Linting noxfile.py")
+    # log.info("Formatting code with black")
+    # session.run("black", "noxfile.py")
+
+    log.info("Linting noxfile.py with ruff")
     session.run(
         "ruff",
         "check",
-        # "--config",
-        # "ruff.ci.toml",
-        f"{Path('./noxfile.py')}",
+        "./noxfile.py",
         "--fix",
     )
 
@@ -202,7 +200,6 @@ def export_requirements(session: nox.Session, pdm_ver: str):
         f"{REQUIREMENTS_OUTPUT_DIR}/requirements.dev.txt",
         "--without-hashes",
     )
-
 
 
 @nox.session(python=PY_VERSIONS, name="tests")
@@ -248,73 +245,92 @@ def run_pre_commit_nbstripout(session: nox.Session):
     log.info("Running nbstripout pre-commit hook")
     session.run("pre-commit", "run", "nbstripout")
 
+
 @nox.session(python=[DEFAULT_PYTHON], name="prune-local-branches", tags=["git"])
 def clean_branches(session: nox.Session):
     log.info("Cleaning local branches that have been deleted from the remote.")
     PROTECTED_BRANCHES: list[str] = ["main", "master", "dev", "rc", "gh-pages"]
-    
+
     options = session.posargs or session.default_args
     force = "force" in options
-    
+
     ## Install GitPython
     session.install("gitpython")
-    
+
     ## Import gitpython
     import git
-    
+
     ## Initialize repository
     repo = git.Repo(".")
-    
+
     ## Fetch latest changes & prune deleted branches
     repo.git.fetch("--prune")
-    
+
     ## Get a list of local branches
     local_branches: list[str] = [head.name for head in repo.heads]
     log.info(f"Found [{len(local_branches)}] local branch(es).")
     if len(local_branches) < 15:
         log.debug(f"Local branches: {local_branches}")
-        
+
     ## Get a list of remote branches
-    remote_branches: list[str] = [ref.name.replace('origin/', '') for ref in repo.remotes.origin.refs]
+    remote_branches: list[str] = [
+        ref.name.replace("origin/", "") for ref in repo.remotes.origin.refs
+    ]
     log.info(f"Found [{len(remote_branches)}] remote branch(es).")
     if len(remote_branches) < 15:
         log.debug(f"Remote branches: {remote_branches}")
-    
+
     ## Find local branches that are not present in remote branches
-    branches_to_delete: list[str] = [branch for branch in local_branches if branch not in remote_branches]       
-    log.info(f"Prepared [{len(branches_to_delete)}] branch(es) for deletion.") 
+    branches_to_delete: list[str] = [
+        branch for branch in local_branches if branch not in remote_branches
+    ]
+    log.info(f"Prepared [{len(branches_to_delete)}] branch(es) for deletion.")
     if len(branches_to_delete) < 15:
         log.debug(f"Deleting branches: {branches_to_delete}")
-        
+
     for branch in branches_to_delete:
         if branch not in PROTECTED_BRANCHES:  ## Avoid deleting specified branches
             try:
-                repo.git.branch('-d', branch)
+                repo.git.branch("-d", branch)
                 log.info(f"Deleted branch '{branch}'")
             except git.GitError as git_err:
-                msg = Exception(f"Git error while deleting branch '{branch}'. Details: {git_err}")
-                
+                msg = Exception(
+                    f"Git error while deleting branch '{branch}'. Details: {git_err}"
+                )
+
                 if force:
                     log.warning("Force=True, attempting to delete with -D")
                     try:
                         repo.git.branch("-D", branch)
                         log.info(f"Force-deleted branch '{branch}'")
                     except git.GitError as git_err2:
-                        msg2 = Exception(f"Git error while force deleting branch '{branch}'. Details: {git_err2}")
-                        log.warning(f"Branch '{branch}' was not deleted. Reason: {msg2}")
-                        
+                        msg2 = Exception(
+                            f"Git error while force deleting branch '{branch}'. Details: {git_err2}"
+                        )
+                        log.warning(
+                            f"Branch '{branch}' was not deleted. Reason: {msg2}"
+                        )
+
                         ## Retry with subprocess
                         try:
                             log.info("Retrying using subprocess.")
                             session.run(["git", "branch", "-D", branch], external=True)
-                            log.info(f"Force-deleted branch '{branch}'. Required fallback to subprocess.")
+                            log.info(
+                                f"Force-deleted branch '{branch}'. Required fallback to subprocess."
+                            )
                         except git.GitError as git_err3:
-                            msg3 = Exception(f"Git error while force deleting branch '{branch}'. Details: {git_err3}")
-                            log.warning(f"Branch '{branch}' was not deleted. Reason: {msg3}")
+                            msg3 = Exception(
+                                f"Git error while force deleting branch '{branch}'. Details: {git_err3}"
+                            )
+                            log.warning(
+                                f"Branch '{branch}' was not deleted. Reason: {msg3}"
+                            )
                         except Exception as exc:
-                            msg = Exception(f"Unhandled exception attempting to delete git branch '{branch}' using subprocess.run(). Details: {exc}")
+                            msg = Exception(
+                                f"Unhandled exception attempting to delete git branch '{branch}' using subprocess.run(). Details: {exc}"
+                            )
                             log.error(msg)
-                            
+
                 else:
                     log.warning(f"Branch '{branch}' was not deleted. Reason: {msg}")
 
@@ -324,29 +340,30 @@ def clean_branches(session: nox.Session):
 @nox.session(python=[DEFAULT_PYTHON], name="publish-mkdocs", tags=["mkdocs", "publish"])
 def publish_mkdocs(session: nox.Session):
     session.install("-r", f"{REQUIREMENTS_OUTPUT_DIR}/requirements.txt")
-    
+
     log.info("Publishing MKDocs site")
-    
+
     session.run("mkdocs", "gh-deploy")
 
-# @nox.session(python=[PY_VER_TUPLE], name="init-setup")
-# def run_initial_setup(session: nox.Session):
-#     log.info(f"Running initial setup.")
-#     if INIT_COPY_FILES is None:
-#         log.warning(f"INIT_COPY_FILES is empty. Skipping")
-#         pass
 
-#     else:
+@nox.session(python=[PY_VER_TUPLE], name="init-setup")
+def run_initial_setup(session: nox.Session):
+    log.info("Running initial setup.")
+    if INIT_COPY_FILES is None:
+        log.warning("INIT_COPY_FILES is empty. Skipping")
+        pass
 
-#         for pair_dict in INIT_COPY_FILES:
-#             src = Path(pair_dict["src"])
-#             dest = Path(pair_dict["dest"])
-#             if not dest.exists():
-#                 log.info(f"Copying {src} to {dest}")
-#                 try:
-#                     shutil.copy(src, dest)
-#                 except Exception as exc:
-#                     msg = Exception(
-#                         f"Unhandled exception copying file from '{src}' to '{dest}'. Details: {exc}"
-#                     )
-#                     log.error(msg)
+    else:
+
+        for pair_dict in INIT_COPY_FILES:
+            src = Path(pair_dict["src"])
+            dest = Path(pair_dict["dest"])
+            if not dest.exists():
+                log.info(f"Copying {src} to {dest}")
+                try:
+                    shutil.copy(src, dest)
+                except Exception as exc:
+                    msg = Exception(
+                        f"Unhandled exception copying file from '{src}' to '{dest}'. Details: {exc}"
+                    )
+                    log.error(msg)
