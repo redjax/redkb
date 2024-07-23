@@ -71,9 +71,8 @@ plugins:
   - glightbox
   - tags:
       tags_file: tags.md
-      tags_heirarchy: true
+      # tags_heirarchy: true  # Only available in "insiders" edition
   - git-revision-date-localized:
-      enable_creation_time: true
       ## Options: ["date", "datetime", "iso_date", "iso_datetime", "timeago"]
       type: timeago
       ## Show/hide creaetion date of file associated with page.
