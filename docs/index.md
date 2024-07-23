@@ -15,5 +15,5 @@ My personal knowledgebase. Use the sections along the top (i.e. [`Programming`](
 
 - 🅿️ Powershell
     - [`Powershell profiles`](programming/powershell/profiles/index.md)
-    - [`Powershell code snippets'](programming/powershell/snippets/index.md)
+    - [`Powershell code snippets`](programming/powershell/snippets/index.md)
     - [`Powershell modules`](programming/powershell/modules/index.md)
