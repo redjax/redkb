@@ -54,7 +54,7 @@ Add this code to a cell (I usually put it in the very first cell) to automatical
 
 When running Jupyter notebooks, it's usually good practice to clear the notebook's output when committing to git. This can be for privacy/security (if you're debugging PII or environment variables in the notebook), or just a tidy repository.
 
-Using `pre-commit` (check [my section on `pre-commit`](../standard-project-files/pre-commit/)) and the [`nbstripout action`](https://github.com/kynan/nbstripout), we can automate stripping the notebook each time a git commit is created.
+Using `pre-commit` (check [my section on `pre-commit`](../standard-project-files/pre-commit/index.md)) and the [`nbstripout action`](https://github.com/kynan/nbstripout), we can automate stripping the notebook each time a git commit is created.
 
 **Instructions**
 
