@@ -36,11 +36,39 @@ import shutil
 
 import nox
 
+## Set nox options
+nox.options.default_venv_backend = "venv"
+nox.options.reuse_existing_virtualenvs = True
+nox.options.error_on_external_run = False
+nox.options.error_on_missing_interpreters = False
+# nox.options.report = True
+
+## Define sessions to run when no session is specified
+nox.sessions = ["lint", "export", "tests"]
+
 ## Detect container env, or default to False
 if "CONTAINER_ENV" in os.environ:
     CONTAINER_ENV: bool = os.environ["CONTAINER_ENV"]
 else:
     CONTAINER_ENV: bool = False
+
+## Create logger for this module
+log: logging.Logger = logging.getLogger("nox")
+
+## Define versions to test
+PY_VERSIONS: list[str] = ["3.12", "3.11"]
+## Get tuple of Python ver ('maj', 'min', 'mic')
+PY_VER_TUPLE: tuple[str, str, str] = platform.python_version_tuple()
+## Dynamically set Python version
+DEFAULT_PYTHON: str = f"{PY_VER_TUPLE[0]}.{PY_VER_TUPLE[1]}"
+
+## Set PDM version to install throughout
+PDM_VER: str = "2.15.4"
+## Set paths to lint with the lint session
+LINT_PATHS: list[str] = ["src", "tests"]
+
+## Set directory for requirements.txt file output
+REQUIREMENTS_OUTPUT_DIR: Path = Path("./requirements")
 
 
 def setup_nox_logging(
@@ -92,37 +120,30 @@ def setup_nox_logging(
         logging.getLogger(_logger).setLevel(logging.WARNING)
 
 
+def append_lint_paths(search_patterns: str | list[str] = None, lint_paths: list[str] = None):
+    if lint_paths is None:
+        lint_paths = []
+
+    if search_patterns is None:
+        return lint_paths
+
+    if isinstance(search_patterns, str):
+        search_patterns = [search_patterns]
+
+    for pattern in search_patterns:
+        for path in Path('.').rglob(pattern):
+            relative_path = Path('.').joinpath(path).resolve().relative_to(Path('.').resolve())
+            
+            if f"{relative_path}" not in lint_paths:
+                lint_paths.append(f"./{relative_path}")
+
+    log.debug(f"Lint paths: {lint_paths}")
+    return lint_paths
+
+
 setup_nox_logging()
 
-## Create logger for this module
-log: logging.Logger = logging.getLogger("nox")
-
 log.info(f"[container_env:{CONTAINER_ENV}]")
-
-## Set nox options
-nox.options.default_venv_backend = "venv"
-nox.options.reuse_existing_virtualenvs = True
-nox.options.error_on_external_run = False
-nox.options.error_on_missing_interpreters = False
-# nox.options.report = True
-
-## Define sessions to run when no session is specified
-nox.sessions = ["lint", "export", "tests"]
-
-## Define versions to test
-PY_VERSIONS: list[str] = ["3.12", "3.11"]
-## Get tuple of Python ver ('maj', 'min', 'mic')
-PY_VER_TUPLE: tuple[str, str, str] = platform.python_version_tuple()
-## Dynamically set Python version
-DEFAULT_PYTHON: str = f"{PY_VER_TUPLE[0]}.{PY_VER_TUPLE[1]}"
-
-## Set PDM version to install throughout
-PDM_VER: str = "2.15.4"
-## Set paths to lint with the lint session
-LINT_PATHS: list[str] = ["src", "tests"]
-
-## Set directory for requirements.txt file output
-REQUIREMENTS_OUTPUT_DIR: Path = Path("./requirements")
 
 ## Ensure REQUIREMENTS_OUTPUT_DIR path exists
 if not REQUIREMENTS_OUTPUT_DIR.exists():
@@ -136,10 +157,9 @@ if not REQUIREMENTS_OUTPUT_DIR.exists():
 
         REQUIREMENTS_OUTPUT_DIR: Path = Path(".")
 
-# INIT_COPY_FILES: list[dict[str, str]] = [
-#     {"src": "config/.secrets.example.toml", "dest": "config/.secrets.toml"},
-#     {"src": "config/settings.toml", "dest": "config/settings.local.toml"},
-# ]
+## List of dicts describing a src file to copy to a specified destination file
+#  Ex: {"src": "config/.secrets.example.toml", "dest": "config/.secrets.toml"}
+INIT_COPY_FILES: list[dict[str, str]] = []
 
 
 @nox.session(python=PY_VERSIONS, name="build-env")
@@ -268,27 +288,27 @@ def run_pre_commit_nbstripout(session: nox.Session):
     session.run("pre-commit", "run", "nbstripout")
 
 
-# @nox.session(python=[PY_VER_TUPLE], name="init-setup")
-# def run_initial_setup(session: nox.Session):
-#     log.info(f"Running initial setup.")
-#     if INIT_COPY_FILES is None:
-#         log.warning(f"INIT_COPY_FILES is empty. Skipping")
-#         pass
+@nox.session(python=[PY_VER_TUPLE], name="init-setup")
+def run_initial_setup(session: nox.Session):
+    log.info(f"Running initial setup.")
+    if INIT_COPY_FILES is None:
+        log.warning(f"INIT_COPY_FILES is empty. Skipping")
+        pass
 
-#     else:
+    else:
 
-#         for pair_dict in INIT_COPY_FILES:
-#             src = Path(pair_dict["src"])
-#             dest = Path(pair_dict["dest"])
-#             if not dest.exists():
-#                 log.info(f"Copying {src} to {dest}")
-#                 try:
-#                     shutil.copy(src, dest)
-#                 except Exception as exc:
-#                     msg = Exception(
-#                         f"Unhandled exception copying file from '{src}' to '{dest}'. Details: {exc}"
-#                     )
-#                     log.error(msg)
+        for pair_dict in INIT_COPY_FILES:
+            src = Path(pair_dict["src"])
+            dest = Path(pair_dict["dest"])
+            if not dest.exists():
+                log.info(f"Copying {src} to {dest}")
+                try:
+                    shutil.copy(src, dest)
+                except Exception as exc:
+                    msg = Exception(
+                        f"Unhandled exception copying file from '{src}' to '{dest}'. Details: {exc}"
+                    )
+                    log.error(msg)
 
 ```
 
