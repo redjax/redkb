@@ -6,7 +6,7 @@ tags:
 
 # pre-commit hooks
 
-Some [`pre-commit`](pre-commit.com/) hooks I use frequently.
+Some [`pre-commit`](https://pre-commit.com/) hooks I use frequently.
 
 ## Example .pre-commit-config.yaml file
 
