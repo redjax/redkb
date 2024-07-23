@@ -252,12 +252,12 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv
 * You can do this by opening the Control Panel > User Accounts and clicking "Change my environment variables":
 
 <figure markdown="span">
-  ![pyenv-win PATH](../../assets/img/pyenv/pyenv-win_set_path_vars.png)
+  ![pyenv-win PATH](assets/img/pyenv-win_set_path_vars.png)
   <figcaption>Set pyenv-win PATH variables on Windows</figcaption>
 </figure>
 
 <figure markdown="span">
-  ![pyenv-win PATH pt 2](../../assets/img/pyenv/pyenv-win_set_path_vars2.png)
+  ![pyenv-win PATH pt 2](assets/img/pyenv-win_set_path_vars2.png)
   <figcaption>Set pyenv-win PATH variables on Windows pt. 2</figcaption>
 </figure>
 

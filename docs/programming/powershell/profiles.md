@@ -12,7 +12,6 @@ tags:
     - [ ] Link to helpful articles about setting up profiles
     - [ ] Document helpful snippets
         - [ ] Automatic transcription (logging)
-        - [ ] 
     - [ ] Demo example full Powershell profile
 
 A Powershell profile is a `.ps1` file, which does not exist by default but is expected at `C:\Users\<username>\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`, is a file that is "sourced"/loaded each time a Powershell session is opened. You can use a profile to customize your Powershell session. Functions declared in your profile are accessible to your whole session. You can set variables with default values, customize your session's colors (by editing a `function Prompt {}` section), split behavior between regular/elevated prompts, and more.
