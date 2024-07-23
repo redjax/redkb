@@ -10,9 +10,9 @@ tags:
 
     In progress...
 
-- Read about enhancing your Powershell sessions with a [profile](./profiles).
-- Check the [snippets page](./snippets.md) for code examples with little/no explanation.
-    - Some snippets may link to a section in the [`reference` page](./Reference/reference%20(longform)/powershell-ref-longform.md) for more in-depth documentation.
+- Read about enhancing your Powershell sessions with a [profile](profiles/index.md).
+- Check the [snippets page](snippets/index.md) for code examples with little/no explanation.
+- Learn more about grouping a collection of related scripts into [a Powershell module](modules/index.md)
 
 !!! todo
 

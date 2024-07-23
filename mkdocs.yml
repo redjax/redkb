@@ -5,6 +5,13 @@ site_description: My personal knowledgebase
 repo_name: redjax/redkb
 repo_url: https://github.com/redjax/redkb
 
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/redjax
+  ## True=show "Made with Material for MkDocs", false=hide
+  generator: false
+
 exclude_docs: |
   drafts/
   **/drafts/
@@ -39,15 +46,21 @@ theme:
       accent: amber
 
   features:
-    - search.suggest
-    - search.highlight
-    - content.tabs.link
-    - navigation.indexes
-    - navigation.path
     - content.code.annotate
     - content.code.copy
+    - content.tabs.link
     - content.code.select
+    # - header.autohide
+    - navigation.footer
+    - navigation.indexes
+    - navigation.path
     - navigation.tabs
+    - navigation.tracking
+    # - navigation.sections
+    - search.share
+    - search.suggest
+    - search.highlight
+    - toc.follow
 
 plugins:
   - search
@@ -58,13 +71,30 @@ plugins:
   - glightbox
   - tags:
       tags_file: tags.md
+      # tags_heirarchy: true  # Only available in "insiders" edition
+  - git-revision-date-localized:
+      ## Options: ["date", "datetime", "iso_date", "iso_datetime", "timeago"]
+      type: timeago
+      ## Show/hide creaetion date of file associated with page.
+      #  Appears next to last updated date at bottom of page
+      enable_creation_date: true
+      ## Fallback to build date if mkdocs build is run outside of a git repo
+      fallback_to_build_date: true
+  ## Enable offline versionn of site. Breaks many features.
+  # - offline
 
 markdown_extensions:
+  ## Add footnotes to marked-up abbreviations to provide extra context.
+  #  https://squidfunk.github.io/mkdocs-material/reference/tooltips/#adding-abbreviations
+  - abbr
   - admonition
   - markdown_include.include:
       base_path: .
   - pymdownx.inlinehilite
-  - pymdownx.snippets
+  - pymdownx.snippets:
+      ## Add additional snippets, like *[Annotation]: ... glossaries
+      auto_append:
+        - includes/abbreviations.md
   - pymdownx.superfences
   - pymdownx.highlight:
       anchor_linenums: true
