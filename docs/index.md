@@ -14,5 +14,5 @@ My personal knowledgebase. Use the sections along the top (i.e. [`Programming`](
             - [`noxfile.py`](programming/standard-project-files/python/nox/index.md#noxfilepy-base)
 
 - 🅿️ Powershell
-    - ['Powershell Profiles`](programming/powershell/profiles.md)
-    - ['Powershell snippets'](programming/powershell/snippets.md)
+    - ['Powershell Profiles`](programming/powershell/profiles/index.md)
+    - ['Powershell snippets'](programming/powershell/snippets/index.md)
