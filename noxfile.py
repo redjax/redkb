@@ -321,6 +321,14 @@ def clean_branches(session: nox.Session):
                 continue
 
 
+@nox.session(python=[DEFAULT_PYTHON], name="publish-mkdocs", tags=["mkdocs", "publish"])
+def publish_mkdocs(session: nox.Session):
+    session.install("-r", f"{REQUIREMENTS_OUTPUT_DIR}/requirements.txt")
+    
+    log.info("Publishing MKDocs site")
+    
+    session.run("mkdocs", "gh-deploy")
+
 # @nox.session(python=[PY_VER_TUPLE], name="init-setup")
 # def run_initial_setup(session: nox.Session):
 #     log.info(f"Running initial setup.")

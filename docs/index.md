@@ -7,7 +7,7 @@ My personal knowledgebase. Use the sections along the top (i.e. [`Programming`](
 - 🐍 Python
     - [`Python standard project files`](programming/standard-project-files/python/index.md)
         - [`ruff`](programming/standard-project-files/python/ruff/index.md)
-            - [`ruff.toml file`](programming/standard-project-files/ruff/pyproject-ruff.md)
+            - [`ruff.toml file`](programming/standard-project-files/python/ruff/pyproject-ruff.md)
         - [`python .gitignore` file](programming/standard-project-files/python/gitignore.md)
         - [`dynaconf`](programming/standard-project-files/python/Dynaconf/index.md)
         - [`nox`](programming/standard-project-files/python/nox/index.md)
