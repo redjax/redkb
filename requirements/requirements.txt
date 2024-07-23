@@ -22,6 +22,7 @@ mkdocs==1.6.0
 mkdocs-autorefs==1.0.1
 mkdocs-gen-files==0.5.0
 mkdocs-get-deps==0.2.0
+mkdocs-git-revision-date-localized-plugin==1.2.6
 mkdocs-glightbox==0.4.0
 mkdocs-literate-nav==0.6.1
 mkdocs-material==9.5.29
@@ -38,6 +39,7 @@ platformdirs==4.2.2
 pygments==2.18.0
 pymdown-extensions==10.8.1
 python-dateutil==2.9.0.post0
+pytz==2024.1
 pyyaml==6.0.1
 pyyaml-env-tag==0.1
 regex==2024.5.15
