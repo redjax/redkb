@@ -1,5 +1,7 @@
 ---
 tags:
+    - vscode
+    - ide
     - python
     - jupyter
     - snippet
@@ -34,6 +36,6 @@ msg
 ```
 
 <figure markdown="span">
-  ![vscode_nb_cells](../../assets/img/vscode/vscode_nb_cells.png)
+  ![vscode_nb_cells](assets/img/vscode_nb_cells.png)
   <figcaption>Notebook cells in VSCode</figcaption>
 </figure>
