@@ -37,7 +37,7 @@ import shutil
 import nox
 
 ## Set nox options
-nox.options.default_venv_backend = "venv"
+nox.options.default_venv_backend = "uv|virtualenv"  # install 'uv' in program's dev dependencies, fallback to virtualenv
 nox.options.reuse_existing_virtualenvs = True
 nox.options.error_on_external_run = False
 nox.options.error_on_missing_interpreters = False
