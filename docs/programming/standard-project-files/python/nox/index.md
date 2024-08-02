@@ -37,7 +37,10 @@ import shutil
 import nox
 
 ## Set nox options
-nox.options.default_venv_backend = "uv|virtualenv"  # install 'uv' in program's dev dependencies, fallback to virtualenv
+if importlib.util.find_spec("uv"):
+    nox.options.default_venv_backend = "uv|virtualenv"
+else:
+    nox.options.default_venv_backend = "virtualenv"
 nox.options.reuse_existing_virtualenvs = True
 nox.options.error_on_external_run = False
 nox.options.error_on_missing_interpreters = False
@@ -162,7 +165,7 @@ if not REQUIREMENTS_OUTPUT_DIR.exists():
 INIT_COPY_FILES: list[dict[str, str]] = []
 
 
-@nox.session(python=PY_VERSIONS, name="build-env")
+@nox.session(python=PY_VERSIONS, name="build-env", names=["env", "build", "setup"])
 @nox.parametrize("pdm_ver", [PDM_VER])
 def setup_base_testenv(session: nox.Session, pdm_ver: str):
     log.debug(f"Default Python: {DEFAULT_PYTHON}")
@@ -173,10 +176,10 @@ def setup_base_testenv(session: nox.Session, pdm_ver: str):
     session.run("pdm", "install")
 
 
-@nox.session(python=[DEFAULT_PYTHON], name="lint")
+@nox.session(python=[DEFAULT_PYTHON], name="lint", env=["quality"])
 def run_linter(session: nox.Session):
     session.install("ruff")
-    # session.install("black")
+    session.install("black")
 
     log.info("Linting code")
     for d in LINT_PATHS:
@@ -195,11 +198,11 @@ def run_linter(session: nox.Session):
                 "--fix",
             )
 
-            # log.info(f"Formatting '{d}' with Black")
-            # session.run(
-            #     "black",
-            #     lint_path,
-            # )
+            log.info(f"Formatting '{d}' with Black")
+            session.run(
+                "black",
+                lint_path,
+            )
 
             log.info(f"Running ruff checks on '{d}' with --fix")
             session.run(
@@ -218,7 +221,7 @@ def run_linter(session: nox.Session):
     )
 
 
-@nox.session(python=[DEFAULT_PYTHON], name="export")
+@nox.session(python=[DEFAULT_PYTHON], name="export", tags=["requirements"])
 @nox.parametrize("pdm_ver", [PDM_VER])
 def export_requirements(session: nox.Session, pdm_ver: str):
     session.install(f"pdm>={pdm_ver}")
@@ -244,7 +247,7 @@ def export_requirements(session: nox.Session, pdm_ver: str):
     )
 
 
-@nox.session(python=PY_VERSIONS, name="tests")
+@nox.session(python=PY_VERSIONS, name="tests", tags=["test"])
 @nox.parametrize("pdm_ver", [PDM_VER])
 def run_tests(session: nox.Session, pdm_ver: str):
     session.install(f"pdm>={pdm_ver}")
@@ -263,7 +266,7 @@ def run_tests(session: nox.Session, pdm_ver: str):
     )
 
 
-@nox.session(python=PY_VERSIONS, name="pre-commit-all")
+@nox.session(python=PY_VERSIONS, name="pre-commit-all", tags=["repo", "pre-commit"])
 def run_pre_commit_all(session: nox.Session):
     session.install("pre-commit")
     session.run("pre-commit")
@@ -272,7 +275,7 @@ def run_pre_commit_all(session: nox.Session):
     session.run("pre-commit", "run")
 
 
-@nox.session(python=PY_VERSIONS, name="pre-commit-update")
+@nox.session(python=PY_VERSIONS, name="pre-commit-update", tags=["repo", "pre-commit"])
 def run_pre_commit_autoupdate(session: nox.Session):
     session.install(f"pre-commit")
 
@@ -280,7 +283,7 @@ def run_pre_commit_autoupdate(session: nox.Session):
     session.run("pre-commit", "autoupdate")
 
 
-@nox.session(python=PY_VERSIONS, name="pre-commit-nbstripout")
+@nox.session(python=PY_VERSIONS, name="pre-commit-nbstripout", tags=["repo", "pre-commit"])
 def run_pre_commit_nbstripout(session: nox.Session):
     session.install(f"pre-commit")
 
@@ -288,7 +291,7 @@ def run_pre_commit_nbstripout(session: nox.Session):
     session.run("pre-commit", "run", "nbstripout")
 
 
-@nox.session(python=[PY_VER_TUPLE], name="init-setup")
+@nox.session(python=[PY_VER_TUPLE], name="init-setup", tags=["setup"])
 def run_initial_setup(session: nox.Session):
     log.info(f"Running initial setup.")
     if INIT_COPY_FILES is None:
