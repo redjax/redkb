@@ -177,7 +177,7 @@ def setup_base_testenv(session: nox.Session, pdm_ver: str):
     session.run("pdm", "install")
 
 
-@nox.session(python=[DEFAULT_PYTHON], name="lint", env=["quality"])
+@nox.session(python=[DEFAULT_PYTHON], name="lint", tags=["quality"])
 def run_linter(session: nox.Session):
     session.install("ruff")
     session.install("black")
