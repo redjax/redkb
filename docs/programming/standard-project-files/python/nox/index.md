@@ -166,7 +166,7 @@ if not REQUIREMENTS_OUTPUT_DIR.exists():
 INIT_COPY_FILES: list[dict[str, str]] = []
 
 
-@nox.session(python=PY_VERSIONS, name="build-env", names=["env", "build", "setup"])
+@nox.session(python=PY_VERSIONS, name="build-env", tags=["env", "build", "setup"])
 @nox.parametrize("pdm_ver", [PDM_VER])
 def setup_base_testenv(session: nox.Session, pdm_ver: str):
     log.debug(f"Default Python: {DEFAULT_PYTHON}")
