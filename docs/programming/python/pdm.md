@@ -17,7 +17,7 @@ tags:
         - [x] Add/remove dependencies
         - [x] Execute code
         - [x] Add development dependencies
-    - [ ] Detail publishing a project to `pypi` with `pdm
+    - [ ] Detail publishing a project to `pypi` with `pdm`
 
 !!! TOC
 
