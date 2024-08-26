@@ -10,6 +10,10 @@ tags:
 
 # Custom nox sessions
 
+!!! warning
+
+    Most of the code in this module will be moved to the [`nox_extra` module documentation](nox_extra-module/index.md) eventually.
+
 ## pre-commit
 
 ### Run all pre-commit hooks
