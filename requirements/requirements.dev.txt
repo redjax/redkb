@@ -4,7 +4,6 @@
 argcomplete==3.5.0
 babel==2.16.0
 beautifulsoup4==4.12.3
-black==24.8.0
 cachecontrol==0.14.0
 cachecontrol[filecache]==0.14.0
 certifi==2024.8.30
@@ -42,7 +41,6 @@ mkdocstrings==0.26.0
 mkdocstrings-python==1.11.1
 mkdocstrings[python]==0.26.0
 msgpack==1.0.8
-mypy-extensions==1.0.0
 nodeenv==1.9.1
 nox==2024.4.15
 packaging==24.1
