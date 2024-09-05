@@ -215,6 +215,53 @@ def export_requirements(session: nox.Session, pdm_ver: str):
         "--without-hashes",
     )
 
+@nox.session(python=[DEFAULT_PYTHON], name="update-all-dependencies", tags=["python"])
+@nox.parametrize("pdm_ver", [PDM_VER])
+def pdm_update_all(session: nox.Session, pdm_ver: str):
+    session.install(f"pdm>={pdm_ver}")
+    
+    log.warning("Upgrading all packages can be a destructive action. Make sure to test everything before committing changes!")
+    choice = input("Continue with pdm update --update-all command? (Y/N):\nChoice: ")
+    
+    match choice:
+        case "Y" | "y" | "YES" | "yes" | "yES" | "YeS" | "Yes" | "YEs" | "yEs":
+            log.info("Upgrading all PDM packages")
+            
+            try:
+                session.run("pdm", "update", "--update-all")
+            except Exception as exc:
+                msg = f"({type(exc)}) Unhandled exception updating all packages."
+                log.error(msg)
+                
+                return
+            
+            log.info("Packages updated successfully. Exporting requirements")
+            print("-" * 32)
+            
+            log.info("Exporting production requirements")
+            session.run(
+                "pdm",
+                "export",
+                "--prod",
+                "-o",
+                f"{REQUIREMENTS_OUTPUT_DIR}/requirements.txt",
+                "--without-hashes",
+            )
+
+            log.info("Exporting development requirements")
+            session.run(
+                "pdm",
+                "export",
+                "-d",
+                "-o",
+                f"{REQUIREMENTS_OUTPUT_DIR}/requirements.dev.txt",
+                "--without-hashes",
+            )
+    
+        case "N" | "n" | "NO" | "no" | "No" | "nO":
+            log.info("Aborting upgrades")
+            
+            return
 
 @nox.session(python=PY_VERSIONS, name="tests")
 @nox.parametrize("pdm_ver", [PDM_VER])
