@@ -8,6 +8,7 @@ from pathlib import Path
 import platform
 import shutil
 import socket
+import importlib
 
 import nox
 
@@ -194,7 +195,6 @@ def run_linter(session: nox.Session):
 @nox.parametrize("pdm_ver", [PDM_VER])
 def export_requirements(session: nox.Session, pdm_ver: str):
     session.install(f"pdm>={pdm_ver}")
-
     log.info("Exporting production requirements")
     session.run(
         "pdm",
