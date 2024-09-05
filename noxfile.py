@@ -33,7 +33,7 @@ nox.sessions = ["lint", "export", "tests"]
 ## Define versions to test
 PY_VERSIONS: list[str] = ["3.12", "3.11"]
 ## Set PDM version to install throughout
-PDM_VER: str = "2.15.4"
+PDM_VER: str = "2.18.1"
 
 ## Get tuple of Python ver ('maj', 'min', 'mic')
 PY_VER_TUPLE = platform.python_version_tuple()
@@ -359,6 +359,21 @@ def publish_mkdocs(session: nox.Session):
 
     session.run("mkdocs", "gh-deploy")
     
+@nox.session(python=[DEFAULT_PYTHON], name="serve-mkdocs-check-links", tags=["mkdocs", "lint"])
+def check_mkdocs_links(session: nox.Session):
+    session.install("-r", f"{REQUIREMENTS_OUTPUT_DIR}/requirements.txt")
+    
+    free_port = _find_free_port(start_port=8000)
+    
+    log.info(f"Serving MKDocs site with link checking enabled on port {free_port}")
+    try:
+        session.run("ENABLED_HTMLPROOFER=true", "mkdocs", "serve", "--dev-addr", f"0.0.0.0:{free_port}")
+    except Exception as exc:
+        msg = f"({type(exc)}) Unhandled exception checking mkdocs site links. Details: {exc}"
+        log.error(msg)
+        
+        raise exc
+
 
 @nox.session(python=DEFAULT_PYTHON, name="serve-mkdocs", tags=["mkdocs", "serve"])
 def serve_mkdocs(session: nox.Session):
@@ -366,7 +381,7 @@ def serve_mkdocs(session: nox.Session):
     
     free_port = _find_free_port(start_port=8000)
     
-    log.info(f"Serving MKDocssite on port {free_port}")
+    log.info(f"Serving MKDocs site on port {free_port}")
     
     try:
         session.run("mkdocs", "serve", "--dev-addr", f"0.0.0.0:{free_port}")
