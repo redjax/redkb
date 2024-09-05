@@ -83,7 +83,7 @@ plugins:
   ## Check rendered HTML for broken links, set ENABLED_HTMLPROOFEER=True to enable
   #  then run mkdocs serve command.
   - htmlproofer:
-      enabled: !ENV [ENABLED_HTMLPROOFER, True]
+      enabled: !ENV [ENABLED_HTMLPROOFER, False]
       warn_on_ignored_urls: true
       validate_external_urls: True
       validate_rendered_template: True
