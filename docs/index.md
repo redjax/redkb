@@ -27,5 +27,5 @@ My personal knowledgebase. Use the sections along the top (i.e. [`Programming`](
 
 #### 🔑 [SSH](utilities/ssh/index.md)
 
-- [Create an SSH keypair](utilities/ssh/index.html#create-an-ssh-key-pair) 
-- [Install SSH key on remote machine](utilities/ssh/index.html#install-an-ssh-key-on-a-remote-machine-for-passwordless-ssh-login.md)
+- [Create an SSH keypair](utilities/ssh/index.md#create-an-ssh-key-pair) 
+- [Install SSH key on remote machine](utilities/ssh/index.md#install-an-ssh-key-on-a-remote-machine-for-passwordless-ssh-login.md)
