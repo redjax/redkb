@@ -149,4 +149,4 @@ $ chmod 644 ~/.ssh/id_rsa{.pub}
 | `~/.ssh/identity`  <br>`~/.ssh/id_dsa`  <br>`~/.ssh/id_rsa`             | These files contain sensitive data and should be readable by the user but not accessible by others (read/write/execute)                                                                  |                        | 600                  |
 | `~/.ssh/identity.pub`  <br>`~/.ssh/id_dsa.pub`  <br>`~/.ssh/id_rsa.pub` | Contains the public key for authentication. These files are not sensitive and can (but need not) be readable by anyone.                                                                  | 644                    |                      |
 
-*(table data source: [Superuser.com answer](https://superuser.com/a/1559867))
+*(table data source: [Superuser.com answer](https://superuser.com/a/1559867))*

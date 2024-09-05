@@ -8,6 +8,20 @@ tags:
 
 # MkDocs
 
+Create a file at `nox_extra/nox_mkdocs_sessions.py` and paste the following contents:
+
+```python title="nox_extra/nox_mkdocs_sessions.py imports" linenums="1"
+import logging
+import socket
+
+log = logging.getLogger(__name__)
+
+import nox
+
+from .nox_utils import REQUIREMENTS_OUTPUT_DIR, DEFAULT_PYTHON
+
+```
+
 ## Publish mkdocs
 ```python title="noxfile.py" linenums="1"
 REQUIREMENTS_OUTPUT_DIR: str = "requirements"
@@ -50,7 +64,7 @@ def serve_mkdocs(session: nox.Session):
     
     free_port = _find_free_port(start_port=8000)
     
-    log.info(f"Serving MKDocssite on port {free_port}")
+    log.info(f"Serving MKDocs site on port {free_port}")
     
     try:
         session.run("mkdocs", "serve", "--dev-addr", f"0.0.0.0:{free_port}")
