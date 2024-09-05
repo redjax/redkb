@@ -100,5 +100,8 @@
         "editor.formatOnSave": false,
         "editor.wordBasedSuggestions": "off"
     },
-    "workbench.editor.tabActionLocation": "left"
+    "workbench.editor.tabActionLocation": "left",
+    "[shellscript]": {
+        "editor.defaultFormatter": "foxundermoon.shell-format"
+    }
 }

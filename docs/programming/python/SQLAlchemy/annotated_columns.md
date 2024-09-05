@@ -6,7 +6,7 @@ tags:
 
 # Annotated columns & custom types
 
-- 📄 [SQLAlchemy docs: Mapping whole column declarations to Python types](https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html#mapping-whole-column-declarations-to-python-types)
+- 📄 [SQLAlchemy docs: Mapping whole column declarations to Python types](https://docs.sqlalchemy.org/en/20/orm/declarative_tables.md#mapping-whole-column-declarations-to-python-types)
 
 ## Annotated columns
 
