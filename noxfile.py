@@ -367,7 +367,8 @@ def check_mkdocs_links(session: nox.Session):
     
     log.info(f"Serving MKDocs site with link checking enabled on port {free_port}")
     try:
-        session.run("ENABLED_HTMLPROOFER=true", "mkdocs", "serve", "--dev-addr", f"0.0.0.0:{free_port}")
+        os.environ["ENABLED_HTMLPROOFER"] = "true"
+        session.run("mkdocs", "serve", "--dev-addr", f"0.0.0.0:{free_port}")
     except Exception as exc:
         msg = f"({type(exc)}) Unhandled exception checking mkdocs site links. Details: {exc}"
         log.error(msg)

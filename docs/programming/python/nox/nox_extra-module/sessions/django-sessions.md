@@ -10,7 +10,7 @@ tags:
 
 ## nox_extra/nox_django_sessions.py
 
-Helpers & `nox` sessions for `Django` projects. Expects the existence of a [`nox_extra/nox_utils.py`](./index.md#nox_extranox_utilspy) file to exist, this script imports some values from the common utils file.
+Helpers & `nox` sessions for `Django` projects. Expects the existence of a [`nox_extra/nox_utils.py`](./index.md#nox_-xtranox-utilspy) file to exist, this script imports some values from the common utils file.
 
 ### nox_django_sessions.py
 

@@ -80,7 +80,14 @@ plugins:
       enable_creation_date: true
       ## Fallback to build date if mkdocs build is run outside of a git repo
       fallback_to_build_date: true
-  ## Enable offline versionn of site. Breaks many features.
+  ## Check rendered HTML for broken links, set ENABLED_HTMLPROOFEER=True to enable
+  #  then run mkdocs serve command.
+  - htmlproofer:
+      enabled: !ENV [ENABLED_HTMLPROOFER, True]
+      warn_on_ignored_urls: true
+      validate_external_urls: True
+      validate_rendered_template: True
+  ## Enable offline version of site. Breaks many features.
   # - offline
 
 markdown_extensions:
