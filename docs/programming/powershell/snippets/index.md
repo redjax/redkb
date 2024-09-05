@@ -105,7 +105,7 @@ function Edit-Profile {
 
 ### Delay Conda execution
 
-[Conda]() is a Python package manager. It's a very useful utility, but I've found adding it to my `$PATH` or Powershell profile results in a very slow session load in new tabs/windows. Adding the `SOURCE_CONDA` function below, and settings an alias to the `conda` command to call this function instead (`Set-Alias conda SOURCE_CONDA`), delays the sourcing of the `Conda` path. The first time you run `conda` in a new session, you will see a message that Conda has been initialized and you need to re-run your command. You can simply press the up key on your keyboard and run it again; now that Conda is initialized, it will execute, and once a Powershell session is loaded, sourcing Conda is much quicker!
+[Conda](https://docs.conda.io/en/latest/) is a Python package manager. It's a very useful utility, but I've found adding it to my `$PATH` or Powershell profile results in a very slow session load in new tabs/windows. Adding the `SOURCE_CONDA` function below, and settings an alias to the `conda` command to call this function instead (`Set-Alias conda SOURCE_CONDA`), delays the sourcing of the `Conda` path. The first time you run `conda` in a new session, you will see a message that Conda has been initialized and you need to re-run your command. You can simply press the up key on your keyboard and run it again; now that Conda is initialized, it will execute, and once a Powershell session is loaded, sourcing Conda is much quicker!
 
 ```powershell title="Delay Conda sourcing" linenums="1"
 function SOURCE_CONDA {

@@ -12,7 +12,7 @@ tags:
 `nox` is versatile. If you can run a command in your shell, you should be able to automate it with `nox`. The idea is that `nox` sessions can run the same way in any environment (local, CI/CD pipelines, and cross-platform). For example, my [`Ansible homelab` repository](https://github.com/redjax/ansible_homelab) uses a [`noxfile.py`](https://github.com/redjax/ansible_homelab/blob/main/noxfile.py) to automate running Ansible playbooks.
 
 !!! note
-    Check the documentation for [making your `noxfile.py` modular](./nox_extra-module/index.md) to keep your `noxfile.py` short & clean by import sessions from a `nox_extra/` directory in your project.
+    Check the documentation for [making your `noxfile.py` modular](nox_extra-module/index.md) to keep your `noxfile.py` short & clean by import sessions from a `nox_extra/` directory in your project.
 
 
 ## noxfile.py base
@@ -324,4 +324,4 @@ def run_initial_setup(session: nox.Session):
 
 ## Extending the noxfile
 
-Check the [extend-nox page](./extend-nox.md) for information on extending `nox` with custom sessions.
+Check the [`nox_extra` module](nox_extra-module/index.md) for information on extending `nox` with custom sessions.
