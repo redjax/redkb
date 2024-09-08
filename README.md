@@ -1,5 +1,12 @@
 # redkb
 
+![GitHub Created At](https://img.shields.io/github/created-at/redjax/redkb)
+![GitHub last commit](https://img.shields.io/github/last-commit/redjax/redkb)
+![GitHub commits this year](https://img.shields.io/github/commit-activity/y/redjax/redkb)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/redjax/redkb/deploy_docs.yml)
+![GitHub repo size](https://img.shields.io/github/repo-size/redjax/redkb)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/redjax/redkb)
+
 🏠 [`redjax.github.io/redkb`](https://redjax.github.io/redkb)
 📚 [`readthedocs`](https://redkb.readthedocs.io/en)
 
