@@ -76,6 +76,8 @@ db.sqlite3-journal
 *.sqlite
 *.sqlite3
 *.db
+*.duck
+*.duckdb
 
 # Flask stuff:
 instance/
