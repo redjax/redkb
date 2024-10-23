@@ -33,37 +33,48 @@ T = t.TypeVar("T")
 import sqlalchemy as sa
 import sqlalchemy as so
 
-class RepositoryBase(t.Generic[T], metaclass=abc.ABCMeta):
-	"""A generic SQLAlchemy repository class base."""
-    def __init__(self, session: so.Session) -> None:
-        if session is None:
-            raise ValueError("session cannot be None")
+class BaseRepository(t.Generic[T]):
+    """Base class for a SQLAlchemy database repository.
 
-        if not isinstance(session, so.Session):
-            raise TypeError(
-            f"session must be of type sqlalchemy.orm.Session. Got type: ({type(session)})"
-        )
+    Usage:
+        When creating a new repository class, inherit from this BaseRepository.
+        The new class will have sessions for create(), get(), update(), delete(), and list().
+    """
 
-        self.session: so.Session = session
+    def __init__(self, session: so.Session, model: t.Type[T]):
+        self.session = session
+        self.model = model
 
-    def __exit__(self):
-        """Close database session."""
-        self.session.close()
+    def create(self, obj: T) -> T:
+        self.session.add(obj)
 
-	@abc.abstractmethod
-	def add(self, entity: T):
-		"""Add new entity to database."""
-		raise NotImplementedError()
+        self.session.commit()
+        self.session.refresh(obj)
 
-	@abc.abstractmethod
-	def remove(self, entity: T):
-		"""Remove existing entity from database."""
-		raise NotImplementedError()
+        return obj
 
-	@abc.abstractmethod
-	def get_by_id(self, entity_id) -> T:
-		"""Retrieve entity from database by its ID."""
-		raise NotImplementedError()
+    def get(self, id: int) -> t.Optional[T]:
+        return self.session.get(self.model, id)
+
+    def update(self, obj: T, data: dict) -> T:
+        for key, value in data.items():
+            setattr(obj, key, value)
+
+        self.session.commit()
+
+        return obj
+
+    def delete(self, obj: T) -> None:
+        self.session.delete(obj)
+
+        self.session.commit()
+
+    def list(self) -> list[T]:
+        return self.session.execute(sa.select(self.model)).scalars().all()
+
+    def count(self) -> int:
+        """Return the count of entities in the table."""
+        return self.session.query(self.model).count()
 
 ```
 
