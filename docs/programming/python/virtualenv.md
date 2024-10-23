@@ -7,11 +7,6 @@ tags:
 
 # Use virtualenv to manage dependencies
 
-!!! TODO
-
-    - [ ] Finish the "Common virtualenv troubleshooting" section
-    - [ ] Finish the "Alternatives to virtualenv" section
-
 !!! ToC
 
     Jump right to a section:
@@ -113,17 +108,35 @@ $ ./venv/bin/activate  # Linux/Mac
 
 ## Common virtualenv troubleshooting
 
-!!! TODO
+### Recreate .venv
 
-    - [ ] How to recreate a `.venv` environment
-    - [ ] Fix issue of virtual environment not showing in Jupyter notebooks
+Sometimes you find yourself with a `.venv` that's in disrepair, and you might want to start from scratch and recreate it. This is as simple as removing the `.venv` directory with `rm -r .venv` (you may get warnings about write-protected files, in which case you will need to use `sudo` to remove the `.venv`).
+
+After removing the `.venv`, you can recreate it with `virtualenv .venv`. Make sure to activate the new virtualenv and reinstall your dependencies with `pip install -r requirements.txt`
+
+### Fix virtual environment not showing in Jupyter notebooks
+
+This is almost always because your virtualenv is missing the `ipykernel` package. This package is required for a virtualenv to be detectable by Jupyter notebooks.
+
+Simply add the package: `pip install ipykernel`.
 
 ## Alternatives to virtualenv
 
-!!! TODO
+There are other ways to manage a virtual environment for Python. Most people start out using `virtualenv`, and some people never find a need to replace `virtualenv` with another tool.
 
-    - [ ] Writeup of common pain points with `virtualenv`
-        - [ ] Detail limitations of `virtualenv`
-        - [ ] Detail the issue of pinning dependencies/compatibility matrices
-    - [ ] Brief writeup for `poetry`
-    - [ ] Brief writeup for `pdm`
+If you want to separate your development dependencies from production, or "manage" your Python project including building & publishing your code, running scripts/tasks, and resolving dependencies more quickly/reliably than with `pip`, you can use a Python project manager.
+
+Python's package management ecosystem is much older than other languages like Node's `npm`, and as a result package management came later and was not "figured out" by the time Python developed `pip`. The `pip` utility has served a very important role for many years, and there are those who would argue you never need anything more than `pip + virtualenv`. It is true that you can be just as effective with `pip + virtualenv` as any of the project managers below, but there are some conveniences to using a project manager, such as installing non-Python dependencies with `conda` for scientific/ML/AI development.
+
+This section will not go into much detail on each package manager. Other sections of this KB site may expand more on how to use each of these. This page serves to simply list alternatives to `virtualenv`.
+
+Alternatives to `pip/virtualenv`:
+
+| tool                                                                                                                                                                                         | description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`pdm`](https://pdm-project.org)                                                                                                                                                             | The "Python Dependency Manager" is one of the best all-around tools on this list. It can handle complex dependency resolution (i.e. `pytorch` installation), project scripts (something `poetry` needs a plugin for, and that is completely missing from `virtualenv`), and can build & publish your code to `pypi`.                                                                                                                                                                                                                                                                                                    |
+| [`uv`](https://astral.sh/uv)                                                                                                                                                                 | A new(ew) Python project manage, `uv` is built with Rust and boasts the fastest dependency resolution of any package manager I've tried. What might take 30 seconds to install with `pdm` (a perfectly acceptable dependency resolution/installation time) may take only 2-3 seconds in `uv`. Support for monorepos, building the project, scripts (that function differently from `pdm`, but are still useful), installing Python (you don't even need Python installed to run `uv`!), `venv` management, and more. I am slowly converting most/all of my projects to `uv`, and using it for new projects. It's great! |
+| [`poetry`](https://python-poetry.org/)                                                                                                                                                       | A favorite of many in the Python community, the `poetry` tool is another fast, capable project manager. The project does not follow PEP standards, which puts it at odds with some other tools. For example, `poetry` makes heavy modifications to the standard `pyproject.toml` file, and has not expressed interest in following a number of PEPs, which could lead to complicated divergence over time. Scripting is not a first-class feature of `poetry` either, requiring a plugin called `poe-the-poet`.                                                                                                         |
+| [`conda`](https://docs.conda.io)                                                                                                                                                             | The package manager for the Anaconda Python distribution, aimed at scientific Python and machine learning/AI development. Conda filled a desperately needed role in the mid-2010s, when it was very difficult to install packages required for machine learning development. The tool continues to see use, but if you are interested in using `conda` for development, you would be better served using something like `mamba`/`micromamba`, or the newer `pixi` tool that uses Conda's repositories but is written in Rust and has many more convenient features.                                                     |
+| [`mamba`](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html)/[`micromamba`](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html) | `mamba` is a resolver for `conda` packages that significantly speeds up environment resolution time. `conda` is great, but is very, very slow. The `mamba` solver makes `conda` far more useable. `micromamba` is a statically linked, self-contained tool. It supports all of the major features of `mamba`, but instead of installing a whole package, you simply place the `micromamba` binary somewhere in your `PATH`. `micromamba` is faster than `conda` and `mamba`, and will serve most use cases.                                                                                                             |
+| [`pixi`](https://prefix.dev/)                                                                                                                                                                | A newer project manager, `pixi` uses the `conda` package sources (meaning any package you can install with `conda`/`mamba` can be installed with `pixi`). The tool is written in Rust and is extremely fast. It also has a number of very useful features that put it more in line with `pdm` or `uv` than `conda`. If you are interested in using `conda` for your development, I highly recommend trying `pixi` over the other options.                                                                                                                                                                               |
