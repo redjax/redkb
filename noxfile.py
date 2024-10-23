@@ -225,7 +225,7 @@ def run_pre_commit_nbstripout(session: nox.Session):
 
 @nox.session(python=[DEFAULT_PYTHON], name="publish-mkdocs", tags=["mkdocs", "publish"])
 def publish_mkdocs(session: nox.Session):
-    session.install("-r", f"{REQUIREMENTS_OUTPUT_DIR}/requirements.txt")
+    install_uv_project(session)
 
     log.info("Publishing MKDocs site")
 
@@ -233,7 +233,7 @@ def publish_mkdocs(session: nox.Session):
     
 @nox.session(python=[DEFAULT_PYTHON], name="serve-mkdocs-check-links", tags=["mkdocs", "lint"])
 def check_mkdocs_links(session: nox.Session):
-    session.install("-r", f"{REQUIREMENTS_OUTPUT_DIR}/requirements.txt")
+    install_uv_project(session)
     
     free_port = _find_free_port(start_port=8000)
     
@@ -250,7 +250,7 @@ def check_mkdocs_links(session: nox.Session):
 
 @nox.session(python=DEFAULT_PYTHON, name="serve-mkdocs", tags=["mkdocs", "serve"])
 def serve_mkdocs(session: nox.Session):
-    session.install("-r", f"{REQUIREMENTS_OUTPUT_DIR}/requirements.txt")
+    install_uv_project(session)
     
     free_port = _find_free_port(start_port=8000)
     
