@@ -1,19 +1,29 @@
 from __future__ import annotations
 
+from contextlib import contextmanager
+import importlib.util
 import logging
-import logging.config
-import logging.handlers
 import os
 from pathlib import Path
 import platform
 import shutil
 import socket
-import importlib
+import sys
+import typing as t
+
+log = logging.getLogger(__name__)
 
 import nox
 
-## Create logger for this module
-log: logging.Logger = logging.getLogger("nox")
+## Set nox options
+if importlib.util.find_spec("uv"):
+    nox.options.default_venv_backend = "uv|virtualenv"
+else:
+    nox.options.default_venv_backend = "virtualenv"
+nox.options.reuse_existing_virtualenvs = True
+nox.options.error_on_external_run = False
+nox.options.error_on_missing_interpreters = False
+# nox.options.report = True
 
 ## Detect container env, or default to False
 if "CONTAINER_ENV" in os.environ:
@@ -21,40 +31,84 @@ if "CONTAINER_ENV" in os.environ:
 else:
     CONTAINER_ENV: bool = False
 
-## Set nox options
-nox.options.default_venv_backend = "uv|virtualenv"
-nox.options.reuse_existing_virtualenvs = True
-nox.options.error_on_external_run = False
-nox.options.error_on_missing_interpreters = False
-# nox.options.report = True
-
-## Define sessions to run when no session is specified
-nox.sessions = ["lint", "export", "tests"]
-
 ## Define versions to test
 PY_VERSIONS: list[str] = ["3.12", "3.11"]
-## Set PDM version to install throughout
-PDM_VER: str = "2.18.1"
-
 ## Get tuple of Python ver ('maj', 'min', 'mic')
-PY_VER_TUPLE = platform.python_version_tuple()
+PY_VER_TUPLE: tuple[str, str, str] = platform.python_version_tuple()
 ## Dynamically set Python version
 DEFAULT_PYTHON: str = f"{PY_VER_TUPLE[0]}.{PY_VER_TUPLE[1]}"
 
-## Set paths to lint with the lint session
-LINT_PATHS: list[str] = ["src", "tests"]
+# this VENV_DIR constant specifies the name of the dir that the `dev`
+# session will create, containing the virtualenv;
+# the `resolve()` makes it portable
+VENV_DIR = Path("./.venv").resolve()
 
+## At minimum, these paths will be checked by your linters
+#  Add new paths with nox_utils.append_lint_paths(extra_paths=["..."],)
+DEFAULT_LINT_PATHS: list[str] = [
+    "src",
+]
 ## Set directory for requirements.txt file output
-REQUIREMENTS_OUTPUT_DIR: Path = Path("./requirements")
+REQUIREMENTS_OUTPUT_DIR: Path = Path("./")
 
-## Set file src/dest pairs for copying in init-setup session.
-#  Leave empty to skip.
-#  Example: {"src": "config/settings.toml", "dest": "config/settings.local.toml"}
-INIT_COPY_FILES: list[dict[str, str]] = []
+## Configure logging
+logging.basicConfig(
+    level="DEBUG",
+    format="%(name)s | [%(levelname)s] > %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
+## Add logger names to the list to 'silence' them, reducing log noise from 3rd party packages
+for _logger in []:
+    logging.getLogger(_logger).setLevel("WARNING")
+
+
+@contextmanager
+def cd(newdir):
+    """Context manager to change a directory before executing command."""
+    prevdir = os.getcwd()
+    os.chdir(os.path.expanduser(newdir))
+    try:
+        yield
+    finally:
+        os.chdir(prevdir)
+
+
+def check_path_exists(p: t.Union[str, Path] = None) -> bool:
+    """Check the existence of a path.
+
+    Params:
+        p (str | Path): The path to the directory/file to check.
+
+    Returns:
+        (True): If Path defined in `p` exists.
+        (False): If Path defined in `p` does not exist.
+
+    """
+    p: Path = Path(f"{p}")
+    if "~" in f"{p}":
+        p = p.expanduser()
+
+    _exists: bool = p.exists()
+
+    if not _exists:
+        log.error(FileNotFoundError(f"Could not find path '{p}'."))
+
+    return _exists
+
+
+def install_uv_project(session: nox.Session, external: bool = False) -> None:
+    """Method to install uv and the current project in a nox session."""
+    log.info("Installing uv in session")
+    session.install("uv")
+    log.info("Syncing uv project")
+    session.run("uv", "sync", external=external)
+    log.info("Installing project")
+    session.run("uv", "pip", "install", ".", external=external)
 
 
 def _find_free_port(start_port=8000):
-    """Find a free port starting from a specific port number"""
+    """Find a free port starting from a specific port number."""
     port = start_port
     while True:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -66,90 +120,36 @@ def _find_free_port(start_port=8000):
                 port += 1
 
 
-def setup_nox_logging(
-    level_name: str = "DEBUG", disable_loggers: list[str] | None = []
-) -> None:
-    """Configure a logger for the Nox module.
+#######################
+# Repository Sessions #
+#######################
 
-    Params:
-        level_name (str): The uppercase string repesenting a logging logLevel.
-        disable_loggers (list[str] | None): A list of logger names to disable, i.e. for 3rd party apps.
-            Note: Disabling means setting the logLevel to `WARNING`, so you can still see errors.
 
+@nox.session(python=[DEFAULT_PYTHON], name="dev-env")
+def dev(session: nox.Session) -> None:
+    """Sets up a python development environment for the project.
+
+    Run this on a fresh clone of the repository to automate building the project with uv.
     """
-    ## If container environment detected, default to logging.DEBUG
-    if CONTAINER_ENV:
-        level_name: str = "DEBUG"
+    install_uv_project(session, external=True)
+    
+@nox.session(python=[DEFAULT_PYTHON], name="ruff-lint", tags=["ruff", "clean", "lint"])
+def run_linter(session: nox.Session, lint_paths: list[str] = DEFAULT_LINT_PATHS):
+    """Nox session to run Ruff code linting."""
+    if not check_path_exists(p="ruff.toml"):
+        if not Path("pyproject.toml").exists():
+            log.warning(
+                """No ruff.toml file found. Make sure your pyproject.toml has a [tool.ruff] section!
+                    
+If your pyproject.toml does not have a [tool.ruff] section, ruff's defaults will be used.
+Double check imports in __init__.py files, ruff removes unused imports by default.
+"""
+            )
 
-    logging_config: dict = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        "loggers": {
-            "nox": {
-                "level": level_name.upper(),
-                "handlers": ["console"],
-                "propagate": False,
-            }
-        },
-        "handlers": {
-            "console": {
-                "class": "logging.StreamHandler",
-                "formatter": "nox",
-                "level": "DEBUG",
-                "stream": "ext://sys.stdout",
-            }
-        },
-        "formatters": {
-            "nox": {
-                "format": "[NOX] [%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
-                "datefmt": "%Y-%m-%D %H:%M:%S",
-            }
-        },
-    }
-
-    ## Configure logging. Only run this once in an application
-    logging.config.dictConfig(config=logging_config)
-
-    ## Disable loggers by name. Sets logLevel to logging.WARNING to suppress all but warnings & errors
-    for _logger in disable_loggers:
-        logging.getLogger(_logger).setLevel(logging.WARNING)
-
-
-setup_nox_logging()
-
-log.info(f"[container_env:{CONTAINER_ENV}]")
-
-## Ensure REQUIREMENTS_OUTPUT_DIR path exists
-if not REQUIREMENTS_OUTPUT_DIR.exists():
-    try:
-        REQUIREMENTS_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    except Exception as exc:
-        msg = Exception(
-            f"Unable to create requirements export directory: '{REQUIREMENTS_OUTPUT_DIR}'. Details: {exc}"
-        )
-        print(msg)
-
-        REQUIREMENTS_OUTPUT_DIR: Path = Path(".")
-
-
-@nox.session(python=PY_VERSIONS, name="build-env")
-@nox.parametrize("pdm_ver", [PDM_VER])
-def setup_base_testenv(session: nox.Session, pdm_ver: str):
-    log.debug(f"Default Python: {DEFAULT_PYTHON}")
-    session.install(f"pdm>={pdm_ver}")
-
-    log.info("Installing dependencies with PDM")
-    session.run("pdm", "sync")
-    session.run("pdm", "install")
-
-
-@nox.session(python=[DEFAULT_PYTHON], name="lint")
-def run_linter(session: nox.Session):
     session.install("ruff")
-    # session.install("black")
 
     log.info("Linting code")
-    for d in LINT_PATHS:
+    for d in lint_paths:
         if not Path(d).exists():
             log.warning(f"Skipping lint path '{d}', could not find path")
             pass
@@ -165,12 +165,6 @@ def run_linter(session: nox.Session):
                 "--fix",
             )
 
-            log.info(f"Formatting '{d}' with Black")
-            session.run(
-                "black",
-                lint_path,
-            )
-
             log.info(f"Running ruff checks on '{d}' with --fix")
             session.run(
                 "ruff",
@@ -179,108 +173,27 @@ def run_linter(session: nox.Session):
                 "--fix",
             )
 
-    # log.info("Formatting code with black")
-    # session.run("black", "noxfile.py")
-
-    log.info("Linting noxfile.py with ruff")
+    log.info("Linting noxfile.py")
     session.run(
         "ruff",
         "check",
-        "./noxfile.py",
+        f"{Path('./noxfile.py')}",
         "--fix",
     )
-
-
-@nox.session(python=[DEFAULT_PYTHON], name="export")
-@nox.parametrize("pdm_ver", [PDM_VER])
-def export_requirements(session: nox.Session, pdm_ver: str):
-    session.install(f"pdm>={pdm_ver}")
-    log.info("Exporting production requirements")
-    session.run(
-        "pdm",
-        "export",
-        "--prod",
-        "-o",
-        f"{REQUIREMENTS_OUTPUT_DIR}/requirements.txt",
-        "--without-hashes",
-    )
-
-    log.info("Exporting development requirements")
-    session.run(
-        "pdm",
-        "export",
-        "-d",
-        "-o",
-        f"{REQUIREMENTS_OUTPUT_DIR}/requirements.dev.txt",
-        "--without-hashes",
-    )
-
-@nox.session(python=[DEFAULT_PYTHON], name="update-all-dependencies", tags=["python"])
-@nox.parametrize("pdm_ver", [PDM_VER])
-def pdm_update_all(session: nox.Session, pdm_ver: str):
-    session.install(f"pdm>={pdm_ver}")
     
-    log.warning("Upgrading all packages can be a destructive action. Make sure to test everything before committing changes!")
-    choice = input("Continue with pdm update --update-all command? (Y/N):\nChoice: ")
+@nox.session(name="vulture-check", tags=["coverage", "quality"])
+def vulture_check(session: nox.Session):
+    install_uv_project(session)
+
+    log.info("Installing vulture for dead code checking")
+    session.install("vulture")
+
+    log.info("Running vulture")
+    session.run("vulture")
     
-    match choice:
-        case "Y" | "y" | "YES" | "yes" | "yES" | "YeS" | "Yes" | "YEs" | "yEs":
-            log.info("Upgrading all PDM packages")
-            
-            try:
-                session.run("pdm", "update", "--update-all")
-            except Exception as exc:
-                msg = f"({type(exc)}) Unhandled exception updating all packages."
-                log.error(msg)
-                
-                return
-            
-            log.info("Packages updated successfully. Exporting requirements")
-            print("-" * 32)
-            
-            log.info("Exporting production requirements")
-            session.run(
-                "pdm",
-                "export",
-                "--prod",
-                "-o",
-                f"{REQUIREMENTS_OUTPUT_DIR}/requirements.txt",
-                "--without-hashes",
-            )
-
-            log.info("Exporting development requirements")
-            session.run(
-                "pdm",
-                "export",
-                "-d",
-                "-o",
-                f"{REQUIREMENTS_OUTPUT_DIR}/requirements.dev.txt",
-                "--without-hashes",
-            )
-    
-        case "N" | "n" | "NO" | "no" | "No" | "nO":
-            log.info("Aborting upgrades")
-            
-            return
-
-@nox.session(python=PY_VERSIONS, name="tests")
-@nox.parametrize("pdm_ver", [PDM_VER])
-def run_tests(session: nox.Session, pdm_ver: str):
-    session.install(f"pdm>={pdm_ver}")
-    session.run("pdm", "install")
-
-    log.info("Running Pytest tests")
-    session.run(
-        "pdm",
-        "run",
-        "pytest",
-        "-n",
-        "auto",
-        "--tb=auto",
-        "-v",
-        "-rsXxfP",
-    )
-
+##############
+# Pre-commit #
+##############
 
 @nox.session(python=PY_VERSIONS, name="pre-commit-all")
 def run_pre_commit_all(session: nox.Session):
@@ -306,101 +219,13 @@ def run_pre_commit_nbstripout(session: nox.Session):
     log.info("Running nbstripout pre-commit hook")
     session.run("pre-commit", "run", "nbstripout")
 
-
-@nox.session(python=[DEFAULT_PYTHON], name="prune-local-branches", tags=["git"])
-def clean_branches(session: nox.Session):
-    log.info("Cleaning local branches that have been deleted from the remote.")
-    PROTECTED_BRANCHES: list[str] = ["main", "master", "dev", "rc", "gh-pages"]
-
-    options = session.posargs or session.default_args
-    force = "force" in options
-
-    ## Install GitPython
-    session.install("gitpython")
-
-    ## Import gitpython
-    import git
-
-    ## Initialize repository
-    repo = git.Repo(".")
-
-    ## Fetch latest changes & prune deleted branches
-    repo.git.fetch("--prune")
-
-    ## Get a list of local branches
-    local_branches: list[str] = [head.name for head in repo.heads]
-    log.info(f"Found [{len(local_branches)}] local branch(es).")
-    if len(local_branches) < 15:
-        log.debug(f"Local branches: {local_branches}")
-
-    ## Get a list of remote branches
-    remote_branches: list[str] = [
-        ref.name.replace("origin/", "") for ref in repo.remotes.origin.refs
-    ]
-    log.info(f"Found [{len(remote_branches)}] remote branch(es).")
-    if len(remote_branches) < 15:
-        log.debug(f"Remote branches: {remote_branches}")
-
-    ## Find local branches that are not present in remote branches
-    branches_to_delete: list[str] = [
-        branch for branch in local_branches if branch not in remote_branches
-    ]
-    log.info(f"Prepared [{len(branches_to_delete)}] branch(es) for deletion.")
-    if len(branches_to_delete) < 15:
-        log.debug(f"Deleting branches: {branches_to_delete}")
-
-    for branch in branches_to_delete:
-        if branch not in PROTECTED_BRANCHES:  ## Avoid deleting specified branches
-            try:
-                repo.git.branch("-d", branch)
-                log.info(f"Deleted branch '{branch}'")
-            except git.GitError as git_err:
-                msg = Exception(
-                    f"Git error while deleting branch '{branch}'. Details: {git_err}"
-                )
-
-                if force:
-                    log.warning("Force=True, attempting to delete with -D")
-                    try:
-                        repo.git.branch("-D", branch)
-                        log.info(f"Force-deleted branch '{branch}'")
-                    except git.GitError as git_err2:
-                        msg2 = Exception(
-                            f"Git error while force deleting branch '{branch}'. Details: {git_err2}"
-                        )
-                        log.warning(
-                            f"Branch '{branch}' was not deleted. Reason: {msg2}"
-                        )
-
-                        ## Retry with subprocess
-                        try:
-                            log.info("Retrying using subprocess.")
-                            session.run(["git", "branch", "-D", branch], external=True)
-                            log.info(
-                                f"Force-deleted branch '{branch}'. Required fallback to subprocess."
-                            )
-                        except git.GitError as git_err3:
-                            msg3 = Exception(
-                                f"Git error while force deleting branch '{branch}'. Details: {git_err3}"
-                            )
-                            log.warning(
-                                f"Branch '{branch}' was not deleted. Reason: {msg3}"
-                            )
-                        except Exception as exc:
-                            msg = Exception(
-                                f"Unhandled exception attempting to delete git branch '{branch}' using subprocess.run(). Details: {exc}"
-                            )
-                            log.error(msg)
-
-                else:
-                    log.warning(f"Branch '{branch}' was not deleted. Reason: {msg}")
-
-                continue
-
+##########
+# MKDocs #
+##########
 
 @nox.session(python=[DEFAULT_PYTHON], name="publish-mkdocs", tags=["mkdocs", "publish"])
 def publish_mkdocs(session: nox.Session):
-    session.install("-r", f"{REQUIREMENTS_OUTPUT_DIR}/requirements.txt")
+    install_uv_project(session)
 
     log.info("Publishing MKDocs site")
 
@@ -408,7 +233,7 @@ def publish_mkdocs(session: nox.Session):
     
 @nox.session(python=[DEFAULT_PYTHON], name="serve-mkdocs-check-links", tags=["mkdocs", "lint"])
 def check_mkdocs_links(session: nox.Session):
-    session.install("-r", f"{REQUIREMENTS_OUTPUT_DIR}/requirements.txt")
+    install_uv_project(session)
     
     free_port = _find_free_port(start_port=8000)
     
@@ -425,7 +250,7 @@ def check_mkdocs_links(session: nox.Session):
 
 @nox.session(python=DEFAULT_PYTHON, name="serve-mkdocs", tags=["mkdocs", "serve"])
 def serve_mkdocs(session: nox.Session):
-    session.install("-r", f"{REQUIREMENTS_OUTPUT_DIR}/requirements.txt")
+    install_uv_project(session)
     
     free_port = _find_free_port(start_port=8000)
     
@@ -436,26 +261,3 @@ def serve_mkdocs(session: nox.Session):
     except Exception as exc:
         msg = f"({type(exc)}) Unhandled exception serving MKDocs site. Details: {exc}"
         log.error(msg)
-
-
-@nox.session(python=[PY_VER_TUPLE], name="init-setup")
-def run_initial_setup(session: nox.Session):
-    log.info("Running initial setup.")
-    if INIT_COPY_FILES is None:
-        log.warning("INIT_COPY_FILES is empty. Skipping")
-        pass
-
-    else:
-
-        for pair_dict in INIT_COPY_FILES:
-            src = Path(pair_dict["src"])
-            dest = Path(pair_dict["dest"])
-            if not dest.exists():
-                log.info(f"Copying {src} to {dest}")
-                try:
-                    shutil.copy(src, dest)
-                except Exception as exc:
-                    msg = Exception(
-                        f"Unhandled exception copying file from '{src}' to '{dest}'. Details: {exc}"
-                    )
-                    log.error(msg)
