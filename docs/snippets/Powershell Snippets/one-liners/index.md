@@ -135,3 +135,19 @@ Get-ADUser -Identity <username> -Properties Name, AccountLockoutTime, LastBadPas
 ```powershell title="Unlock AD user account" linenums="1"
 Unlock-ADAccount -Identity $ADUsername
 ```
+
+## Export/Import winget packages
+
+You can export your installed packages using the `winget` utility. The backup format is `.json`.
+
+### Export winget packages
+
+```powershell title="Export winget packages" linenums="1"
+winget export -o C:\path\to\winget-pkgs.json
+```
+
+### Import winget packages
+
+```powershell title="Import winget packages" linenums="1"
+winget import -i C:\path\to\winget-pkgs.json
+```
