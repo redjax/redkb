@@ -1,9 +1,11 @@
 [project]
 name = "redkb"
 version = "0.1.0"
-description = "Add your description here"
+description = "My personal knowledgebase, built with MkDocs."
 readme = "README.md"
 requires-python = ">=3.11"
+authors = [{ name = "redjax", email = "none@none.com" }]
+license = { text = "MIT" }
 dependencies = [
     "markdown-include>=0.8.1",
     "mkdocs>=1.6.1",
