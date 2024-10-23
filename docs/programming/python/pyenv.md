@@ -388,11 +388,11 @@ else {
 # Update pip
 _runCommand "python -m pip install --upgrade pip"
 
-# Install pipx, pdm, black, cookiecutter
-_runCommand "pip install pipx"
-_runCommand "pip install pdm"
-_runCommand "pip install black"
-_runCommand "pip install cookiecutter"
+# Optional, install pipx, pdm, black, cookiecutter
+# _runCommand "pip install pipx"
+# _runCommand "pip install pdm"
+# _runCommand "pip install black"
+# _runCommand "pip install cookiecutter"
 
 ```
 
