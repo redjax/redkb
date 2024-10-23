@@ -7,13 +7,9 @@ tags:
 
 # Dataclasses
 
-!!! note
-
-    🚧Page is still in progress🚧
-
 ## What is a `dataclass`?
 
-A Python data class is a regular Python class that has the @dataclass decorator. It is specifically created to hold data (from [python.land](https://python.land/python-data-classes)).
+A Python data class is a regular Python class that has the `@dataclass` decorator. It is specifically created to hold data (from [python.land](https://python.land/python-data-classes)).
 
 Dataclasses reduce the boilerplate code when creating a Python class. As an example, below are 2 Python classes: the first is written with Python's standard class syntax, and the second is the simplified dataclass:
 
