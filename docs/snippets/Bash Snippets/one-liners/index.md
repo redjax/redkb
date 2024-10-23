@@ -2,9 +2,10 @@
 tags:
     - snippets
     - bash
+    - one-liners
 ---
 
-# One-Liners
+# One-liners
 
 Some Bash commands can be written as a "one-liner." `if` and `while` statements, for example, can be written in a slightly different way to chain commands.
 
