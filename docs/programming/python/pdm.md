@@ -6,19 +6,6 @@ tags:
 
 # Use PDM to manage your Python projects & dependencies
 
-!!! TODO
-
-    - [x] Write section describing `pdm`
-        - [x] What is `pdm`?
-        - [x] What problem does `pdm` solve?
-    - [x] Write `pdm` cheat sheet
-        - [x] Initialize a project
-            - [x] Difference between an `application` and a `library`
-        - [x] Add/remove dependencies
-        - [x] Execute code
-        - [x] Add development dependencies
-    - [ ] Detail publishing a project to `pypi` with `pdm`
-
 !!! TOC
 
     - [`pdm` cheat sheet](#pdm-cheat-sheet)

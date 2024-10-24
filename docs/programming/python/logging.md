@@ -12,22 +12,6 @@ The Python [`logging`](https://docs.python.org/3/library/logging.html) module is
 
 I have settled on using [`logging.config.dictConfig`]() to configure my logging, and that is how my notes/code are written.
 
-!!! todo
-
-    - [ ] Document formatters
-        - [ ] Document format strings
-        - [ ] Document date format strings
-    - [ ] Document handlers
-        - [ ] Console/Stream
-        - [ ] File
-            - [ ] RotatingFile
-            - [ ] TimedRotatingFile
-        - [ ] Socket
-    - [ ] Document loggers
-        - [ ] Document adding handlers & formatters
-        - [ ] Document "pre-defining" loggers for loggers that don't exist yet/haven't been called yet.
-        - [ ] Document overriding 3rd-party loggers
-
 ## Configuring logging module
 
 The `logging` module can be configured a number of ways, most notably with `basicConfig()`, but my personal favorite is with `dictConfig()`, which lets you pre-define your entire applications' logging (all current and potential future loggers) in a Python `dict`. No need to import handlers, formatters, and other miscellaneous classes from the `logging` module; with `dictConfig()`, everything is a string or integer!
@@ -37,6 +21,46 @@ The `logging` module can be configured a number of ways, most notably with `basi
     I wrote a module, [`red-logging`](https://github.com/redjax/red-logging) to aid with `logging` boilerplate. This module is specific to my own needs and uses, and may not be suitable for you or your project(s), but can serve as a helpful reference for some patterns.
 
     `red-logging` does not import any dependencies, it simply organizes some of `logging`'s functionality into classes, context managers, and functions.
+
+### Configure with basicConfig()
+
+The simplest, quickest way to configure Python's `logging` module is by using the `basicConfig()` function. As with other methods of initializing `logging`, you only need to call this once, at your program's entrypoint (i.e. at the top of a `if __name__ == "__main__"` statement, or in a `__main__.py` file).
+
+```python title="Example of configuring logging with basicConfig()" linenums="1"
+logging.basicConfig(
+    ## You can use logging.LEVEL or an uppercase string
+    level="INFO",
+    ## Configure the log message string's format
+    format="%(asctime)s | [%(levelname)s] | (%(name)s) > %(module)s.%(funcName)s:%(lineno)s |> %(message)s",
+    ## Configure the format for timestamps/datetimes in log messages (i.e. the %(asctime)s value
+    datefmt="%Y-%m-%dT%H:%M:%S"
+)
+```
+
+#### setup_logging() function
+
+I use a function in most of my apps called `setup_logging()` to configure logging with `basicConfig()` (if I'm not using `dictConfig()`). The function accepts a level, format, and datefmt, as well as a list of `silence_loggers`, which are string names of 3rd party modules to "silence" by setting their log level to `WARNING`. When using a `DEBUG` log level, you will also see debug messages for any 3rd party dependencies in your package (i.e. `SQLAlchemy`, `httpx`, etc); the `silence_loggers` list will stop these debug messages.
+
+```python title="setup_logging()" linenums="1"
+def setup_logging(
+    level: str = "INFO",
+    format: str = "%(asctime)s | [%(levelname)s] | (%(name)s) > %(module)s.%(funcName)s:%(lineno)s |> %(message)s",
+    datefmt: str = "%Y-%m-%d_%H-%M-%S",
+    silence_loggers: list[str] = [
+        "httpx",
+        "hishel",
+        "httpcore",
+        "urllib3",
+        "sqlalchemy",
+    ],
+):
+    logging.basicConfig(level=level, format=format, datefmt=datefmt)
+
+    if silence_loggers:
+        for _logger in silence_loggers:
+            logging.getLogger(_logger).setLevel("WARNING")
+
+```
 
 ### Configure with dictConfig()
 
