@@ -7,6 +7,7 @@
 ```text title="Container directory structure"
 container_root/
   ../.env
+  ../.gitignore
   ../docker-compose.yml
 ```
 
@@ -21,9 +22,15 @@ container_root/
 
 ```
 
+### .gitignore
+
+```text title="{{ cookiecutter.page_title | lower() }} .gitignore" linenums="1"
+
+```
+
 ### docker-compose.yml
 
-```text title="{{ cookiecutter.page_title | lower() }} docker-compose.yml
+```text title="{{ cookiecutter.page_title | lower() }} docker-compose.yml" linenums="1"
 ---
 services:
   ...
