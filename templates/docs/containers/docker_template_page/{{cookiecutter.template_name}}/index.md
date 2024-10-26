@@ -4,7 +4,11 @@
 
 ## Directory Structure
 
-`...`
+```text title="Container directory structure"
+container_root/
+  ../.env
+  ../docker-compose.yml
+```
 
 ## Container Files
 
@@ -13,9 +17,8 @@
 ### .env
 
 ```text title="{{ cookiecutter.page_title | lower() }} .env" linenums="1"
-container_dir/
-  ../.env
-  ../docker-compose.yml
+...
+
 ```
 
 ### docker-compose.yml
