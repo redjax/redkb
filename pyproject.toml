@@ -111,6 +111,7 @@ section-order = [
 
 [tool.uv]
 dev-dependencies = [
+    "cookiecutter>=2.6.0",
     "nox>=2024.10.9",
     "pre-commit>=4.0.1",
     "ruff>=0.7.0",
