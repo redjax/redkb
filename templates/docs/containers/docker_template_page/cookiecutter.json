@@ -1,0 +1,5 @@
+{
+  "page_title": "Unnamed Docker Container",
+  "template_name": "{{ cookiecutter.page_title.lower().replace(' ', '_').replace('-', '_') }}",
+  "short_description": "An unnamed Docker template"
+}

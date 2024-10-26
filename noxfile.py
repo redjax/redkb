@@ -261,3 +261,45 @@ def serve_mkdocs(session: nox.Session):
     except Exception as exc:
         msg = f"({type(exc)}) Unhandled exception serving MKDocs site. Details: {exc}"
         log.error(msg)
+
+
+################
+# Cookiecutter #
+################
+
+@nox.session(python=DEFAULT_PYTHON, name="new-docker-template-page", tags=["mkdocs", "cookiecutter", "template"])
+def new_docker_template_page(session: nox.Session):
+    from cookiecutter.main import cookiecutter
+    
+    session.install("cookiecutter")
+    
+    log.info("Answer the prompts to create a new page in docs/programming/docker/my_containers")
+    
+    COOKIECUTTER_TEMPLATE_FILE: Path = Path("./templates/docs/containers/docker_template_page")
+    DOCKER_CONTAINER_DOCS_ROOT: Path = Path("./docs/programming/docker/my_containers")
+    
+    if not COOKIECUTTER_TEMPLATE_FILE.exists():
+        log.warning(f"Could not find cookiecutter template at path '{COOKIECUTTER_TEMPLATE_FILE}'.")
+    
+    while True:
+        docs_section_choice = input("Which section directory will the template be exported to (i.e. automation, databases): ")
+        
+        if docs_section_choice is None or docs_section_choice == "":
+            log.warning("You must type a directory name that exists in ./docs/programming/docker/my_containers")
+            
+        CONTAINER_SECTION = DOCKER_CONTAINER_DOCS_ROOT / docs_section_choice
+        
+        if not CONTAINER_SECTION.exists():
+            # mkdir_choice = input(f"[WARNING] Container directory section '{CONTAINER_SECTION}' does not exist. Create directory now? (Y/N): ")
+            log.warning(f"Could not find section '{CONTAINER_SECTION}'.")
+            
+        break
+    
+    log.info(f"Rendering template [{COOKIECUTTER_TEMPLATE_FILE}] to [{CONTAINER_SECTION}]")
+    
+    try:
+        cookiecutter(template=str(COOKIECUTTER_TEMPLATE_FILE), output_dir=str(CONTAINER_SECTION), no_input=False)
+    except Exception as exc:
+        msg = f"({type(exc)}) Error rendering template. Details: {exc}"
+        log.error(msg)
+            
