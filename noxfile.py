@@ -276,7 +276,7 @@ def new_docker_template_page(session: nox.Session):
     log.info("Answer the prompts to create a new page in docs/programming/docker/my_containers")
     
     COOKIECUTTER_TEMPLATE_FILE: Path = Path("./templates/docs/containers/docker_template_page")
-    DOCKER_CONTAINER_DOCS_ROOT: Path = Path("./docs/programming/docker/my_containers")
+    DOCKER_CONTAINER_DOCS_ROOT: Path = Path("./docs/template/docker")
     
     if not COOKIECUTTER_TEMPLATE_FILE.exists():
         log.warning(f"Could not find cookiecutter template at path '{COOKIECUTTER_TEMPLATE_FILE}'.")
@@ -291,7 +291,14 @@ def new_docker_template_page(session: nox.Session):
         
         if not CONTAINER_SECTION.exists():
             # mkdir_choice = input(f"[WARNING] Container directory section '{CONTAINER_SECTION}' does not exist. Create directory now? (Y/N): ")
-            log.warning(f"Could not find section '{CONTAINER_SECTION}'.")
+            log.warning(f"Could not find section '{CONTAINER_SECTION}'. Creating path '{CONTAINER_SECTION}'")
+            try:
+                CONTAINER_SECTION.mkdir(parents=True, exist_ok=True)
+            except Exception as exc:
+                msg = f"({type(exc)}) Error creating section '{CONTAINER_SECTION}'. Details: {exc}"
+                log.error(msg)
+                
+                raise exc
             
         break
     
