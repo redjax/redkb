@@ -1,3 +1,12 @@
+---
+tags:
+    - docker
+    - templates
+    - database
+    - mariadb
+    - mysql
+---
+
 # MariaDB
 
 Dockerized MariaDB database server.

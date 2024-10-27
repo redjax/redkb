@@ -1,3 +1,11 @@
+---
+tags:
+    - docker
+    - templates
+    - database
+    - influxdb
+---
+
 # InfluxDB
 
 Dockerized InfluxDB database server. InfluxDB is a special purpose time-series database.
