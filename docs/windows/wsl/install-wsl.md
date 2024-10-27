@@ -27,6 +27,12 @@ tags:
     wsl --install
     ```
 
+    To change the default distribution that executes when you run `wsl` with no `-d <distribution-name>`, use `--setdefault`
+
+    ```powershell title="Set default distribution for WSL" linenums="1"
+    wsl --setdefault <distribution-name>
+    ```
+
 ## Install on older versions of Windows
 
 On older versions of Windows, if this command fails, you can install `wsl` with the following steps:
