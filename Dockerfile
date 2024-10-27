@@ -3,6 +3,7 @@
 #  file's build: section
 ARG UV_BASE=${UV_IMG_VER:-0.4.27}
 ARG PYTHON_BASE=${PYTHON_IMG_VER:-3.12-slim}
+ARG NGINX_BASE=${NGINX_IMG_VER:-alpine}
 
 FROM ghcr.io/astral-sh/uv:$UV_BASE as uv
 FROM python:$PYTHON_BASE AS base
@@ -36,6 +37,9 @@ COPY ./docs ./docs
 COPY ./includes ./includes
 COPY ./mkdocs.yml ./mkdocs.yml
 
+## Build the mkdocs site
+RUN uv run mkdocs build
+
 ## Runtime layer
 FROM build AS run
 
@@ -48,3 +52,12 @@ EXPOSE 8000
 
 ## Run a command/script inside the container
 ENTRYPOINT ["uv", "run", "mkdocs", "serve", "--dev-addr", "0.0.0.0:8000"]
+
+## Serve the static site with nginx
+FROM nginx:${NGINX_BASE} AS serve
+
+COPY --from=build /project/site /usr/share/nginx/html
+
+EXPOSE 80
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
