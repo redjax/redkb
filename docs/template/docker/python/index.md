@@ -147,7 +147,7 @@ COPY --from=ghrc.io/astral-sh/uv:$UV_BASE /uv /bin/
 ## Set environment variables. These will be passed
 #  to stages that inherit from this layer
 ENV PYTHONDONTWRITEBYTECODE 1 \
-    PYTHONUNBUFFERED 1
+  PYTHONUNBUFFERED 1
 
 ## Set CWD in container
 WORKDIR /project
@@ -155,7 +155,7 @@ WORKDIR /project
 ## Copy project files & install with uv
 COPY pyproject.toml uv.lock ./
 RUN uv sync --all-extras --dev && \
-    uv pip install .
+  uv pip install .
 
 ## Build layer to install system dependencies, copy scripts,
 #  setup container users, etc
@@ -165,14 +165,14 @@ WORKDIR /project
 
 ## Install system dependencies
 RUN apt-get update -y && \
-    apt-get install -y --no-install-recommends dos2unix
+  apt-get install -y --no-install-recommends dos2unix
 
 ## Copy an entrypoint script & set executable
 COPY ./scripts/docker-entrypoint.sh ./entrypoint.sh
 ## Replace line endings
 RUN sed -i 's/\r$//g' ./entrypoint.sh && \
-    dos2unix ./entrypoint.sh && \
-    chmod +x ./entrypoint.sh
+  dos2unix ./entrypoint.sh && \
+  chmod +x ./entrypoint.sh
 
 ## Copy remaining project files, i.e. source code
 COPY ./src ./src
