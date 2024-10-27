@@ -1,3 +1,12 @@
+---
+tags:
+  - docker
+  - templates
+  - automation
+  - python
+  - data
+---
+
 # Prefect
 
 [`prefect`](https://www.prefect.io) is a Python library for automating data workflows/pipelines. A lighter, more beginner-friendly analogue to [Apache `airflow`](https://airflow.apache.org).

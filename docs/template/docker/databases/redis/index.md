@@ -1,3 +1,11 @@
+---
+tags:
+    - docker
+    - templates
+    - database
+    - redis
+---
+
 # Redis
 
 Dockerized Redis database server. Redis is a key/value store that can act as a powerful cache or in-memory database.
