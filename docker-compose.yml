@@ -1,0 +1,20 @@
+---
+services:
+  mkdocs:
+    container_name: redkb-mkdocs
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UV_BASE: ${UV_IMG_VERSION:-0.4.27}
+        PYTHON_BASE: ${PYTHON_IMG_VERSION:-3.12-slim}
+    # command: uv run mkdocs serve --dev-addr 0.0.0.0:8000
+    volumes:
+      - ./docs:/project/docs
+      - ./includes:/project/includes
+    # expose:
+    #   - 8000
+    ports:
+      - ${MKDOCS_HTTP_PORT:-8000}:8000
+  
