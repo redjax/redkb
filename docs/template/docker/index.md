@@ -1,6 +1,7 @@
 ---
 tags:
     - docker
+    - templates
 ---
 
 # Docker container templates

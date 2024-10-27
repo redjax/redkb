@@ -1,3 +1,11 @@
+---
+tags:
+    - docker
+    - templates
+    - database
+    - postgres
+---
+
 # Postgresql
 
 Dockerized PostgreSQL database server.
