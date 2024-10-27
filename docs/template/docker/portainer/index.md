@@ -2,6 +2,7 @@
 tags:
     - docker
     - portainer
+    - template
 ---
 
 # Portainer

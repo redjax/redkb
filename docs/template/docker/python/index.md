@@ -1,6 +1,6 @@
 ---
 tags:
-    - standard-project-files
+    - templates
     - python
     - docker
 ---
