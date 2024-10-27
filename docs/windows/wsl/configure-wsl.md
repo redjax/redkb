@@ -100,6 +100,24 @@ Configurations per-distribution.
 
 - [Microsoft Docs: wsl-config](https://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconf)
 
+### Disable joining Windows path
+
+WSL will attempt to join the Windows `PATH` variable with its own `$PATH`. This can lead to unexpected behavior, like if `pyenv` is installed in both Windows and WSL.
+
+To fix this, disable the `appendWindowsPath` flag in the `[interop]` section of `/etc/wsl.conf`
+
+```conf title="Disable Windows PATH join" linenums="1"
+## /etc/wsl.conf
+
+...
+
+[interop]
+appendWindowsPath = false
+
+...
+
+```
+
 ### Set default user
 
 !!! note
