@@ -102,7 +102,13 @@ markdown_extensions:
       ## Add additional snippets, like *[Annotation]: ... glossaries
       auto_append:
         - includes/abbreviations.md
+  - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span

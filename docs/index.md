@@ -2,30 +2,59 @@
 
 My personal knowledgebase. Use the sections along the top (i.e. [`Programming`](programming/index.md)) to navigate areas of the KB.
 
+!!! example "Find a mistake?"
+
+    Did you spot a spelling error or some other inaccuracy? Feel free to open a PR on [the Github repository](https://github.com/redjax/redkb) for this site! I welcome contributions 😊
+
+??? warning "Warning on content accuracy & freshness"
+
+    I make no guarantee at total accuracy, relevant/updated, or topic depth for any of the content on this site. My goal is to keep reference notes for myself in a place accessible over the Internet in an easily-editable format (i.e. the [Github repository](https://github.com/redjax/redkb)).
+
+    I aim to be accurate, and notes I reference frequently will be updated more often. Each article on this site has a published and last modified timestamp at the bottom of the page, which you should take note of when referencing content on this site.
+
 ## Quick Links
 
-### 🐍 Python
+The list below is like a table of contents for the sections I most frequently reference or send to other people. Unless you're coming here for something specific, I recommend browsing through the sections at the top.
 
-- [`Python standard project files`](programming/standard-project-files/python/index.md)
-    - [`ruff`](programming/standard-project-files/python/ruff/index.md)
-        - [`ruff pyproject.toml [tool.ruff] section`](programming/standard-project-files/python/ruff/pyproject-ruff.md)
-    - [`python .gitignore` file](programming/standard-project-files/python/gitignore.md)
-    - [`dynaconf`](programming/standard-project-files/python/Dynaconf/index.md)
-    - [`nox`](programming/python/nox/index.md)
-        - [`noxfile.py`](programming/python/nox/index.md#noxfilepy-base)
-        - [`nox_extra`: Make `nox` more modular](programming/python/nox/nox_extra-module/index.md)
-  - [Manage your Python install with `pyenv`](programming/python/virtualenv.md)
-  - [Manage your Python projects with the `pdm` package manager](programming/python/pdm.md)
-  - [Add logging to your project with the stdlib `logging` module](programming/python/logging.md)
+??? tip "🐍 Python"
+    - [Python standard project files](programming/standard-project-files/python/index.md)
+        - [Python Docker image templates](template/docker/python/index.md)
+        - [`ruff`](programming/standard-project-files/python/ruff/index.md)
+            - [`ruff` pyproject.toml `[tool.ruff]` section](programming/standard-project-files/python/ruff/pyproject-ruff.md)
+        - [Python `.gitignore` file](programming/standard-project-files/python/gitignore.md)
+        - [`dynaconf`](programming/standard-project-files/python/Dynaconf/index.md)
+        - [`nox`](programming/python/nox/index.md)
+            - [`noxfile.py`](programming/python/nox/index.md#noxfilepy-base)
+            - [`nox_extra`: Make `nox` more modular](programming/python/nox/nox_extra-module/index.md)
+      - [Manage your Python install with `pyenv`](programming/python/virtualenv.md)
+      - [Manage your Python projects with the `pdm` package manager](programming/python/pdm.md)
+      - [Add logging to your project with the stdlib `logging` module](programming/python/logging.md)
 
-### 🅿️ Powershell
-- [`Powershell profiles`](programming/powershell/profiles/index.md)
-- [`Powershell code snippets`](programming/powershell/snippets/index.md)
-- [`Powershell modules`](programming/powershell/modules/index.md)
+??? tip "🅿️ Powershell"
+    - [Powershell profiles](programming/powershell/profiles/index.md)
+    - [Powershell code snippets](programming/powershell/snippets/index.md)
+    - [Powershell modules](programming/powershell/modules/index.md)
 
-### 🛠️ Utilities
+??? tip "🛠️ Utilities"
+    === "🔑 [SSH](utilities/ssh/index.md)"
+        - [Create an SSH keypair](utilities/ssh/index.md#create-an-ssh-key-pair) 
+        - [Install SSH key on remote machine](utilities/ssh/index.md#install-an-ssh-key-on-a-remote-machine-for-passwordless-ssh-login.md)
 
-#### 🔑 [SSH](utilities/ssh/index.md)
+??? tip "📝 Templates"
 
-- [Create an SSH keypair](utilities/ssh/index.md#create-an-ssh-key-pair) 
-- [Install SSH key on remote machine](utilities/ssh/index.md#install-an-ssh-key-on-a-remote-machine-for-passwordless-ssh-login.md)
+    === "🐋 Docker Templates"
+        - [Databases](template/docker/databases/index.md)
+            - [postgres](template/docker/databases/postgres/index.md)
+            - [mariadb](template/docker/databases/mariadb/index.md)
+            - [redis](template/docker/databases/redis/index.md)
+        - [Python containers](template/docker/python/index.md)
+
+---
+
+## About
+
+This is a hobby project, something I maintain as I have time/interest. The notes on this site are mostly for myself, but are sometimes helpful to others. The site is loosely based on the concept of a [mind garden](https://elizabethbutlermd.com/personal-knowledge-management/).
+
+I frequently write Markdown notes in whatever Markdown notes app has most recently caught my attention (honorable mentions to [Obsidian]() and [Logseq]()). I will occasionally dump pages/sections into this KB. You can check the [tags section](tags.md) to quickly find articles on a specific topic.
+
+I mainly use Linux for my homelab, but work in a Windows environment. I code mainly in Python, Bash, and Powershell, and spend most of my time on the Linux side. The contents of this site skew more heavily towards Linux and the scripting languages I use, but there are also articles on cross-platform tools like SSH and Docker.
