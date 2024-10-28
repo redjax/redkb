@@ -2,8 +2,7 @@
 volumes:
   hedgedoc-db-data: {}
   hedgedoc-data: {}
-  caddy_data: {}
-  caddy_config: {}
+  openvscode-config: {}
 
 networks:
   redkb-devnet: {}
@@ -24,86 +23,40 @@ services:
       - ./docs:/project/docs
       - ./includes:/project/includes
       - ./mkdocs.yml:/project/mkdocs.yml
-    expose:
-      - 8000
-    # ports:
-    #   - ${MKDOCS_HTTP_PORT:-8000}:8000
+    # expose:
+    #   - 8000
+    ports:
+      - ${MKDOCS_HTTP_PORT:-8000}:8000
     networks:
       - redkb-devnet
 
-  hedgedoc-db:
-    image: postgres:alpine
-    container_name: redkb_hedgedoc-db
-    restart: unless-stopped
-    environment:
-      - POSTGRES_USER=${HEDGEDOC_DB_USER:-hedgedoc}
-      - POSTGRES_PASSWORD=${HEDGEDOC_DB_PASSWORD:-hedgedoc}
-      - POSTGRES_DB=${HEDGEDOC_DB_DATABASE:-hedgedoc}
-    expose:
-      - 5432
-    volumes:
-      - ${HEDGEDOC_DB_DATA_DIR:-hedgedoc-db-data}:/var/lib/postgresql/data
-    networks:
-      - redkb-devnet
-
-  hedgedoc:
-    # Make sure to use the latest release from https://hedgedoc.org/latest-release
-    image: quay.io/hedgedoc/hedgedoc:1.9.9
-    container_name: redkb_hedgedoc
-    restart: unless-stopped
-    environment:
-      - CMD_DB_URL=postgres://${HEDGEDOC_DB_USER:-hedgedoc}:${HEDGEDOC_DB_PASSWORD:-hedgedoc}@hedgedoc-db:5432/${HEDGEDOC_DB_DATABASE:-hedgedoc}
-      ## Placeholder; HedgeDoc will be accessed through Caddy’s proxy
-      - CMD_DOMAIN=https://<dynamic-domain>
-      - CMD_URL_ADDPORT=${HEDGEDOC_URL_ADDPORT:-false}
-      - NODE_ENV=production
-      - CMD_ALLOW_ANONYMOUS=false
-      - CMD_ALLOW_ANONYMOUS_EDITS=true
-      - CMD_DEFAULT_PERMISSION=private
-      - CMD_ALLOW_EMAIL_REGISTER=false
-      - CMD_ALLOW_GRAVATAR=false
-    volumes:
-      - ${HEDGEDOC_DATA_DIR:-uploads}:/hedgedoc/public/uploads
-      - ./docs:/hedgedoc/public/uploads/docs
-    # ports:
-    #   - ${HEDGEDOC_HTTP_PORT:-3000}:3000
-    expose:
-      - 3000
-    depends_on:
-      - hedgedoc-db
-    networks:
-      - redkb-devnet
-    labels:
-      caddy: docs.${HEDGEDOC_DOMAIN:-example.com}
-      caddy.reverse_proxy: "{{upstreams 3000}}"
-
-  # caddy:
-  #   image: caddy:latest
-  #   container_name: redkb_caddy
-  #   restart: unless-stopped
-  #   ports:
-  #     - ${CADDY_HTTPS_PORT:-8443}:443
-  #     - ${CADDY_HTTP_PORT:-8000}:80
-  #   volumes:
-  #     - ./dev.Caddyfile:/etc/caddy/Caddyfile
-  #     - caddy_data:/data
-  #     - caddy_config:/config
-  #   networks:
-  #     - redkb-devnet
-  #   depends_on:
-  #     - hedgedoc
-
-  caddy:
-    image: lucaslorentz/caddy-docker-proxy:ci-alpine
-    container_name: redkb_caddy
+  atheos:
+    image: hlsiira/atheos
+    container_name: redkb_atheos-ide
     restart: unless-stopped
     ports:
-      - ${CADDY_HTTP_PORT:-8000}:80
-      - ${CADDY_HTTPS_PORT:-8443}:443
-    environment:
-      - CADDY_INGRESS_NETWORKS=redkb-devnet
+      - ${ATHEOS_WEBUI_PORT:-8080}:80
+    volumes:
+      - ./docs:/var/www/html/workspace/redkb:rw
     networks:
       - redkb-devnet
+
+  openvscode-server:
+    # image: lscr.io/linuxserver/openvscode-server:latest
+    image: gitpod/openvscode-server
+    container_name: openvscode-server
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - CONNECTION_TOKEN= #optional
+      - CONNECTION_SECRET= #optional
+      - SUDO_PASSWORD=password #optional
+      - SUDO_PASSWORD_HASH= #optional
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${CADDY_DATA_DIR:-caddy_data}:/data
+      - ~/.ssh:/home/openvscode-server/.ssh:ro
+      - ${CODE_SERVER_CONF_DIR:-openvscode-config}:/config
+      - ./:/home/workspace/redkb:cached
+    ports:
+      - 3000:3000
