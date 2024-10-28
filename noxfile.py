@@ -393,7 +393,7 @@ def run_pre_commit_nbstripout(session: nox.Session):
 def publish_mkdocs(session: nox.Session):
     install_uv_project(session)
 
-    log.info("Publishing MKDocs site")
+    log.info("Publishing MKDocs site to Github Pages")
 
     session.run("mkdocs", "gh-deploy")
     
