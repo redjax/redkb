@@ -475,4 +475,3 @@ def new_docker_template_page(session: nox.Session):
     except Exception as exc:
         msg = f"({type(exc)}) Error rendering template. Details: {exc}"
         log.error(msg)
-        
