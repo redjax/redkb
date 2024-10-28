@@ -1,6 +1,6 @@
 # RedKB
 
-My personal knowledgebase. Use the sections along the top (i.e. [`Programming`](programming/index.md)) to navigate areas of the KB.
+My personal knowledgebase. Use the sections along the top (i.e. [`Programming`](programming/index.md)) to navigate areas of the KB. Check the [tags section](tags.md) to quickly find articles on a specific topic.
 
 !!! example "Find a mistake?"
 
@@ -14,7 +14,7 @@ My personal knowledgebase. Use the sections along the top (i.e. [`Programming`](
 
 ## Quick Links
 
-The list below is like a table of contents for the sections I most frequently reference or send to other people. Unless you're coming here for something specific, I recommend browsing through the sections at the top.
+The menus below are like a table of contents for the sections I most frequently reference or send to other people. Unless you're coming here for something specific, I recommend browsing through the sections at the top.
 
 ??? tip "🐍 Python"
     - [Python standard project files](programming/standard-project-files/python/index.md)
@@ -36,9 +36,11 @@ The list below is like a table of contents for the sections I most frequently re
     - [Powershell modules](programming/powershell/modules/index.md)
 
 ??? tip "🛠️ Utilities"
-    === "🔑 [SSH](utilities/ssh/index.md)"
+    === "🔑 SSH"
+        - [Understanding the difference between public and private SSH keys](utilities/ssh/index.html#understanding-the-difference-between-public-and-private-keys)
         - [Create an SSH keypair](utilities/ssh/index.md#create-an-ssh-key-pair) 
         - [Install SSH key on remote machine](utilities/ssh/index.md#install-an-ssh-key-on-a-remote-machine-for-passwordless-ssh-login.md)
+        - [SSH chmod permissions for `~/.ssh/` directory and key files](utilities/ssh/index.html#ssh-chmod-permissions)
 
 ??? tip "📝 Templates"
 
@@ -55,6 +57,10 @@ The list below is like a table of contents for the sections I most frequently re
 
 This is a hobby project, something I maintain as I have time/interest. The notes on this site are mostly for myself, but are sometimes helpful to others. The site is loosely based on the concept of a [mind garden](https://elizabethbutlermd.com/personal-knowledge-management/).
 
-I frequently write Markdown notes in whatever Markdown notes app has most recently caught my attention (honorable mentions to [Obsidian]() and [Logseq]()). I will occasionally dump pages/sections into this KB. You can check the [tags section](tags.md) to quickly find articles on a specific topic.
+I frequently write Markdown notes in whatever Markdown notes app has most recently caught my attention (honorable mentions to [Obsidian]() and [Logseq]()). I will occasionally dump pages/sections into this KB.
 
 I mainly use Linux for my homelab, but work in a Windows environment. I code mainly in Python, Bash, and Powershell, and spend most of my time on the Linux side. The contents of this site skew more heavily towards Linux and the scripting languages I use, but there are also articles on cross-platform tools like SSH and Docker.
+
+!!! example "🛠️ Built with"
+    
+    *This site was built with [`MkDocs`](https://www.mkdocs.org) and [`Material for MkDocs`](https://squidfunk.github.io/mkdocs-material/). Check out the source code on [Github](https://github.com/redjax/redkb)*
