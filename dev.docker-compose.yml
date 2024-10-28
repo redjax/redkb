@@ -1,7 +1,5 @@
 ---
 volumes:
-  hedgedoc-db-data: {}
-  hedgedoc-data: {}
   openvscode-config: {}
 
 networks:
@@ -30,17 +28,6 @@ services:
     networks:
       - redkb-devnet
 
-  atheos:
-    image: hlsiira/atheos
-    container_name: redkb_atheos-ide
-    restart: unless-stopped
-    ports:
-      - ${ATHEOS_WEBUI_PORT:-8080}:80
-    volumes:
-      - ./docs:/var/www/html/workspace/redkb:rw
-    networks:
-      - redkb-devnet
-
   openvscode-server:
     # image: lscr.io/linuxserver/openvscode-server:latest
     image: gitpod/openvscode-server
@@ -55,7 +42,6 @@ services:
       - SUDO_PASSWORD=password #optional
       - SUDO_PASSWORD_HASH= #optional
     volumes:
-      - ~/.ssh:/home/openvscode-server/.ssh:ro
       - ${CODE_SERVER_CONF_DIR:-openvscode-config}:/config
       - ./:/home/workspace/redkb:cached
     ports:
