@@ -30,7 +30,7 @@ jobs:
         run: uv run mkdocs build
 
       - name: Deploy MkDocs to Github Pages
-        run: uv run mkdocs gh-deploy
+        run: uv run nox -s publish-mkdocs
 
       # - name: Deploy MkDocs
       #   uses: mhausenblas/mkdocs-deploy-gh-pages@1.26
