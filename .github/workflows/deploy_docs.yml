@@ -10,15 +10,47 @@ on:
 
 jobs:
   deploy-mkdocs:
+    name: Deploy to Github Pages
     if: ${{ github.event.label.name == 'publish' }}
     runs-on: ubuntu-latest
   
     steps:
-      - name: Checkout main
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Deploy MkDocs
-        uses: mhausenblas/mkdocs-deploy-gh-pages@1.26
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REQUIREMENTS: requirements/requirements.dev.txt
+      - name: Setup Git configuration
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: 0.4.27
+
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: Build MkDocs site
+        run: uv run mkdocs build
+
+      - name: Pull the latest gh-pages
+        run: |
+          git fetch origin gh-pages:gh-pages
+          git checkout gh-pages
+          git pull origin gh-pages
+
+      # - name: Deploy MkDocs to GitHub Pages
+      #   run: |
+      #     git add .
+      #     git commit -m "Deploy updated site"
+      #     git push origin gh-pages --force
+
+      - name: Deploy MkDocs to Github Pages
+        run: uv run nox -s publish-mkdocs
+
+      # - name: Deploy MkDocs
+      #   uses: mhausenblas/mkdocs-deploy-gh-pages@1.26
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     REQUIREMENTS: requirements/requirements.dev.txt
