@@ -119,6 +119,172 @@ def _find_free_port(start_port=8000):
                 log.info(f"Port {port} is in use, trying the next port.")
                 port += 1
 
+def run_docker_cmd(session: nox.Session, compose_file: str, operation: str):
+    if compose_file is None:
+        raise ValueError("Missing a compose_file value.")
+
+    if operation is None:
+        raise ValueError("operation should not be None")
+
+    if not check_path_exists(p=compose_file):
+        raise FileNotFoundError(f"Could not find compose file: {compose_file}")
+
+    valid_operations: list[str] = [
+        "build",
+        "build-no-cache",
+        "up",
+        "up-build",
+        "up-recreate",
+        "down",
+    ]
+
+    match operation:
+        case "build":
+            session.run(
+                "docker",
+                "compose",
+                "-f",
+                compose_file,
+                "build",
+                external=True,
+            )
+        case "build-no-cache":
+            session.run(
+                "docker",
+                "compose",
+                "-f",
+                compose_file,
+                "build",
+                "--no-cache",
+                external=True,
+            )
+        case "up":
+            session.run(
+                "docker",
+                "compose",
+                "-f",
+                compose_file,
+                "up",
+                "-d",
+                external=True,
+            )
+        case "up-build":
+            session.run(
+                "docker",
+                "compose",
+                "-f",
+                compose_file,
+                "up",
+                "-d",
+                "--build",
+                external=True,
+            )
+        case "up-recreate":
+            session.run(
+                "docker",
+                "compose",
+                "-f",
+                compose_file,
+                "up",
+                "-d",
+                "--force-recreate",
+                external=True,
+            )
+        case "down" | "stop":
+            session.run(
+                "docker",
+                "compose",
+                "-f",
+                compose_file,
+                "down",
+                external=True,
+            )
+        case _:
+            raise ValueError(
+                f"Invalid Docker compose operation: {operation}. Must be one of {valid_operations}"
+            )
+
+
+def run_podman_cmd(session: nox.Session, compose_file: str, operation: str):
+    if compose_file is None:
+        raise ValueError("Missing a compose_file value.")
+
+    if operation is None:
+        raise ValueError("operation should not be None")
+
+    if not check_path_exists(p=compose_file):
+        raise FileNotFoundError(f"Could not find compose file: {compose_file}")
+
+    valid_operations: list[str] = [
+        "build",
+        "build-no-cache",
+        "up",
+        "up-build",
+        "up-recreate",
+        "down",
+    ]
+
+    match operation:
+        case "build":
+            session.run(
+                "podman-compose",
+                "-f",
+                compose_file,
+                "build",
+                external=True,
+            )
+        case "build-no-cache":
+            session.run(
+                "podman-compose",
+                "-f",
+                compose_file,
+                "build",
+                "--no-cache",
+                external=True,
+            )
+        case "up":
+            session.run(
+                "podman-compose",
+                "-f",
+                compose_file,
+                "up",
+                "-d",
+                external=True,
+            )
+        case "up-build":
+            session.run(
+                "podman-compose",
+                "-f",
+                compose_file,
+                "up",
+                "-d",
+                "--build",
+                external=True,
+            )
+        case "up-recreate":
+            session.run(
+                "podman-compose", "-f", compose_file, "down", "&&",
+                "podman-compose",
+                "-f",
+                compose_file,
+                "up",
+                "-d",
+                "--force-recreate",
+                external=True,
+            )
+        case "down" | "stop":
+            session.run(
+                "podman-compose",
+                "-f",
+                compose_file,
+                "down",
+                external=True,
+            )
+        case _:
+            raise ValueError(
+                f"Invalid podman-compose operation: {operation}. Must be one of {valid_operations}"
+            )
+
 
 #######################
 # Repository Sessions #
@@ -309,4 +475,3 @@ def new_docker_template_page(session: nox.Session):
     except Exception as exc:
         msg = f"({type(exc)}) Error rendering template. Details: {exc}"
         log.error(msg)
-            
