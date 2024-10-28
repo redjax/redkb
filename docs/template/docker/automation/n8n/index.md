@@ -1,3 +1,11 @@
+---
+tags:
+  - docker
+  - templates
+  - automation
+  - nocode
+---
+
 # n8n
 
 [`n8n`](https://n8n.io) is a workflow automation tool. Similar to Zapier, `n8n` can integrate with many sources and provide a no/low code (javascript) interface for building your own automations.

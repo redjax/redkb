@@ -1,0 +1,22 @@
+---
+services:
+  mkdocs:
+    container_name: redkb-mkdocs
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UV_BASE: ${UV_IMG_VERSION:-0.4.27}
+        PYTHON_BASE: ${PYTHON_IMG_VERSION:-3.12-slim}
+      ## Layer that serves site/ with nginx
+      target: serve
+    volumes:
+      - ./docs:/project/docs
+      - ./includes:/project/includes
+      - ./.git:/project/.git
+    # expose:
+    #   - 80
+    ports:
+      - ${NGINX_HTTP_PORT:-80}:80
+  

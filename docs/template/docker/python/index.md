@@ -1,6 +1,6 @@
 ---
 tags:
-    - standard-project-files
+    - templates
     - python
     - docker
 ---
@@ -120,5 +120,74 @@ COPY ./src .
 
 # EXPOSE 5000
 # CMD ["python", "main.py"]
+
+```
+
+## Multistage astral/uv Python Dockerfile
+
+The [Astral.sh `uv` Python project manager](https://docs.astral.sh/uv/guides/integration/docker/) can be used inside of a Dockerfile. In your "base" stage (or at the top of the Dockerfile, if you're not doing a multistage build), you can import `uv` by adding a `COPY` line to your Dockerfile.
+
+```Dockerfile title="Python uv Dockerfile" linenums="1"
+FROM python:3.12-slim AS base
+## Import uv from Astral's Docker container, add uv to /bin/
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
+
+...
+```
+
+After adding `uv` to your Dockerfile, it can be used in other stages.
+
+```Dockerfile title="Python multistage Dockerfile with uv" linenums="1"
+ARG PYTHON_BASE=3.12-slim
+ARG UV_BASE=0.4.27
+FROM python:$PYTHON_BASE AS base
+## Add astral.sh/uv to container's /bin/ path
+COPY --from=ghrc.io/astral-sh/uv:$UV_BASE /uv /bin/
+
+## Set environment variables. These will be passed
+#  to stages that inherit from this layer
+ENV PYTHONDONTWRITEBYTECODE 1 \
+  PYTHONUNBUFFERED 1
+
+## Set CWD in container
+WORKDIR /project
+
+## Copy project files & install with uv
+COPY pyproject.toml uv.lock ./
+RUN uv sync --all-extras --dev && \
+  uv pip install .
+
+## Build layer to install system dependencies, copy scripts,
+#  setup container users, etc
+FROM base AS build
+
+WORKDIR /project
+
+## Install system dependencies
+RUN apt-get update -y && \
+  apt-get install -y --no-install-recommends dos2unix
+
+## Copy an entrypoint script & set executable
+COPY ./scripts/docker-entrypoint.sh ./entrypoint.sh
+## Replace line endings
+RUN sed -i 's/\r$//g' ./entrypoint.sh && \
+  dos2unix ./entrypoint.sh && \
+  chmod +x ./entrypoint.sh
+
+## Copy remaining project files, i.e. source code
+COPY ./src ./src
+
+## Runtime layer
+FROM build AS run
+
+COPY --from=build /project /project
+
+WORKDIR /project
+
+## Expose a port from a service inside the container
+# EXPOSE 8000
+
+## Run a command/script inside the container
+ENTRYPOINT ["./entrypoint.sh"]
 
 ```
