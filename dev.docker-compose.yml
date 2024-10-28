@@ -14,6 +14,7 @@ services:
     volumes:
       - ./docs:/project/docs
       - ./includes:/project/includes
+      - ./mkdocs.yml:/project/mkdocs.yml
     # expose:
     #   - 8000
     ports:

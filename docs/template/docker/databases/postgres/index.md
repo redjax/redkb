@@ -85,7 +85,7 @@ PGADMIN_DATA_DIR=
 
 ### docker-compose.yml
 
-```text title="postgresql docker-compose.yml
+```text title="postgresql docker-compose.yml"
 ---
 volumes:
   postgres_data:
