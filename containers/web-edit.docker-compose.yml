@@ -1,0 +1,90 @@
+---
+## Compose stack for mounting the docs/ directory of this repository
+#  in a web-based OpenVSCode Server (https://github.com/gitpod-io/openvscode-server)
+#  It includes an NGINX proxy with self-signed certificates so SSL "works" on your LAN.
+#  If you run this behind a domain name, set up a proper reverse proxy!
+volumes:
+  openvscode-config: {}
+
+networks:
+  redkb-devnet: {}
+
+services:
+
+  ## If you modify this service, edit it in the other docker-compose.yml files too!
+  mkdocs:
+    container_name: redkb_mkdocs
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: ./containers/Dockerfile
+      args:
+        UV_BASE: ${UV_IMG_VERSION:-0.4.27}
+        PYTHON_BASE: ${PYTHON_IMG_VERSION:-3.12-slim}
+      ## Layer that runs mkdocs serve
+      target: serve
+    volumes:
+      - ${PWD}/docs:/project/docs
+      - ${PWD}/includes:/project/includes
+      - ${PWD}/mkdocs.yml:/project/mkdocs.yml
+    ## If not using reverse proxy, comment out expose and
+    #  uncomment ports
+    expose:
+      - 8000
+    # ports:
+    #   - ${MKDOCS_HTTP_PORT:-8000}:8000
+    networks:
+      - redkb-devnet
+
+  openvscode-server:
+    build:
+      context: ..
+      dockerfile: ./containers/vscode.Dockerfile
+      args:
+        UV_BASE: ${UV_IMG_VERSION:-0.4.27}
+        OPENVSCODE_SERVER_BASE: ${CODE_SERVER_BASE:-latest}
+    env_file:
+      - ${PWD}/containers/.env
+    container_name: openvscode-server
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=Etc/UTC
+      ## Optional
+      - CONNECTION_TOKEN=${CODE_CONNECTION_TOKEN}
+      ## Optional
+      - CONNECTION_SECRET=${CODE_CONNECTION_SECRET}
+      ## Optional
+      - SUDO_PASSWORD=${CODE_SUDO_PASSWORD:-password}
+      ## Optional
+      - SUDO_PASSWORD_HASH=${CODE_SUDO_PASSWORD_HASH:-}
+    volumes:
+      - ${CODE_SERVER_CONF_DIR:-openvscode-config}:/config
+      - ${PWD}:/home/workspace/redkb:cached
+      ## Uncomment this line to allow git operations in browser
+      # - ~/.ssh:/home/workspace/.ssh:ro
+    ## If not using reverse proxy, comment out expose and
+    #  uncomment ports
+    expose:
+      - 3000
+    # ports:
+    #   - ${CODE_HTTP_PORT:-3000}:3000
+    networks:
+      - redkb-devnet
+
+  ## Comment this section to disable reverse proxy.
+  #  Don't forget to uncomment 'ports' sections above
+  #  and comment out 'expose' sections.
+  nginx:
+    image: nginx:latest
+    container_name: redkb_nginx-proxy
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/.certs/nginx:/etc/nginx/ssl
+    ports:
+      - ${NGINX_HTTP_PORT:-80}:80
+      - ${NGINX_HTTPS_PORT:-443}:443
+    networks:
+      - redkb-devnet
