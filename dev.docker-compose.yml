@@ -35,7 +35,13 @@ services:
 
   openvscode-server:
     # image: lscr.io/linuxserver/openvscode-server:latest
-    image: gitpod/openvscode-server
+    # image: gitpod/openvscode-server
+    build:
+      context: .
+      dockerfile: vscode.Dockerfile
+      args:
+        UV_BASE: ${UV_IMG_VERSION:-0.4.27}
+        OPENVSCODE_SERVER_BASE: ${CODE_SERVER_BASE:-latest}
     container_name: openvscode-server
     restart: unless-stopped
     environment:
@@ -53,6 +59,7 @@ services:
     volumes:
       - ${CODE_SERVER_CONF_DIR:-openvscode-config}:/config
       - ./:/home/workspace/redkb:cached
+      - ~/.ssh:/home/.openvscode-server/.ssh:ro
     ## If not using reverse proxy, comment out expose and
     #  uncomment ports
     expose:
