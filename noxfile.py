@@ -27,7 +27,7 @@ nox.options.error_on_missing_interpreters = False
 
 ## Detect container env, or default to False
 if "CONTAINER_ENV" in os.environ:
-    CONTAINER_ENV: bool = os.environ["CONTAINER_ENV"]
+    CONTAINER_ENV: bool = bool(os.environ["CONTAINER_ENV"])
 else:
     CONTAINER_ENV: bool = False
 
@@ -64,17 +64,17 @@ for _logger in []:
 
 
 @contextmanager
-def cd(newdir):
+def cd(new_dir) -> t.Generator[None, importlib.util.Any, None]: # type: ignore
     """Context manager to change a directory before executing command."""
-    prevdir = os.getcwd()
-    os.chdir(os.path.expanduser(newdir))
+    prev_dir: str = os.getcwd()
+    os.chdir(os.path.expanduser(new_dir))
     try:
         yield
     finally:
-        os.chdir(prevdir)
+        os.chdir(prev_dir)
 
 
-def check_path_exists(p: t.Union[str, Path] = None) -> bool:
+def check_path_exists(_path: t.Union[str, Path] | None = None) -> bool:
     """Check the existence of a path.
 
     Params:
@@ -85,14 +85,14 @@ def check_path_exists(p: t.Union[str, Path] = None) -> bool:
         (False): If Path defined in `p` does not exist.
 
     """
-    p: Path = Path(f"{p}")
-    if "~" in f"{p}":
-        p = p.expanduser()
+    path: Path = Path(f"{_path}")
+    if "~" in f"{path}":
+        path = path.expanduser()
 
-    _exists: bool = p.exists()
+    _exists: bool = path.exists()
 
     if not _exists:
-        log.error(FileNotFoundError(f"Could not find path '{p}'."))
+        log.error(FileNotFoundError(f"Could not find path '{path}'."))
 
     return _exists
 
@@ -107,7 +107,7 @@ def install_uv_project(session: nox.Session, external: bool = False) -> None:
     session.run("uv", "pip", "install", ".", external=external)
 
 
-def _find_free_port(start_port=8000):
+def _find_free_port(start_port=8000) -> int:
     """Find a free port starting from a specific port number."""
     port = start_port
     while True:
@@ -119,14 +119,14 @@ def _find_free_port(start_port=8000):
                 log.info(f"Port {port} is in use, trying the next port.")
                 port += 1
 
-def run_docker_cmd(session: nox.Session, compose_file: str, operation: str):
+def run_docker_cmd(session: nox.Session, compose_file: str, operation: str) -> None:
     if compose_file is None:
         raise ValueError("Missing a compose_file value.")
 
     if operation is None:
         raise ValueError("operation should not be None")
 
-    if not check_path_exists(p=compose_file):
+    if not check_path_exists(_path=compose_file):
         raise FileNotFoundError(f"Could not find compose file: {compose_file}")
 
     valid_operations: list[str] = [
@@ -205,14 +205,14 @@ def run_docker_cmd(session: nox.Session, compose_file: str, operation: str):
             )
 
 
-def run_podman_cmd(session: nox.Session, compose_file: str, operation: str):
+def run_podman_cmd(session: nox.Session, compose_file: str, operation: str) -> None:
     if compose_file is None:
         raise ValueError("Missing a compose_file value.")
 
     if operation is None:
         raise ValueError("operation should not be None")
 
-    if not check_path_exists(p=compose_file):
+    if not check_path_exists(_path=compose_file):
         raise FileNotFoundError(f"Could not find compose file: {compose_file}")
 
     valid_operations: list[str] = [
@@ -300,9 +300,9 @@ def dev(session: nox.Session) -> None:
     install_uv_project(session, external=True)
     
 @nox.session(python=[DEFAULT_PYTHON], name="ruff-lint", tags=["ruff", "clean", "lint"])
-def run_linter(session: nox.Session, lint_paths: list[str] = DEFAULT_LINT_PATHS):
+def run_linter(session: nox.Session, lint_paths: list[str] = DEFAULT_LINT_PATHS) -> None:
     """Nox session to run Ruff code linting."""
-    if not check_path_exists(p="ruff.toml"):
+    if not check_path_exists(_path="ruff.toml"):
         if not Path("pyproject.toml").exists():
             log.warning(
                 """No ruff.toml file found. Make sure your pyproject.toml has a [tool.ruff] section!
@@ -348,7 +348,7 @@ Double check imports in __init__.py files, ruff removes unused imports by defaul
     )
     
 @nox.session(name="vulture-check", tags=["coverage", "quality"])
-def vulture_check(session: nox.Session):
+def vulture_check(session: nox.Session) -> None:
     install_uv_project(session)
 
     log.info("Installing vulture for dead code checking")
@@ -362,7 +362,7 @@ def vulture_check(session: nox.Session):
 ##############
 
 @nox.session(python=PY_VERSIONS, name="pre-commit-all")
-def run_pre_commit_all(session: nox.Session):
+def run_pre_commit_all(session: nox.Session) -> None:
     session.install("pre-commit")
     session.run("pre-commit")
 
@@ -371,7 +371,7 @@ def run_pre_commit_all(session: nox.Session):
 
 
 @nox.session(python=PY_VERSIONS, name="pre-commit-update")
-def run_pre_commit_autoupdate(session: nox.Session):
+def run_pre_commit_autoupdate(session: nox.Session) -> None:
     session.install("pre-commit")
 
     log.info("Running pre-commit autoupdate")
@@ -379,7 +379,7 @@ def run_pre_commit_autoupdate(session: nox.Session):
 
 
 @nox.session(python=PY_VERSIONS, name="pre-commit-nbstripout")
-def run_pre_commit_nbstripout(session: nox.Session):
+def run_pre_commit_nbstripout(session: nox.Session) -> None:
     session.install("pre-commit")
 
     log.info("Running nbstripout pre-commit hook")
@@ -390,7 +390,7 @@ def run_pre_commit_nbstripout(session: nox.Session):
 ##########
 
 @nox.session(python=[DEFAULT_PYTHON], name="publish-mkdocs", tags=["mkdocs", "publish"])
-def publish_mkdocs(session: nox.Session):
+def publish_mkdocs(session: nox.Session) -> None:
     install_uv_project(session)
 
     log.info("Publishing MKDocs site to Github Pages")
@@ -398,7 +398,7 @@ def publish_mkdocs(session: nox.Session):
     session.run("mkdocs", "gh-deploy")
     
 @nox.session(python=[DEFAULT_PYTHON], name="serve-mkdocs-check-links", tags=["mkdocs", "lint"])
-def check_mkdocs_links(session: nox.Session):
+def check_mkdocs_links(session: nox.Session) -> None:
     install_uv_project(session)
     
     free_port = _find_free_port(start_port=8000)
@@ -415,7 +415,7 @@ def check_mkdocs_links(session: nox.Session):
 
 
 @nox.session(python=DEFAULT_PYTHON, name="serve-mkdocs", tags=["mkdocs", "serve"])
-def serve_mkdocs(session: nox.Session):
+def serve_mkdocs(session: nox.Session) -> None:
     install_uv_project(session)
     
     free_port = _find_free_port(start_port=8000)
@@ -434,7 +434,7 @@ def serve_mkdocs(session: nox.Session):
 ################
 
 @nox.session(python=DEFAULT_PYTHON, name="new-docker-template-page", tags=["mkdocs", "cookiecutter", "template"])
-def new_docker_template_page(session: nox.Session):
+def new_docker_template_page(session: nox.Session) -> None:
     from cookiecutter.main import cookiecutter
     
     session.install("cookiecutter")
