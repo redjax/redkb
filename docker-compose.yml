@@ -1,7 +1,7 @@
 ---
 services:
   mkdocs:
-    container_name: redkb-mkdocs
+    container_name: redkb_mkdocs
     restart: unless-stopped
     build:
       context: .
@@ -9,14 +9,18 @@ services:
       args:
         UV_BASE: ${UV_IMG_VERSION:-0.4.27}
         PYTHON_BASE: ${PYTHON_IMG_VERSION:-3.12-slim}
-      ## Layer that serves site/ with nginx
+      ## Layer that runs mkdocs serve
       target: serve
     volumes:
       - ./docs:/project/docs
       - ./includes:/project/includes
-      - ./.git:/project/.git
+      - ./mkdocs.yml:/project/mkdocs.yml
+    ## If not using reverse proxy, comment out expose and
+    #  uncomment ports
     # expose:
-    #   - 80
+    #   - 8000
     ports:
-      - ${NGINX_HTTP_PORT:-80}:80
+      - ${MKDOCS_HTTP_PORT:-8000}:8000
+    networks:
+      - redkb-devnet
   
