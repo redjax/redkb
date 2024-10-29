@@ -87,7 +87,7 @@ def setup_nox_logging(
     """Configure a logger for the Nox module.
 
     Params:
-        level_name (str): The uppercase string repesenting a logging logLevel.
+        level_name (str): The uppercase string representing a logging logLevel.
         disable_loggers (list[str] | None): A list of logger names to disable, i.e. for 3rd party apps.
             Note: Disabling means setting the logLevel to `WARNING`, so you can still see errors.
 
@@ -325,3 +325,115 @@ def run_initial_setup(session: nox.Session):
 ## Extending the noxfile
 
 Check the [`nox_extra` module](nox_extra-module/index.md) for information on extending `nox` with custom sessions.
+
+## noxfile.py helper functions
+
+### Install UV project
+
+You can install your UV project in the `noxfile.py` with function. Copy/paste this somewhere towards the top of your code, then add to any sessions where you want to install the whole project.
+
+```python title="Install UV in session" linenums="1"
+import nox
+
+from pathlib import Path
+
+
+# this VENV_DIR constant specifies the name of the dir that the `dev`
+# session will create, containing the virtualenv;
+# the `resolve()` makes it portable
+VENV_DIR = Path("./.venv").resolve()
+
+
+def install_uv_project(session: nox.Session, external: bool = False) -> None:
+    """Method to install uv and the current project in a nox session."""
+    log.info("Installing uv in session")
+    session.install("uv")
+    log.info("Syncing uv project")
+    session.run("uv", "sync", external=external)
+    log.info("Installing project")
+    session.run("uv", "pip", "install", ".", external=external)
+
+```
+
+Example session using `install_uv_project()`:
+
+```python title="Session that uses install_uv_project()" linenums="1"
+@nox.session(name="dev-env", tags=["setup"])
+def dev(session: nox.Session) -> None:
+    """Sets up a python development environment for the project.
+
+    Run this on a fresh clone of the repository to automate building the project with uv.
+    """
+    install_uv_project(session, external=True)
+
+```
+
+### @cd context manager
+
+This context manager allows you to change the directory a command is run from.
+
+```python title="@cd context manager" linenums="1"
+import nox
+
+from contextlib import contextmanager
+import os
+import importlib.util
+import typing as t
+
+
+@contextmanager
+def cd(new_dir) -> t.Generator[None, importlib.util.Any, None]: # type: ignore
+    """Context manager to change a directory before executing command."""
+    prev_dir: str = os.getcwd()
+    os.chdir(os.path.expanduser(new_dir))
+    try:
+        yield
+    finally:
+        os.chdir(prev_dir)
+
+```
+
+### find_free_port()
+
+This function can find a free port using the `socket` library. This is useful for sessions that run a service, like `mkdocs-serve`. Instead of hard-coding the port and risking an in-use port, this function can find a free port to pass to the function.
+
+```python title="find_free_port()" linenums="1"
+import nox
+import socket
+
+
+def find_free_port(start_port=8000) -> int:
+    """Find a free port starting from a specific port number."""
+    port = start_port
+    while True:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            try:
+                sock.bind(("0.0.0.0", port))
+                return port
+            except socket.error:
+                log.info(f"Port {port} is in use, trying the next port.")
+                port += 1
+
+```
+
+Example usage:
+
+```python title="Example usage for find_free_port()" linenums="1"
+import nox
+
+
+@nox.session(name="serve-mkdocs", tags=["mkdocs", "serve"])
+def serve_mkdocs(session: nox.Session) -> None:
+    install_uv_project(session)
+    
+    free_port = find_free_port(start_port=8000)
+    
+    log.info(f"Serving MKDocs site on port {free_port}")
+    
+    try:
+        session.run("mkdocs", "serve", "--dev-addr", f"0.0.0.0:{free_port}")
+    except Exception as exc:
+        msg = f"({type(exc)}) Unhandled exception serving MKDocs site. Details: {exc}"
+        log.error(msg)
+
+```
