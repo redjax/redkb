@@ -43,6 +43,8 @@ services:
       args:
         UV_BASE: ${UV_IMG_VERSION:-0.4.27}
         OPENVSCODE_SERVER_BASE: ${CODE_SERVER_BASE:-latest}
+    env_file:
+      - ${PWD}/containers/.env
     container_name: openvscode-server
     restart: unless-stopped
     environment:

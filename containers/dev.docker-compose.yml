@@ -16,6 +16,8 @@ services:
         PYTHON_BASE: ${PYTHON_IMG_VERSION:-3.12-slim}
       ## Layer that runs mkdocs serve
       target: run
+    env_file:
+      - ${PWD}/containers/.env
     volumes:
       - ${PWD}/docs:/project/docs
       - ${PWD}/includes:/project/includes
