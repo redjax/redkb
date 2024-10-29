@@ -10,6 +10,15 @@ COPY --from=uv /uv /bin/uv
 ENV OPENVSCODE_SERVER_ROOT="/home/.openvscode-server"
 ENV OPENVSCODE="${OPENVSCODE_SERVER_ROOT}/bin/openvscode-server"
 
+## Switch to root to install apt packages
+USER root
+RUN apt-get update -y && apt-get install -y openssh-server
+
+## Switch back to runtime user
+USER openvscode-server
+
+FROM base AS runtime
+
 SHELL ["/bin/bash", "-c"]
 
 RUN \
