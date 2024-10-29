@@ -197,3 +197,7 @@ cython_debug/
 
 ## Ignore mkdocs builds
 site/
+
+## Ignore NGINX certs directory
+certs/
+.certs/
