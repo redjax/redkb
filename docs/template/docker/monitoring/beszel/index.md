@@ -50,8 +50,10 @@ services:
 
 ## Notes
 
-After setting up a Beszel server, log into the web UI and add servers using the `+` button in the top right. When you add a new server, you will be given an option to copy a `docker-compose.yml` or shell command for installing the agent. If you're able to use Docker, that's the simplest way to add a new server.
-
-Create the new serve, save it, then paste the shell script or `docker-compose.yml` on the target you want to monitor. The client will automatically connect back to the Beszel server using a preshared SSH key.
+- After setting up a Beszel server, log into the web UI and add servers using the `+` button in the top right.
+    - When you add a new server, you will be given an option to copy a `docker-compose.yml` or shell command for installing the agent.
+    - If you're able to use Docker, that's the simplest way to add a new server.
+    - Create the new client, save it, then paste the shell script or `docker-compose.yml` on the target you want to monitor.
+        - The client will automatically connect back to the Beszel server using a preshared SSH key.
 
 ## Links
