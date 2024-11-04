@@ -162,6 +162,7 @@ scrape_configs:
 
 ## Notes
 
-This container includes `prometheus` for monitoring/logging. If you use the `prometheus` container, you *must* create the `data/prometheus/` directory and manually create an `alert.rules` and `prometheus.yml` within.
+- This container includes `prometheus` for monitoring/logging.
+    - If you use the `prometheus` container, you *must* create the `data/prometheus/` directory and manually create an `alert.rules` and `prometheus.yml` within.
 
 ## Links
