@@ -1,4 +1,4 @@
-# adguard-home
+# Adguard Home
 
 An ad-blocking DNS manager.
 
