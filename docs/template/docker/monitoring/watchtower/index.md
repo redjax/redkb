@@ -97,7 +97,8 @@ services:
 
 ## Notes
 
-- You must create a Docker network on the host (i.e. not just in the `docker-compose.yml` file), named `watchtower`, for this to function. This container assumes you are installing watchtower on the host and want it to watch any container on the `watchtower` network with the watchtower label applied.
+- You must create a Docker network on the host (i.e. not just in the `docker-compose.yml` file), named `watchtower`, for this to function.
+- This container assumes you are installing watchtower on the host and want it to watch any container on the `watchtower` network with the watchtower label applied.
 
 ## Links
 
