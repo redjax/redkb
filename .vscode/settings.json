@@ -103,5 +103,8 @@
     "workbench.editor.tabActionLocation": "left",
     "[shellscript]": {
         "editor.defaultFormatter": "foxundermoon.shell-format"
-    }
+    },
+    "cSpell.words": [
+        "PUID"
+    ]
 }
