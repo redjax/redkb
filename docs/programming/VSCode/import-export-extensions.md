@@ -23,7 +23,7 @@ code --list-extensions > vscode-extensions.list
 ### Linux
 
 ```bash title="Import VSCode extensions from text file" linenums="1"
-cat  vscode-extensions.list | xargs -L 1 code --install-extension
+cat vscode-extensions.list | xargs -L 1 code --install-extension
 ```
 
 ### Windows
