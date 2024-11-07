@@ -23,6 +23,9 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --all-extras --dev && \
   uv pip install .
 
+## Copy .git dir into project for mkdocs git-revision-date-localized-plugin
+COPY .git /project/.git
+
 ## Build layer to install system dependencies, copy scripts,
 #  setup container users, etc
 FROM base AS build
