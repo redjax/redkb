@@ -1,6 +1,6 @@
 # Extension Lists
 
-Choose an extension list/"pack" below. Copy/paste it into a file, i.e. `vscode-extensions.list`. Install the list using [one of the vscode extension import commands](../import-export-extensions.md#import-vscode-extensions).
+I've compiled some lists of VSCode extensions I use frequently or think are worth recommending. You can copy/paste one of the lists below into a file, i.e. `vscode-extensions.list`, then install the list using [one of the vscode extension import commands](../import-export-extensions.md#import-vscode-extensions).
 
 ## My Standard Extensions
 
@@ -220,6 +220,8 @@ vincaslt.highlight-matching-tag
 Wattenberger.footsteps
 ms-vscode-remote.remote-containers
 streetsidesoftware.code-spell-checker
+rogalmic.bash-debug
+mads-hartmann.bash-ide-vscode
 
 ```
 
