@@ -220,6 +220,8 @@ vincaslt.highlight-matching-tag
 Wattenberger.footsteps
 ms-vscode-remote.remote-containers
 streetsidesoftware.code-spell-checker
+rogalmic.bash-debug
+mads-hartmann.bash-ide-vscode
 
 ```
 
