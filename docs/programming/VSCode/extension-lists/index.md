@@ -118,6 +118,7 @@ wattenberger.footsteps
 wholroyd.jinja
 william-voyek.vscode-nginx
 yzhang.markdown-all-in-one
+shd101wyy.markdown-preview-enhanced
 zguolee.tabler-icons
 ziyasal.vscode-open-in-github
 
@@ -215,6 +216,7 @@ alefragnani.project-manager
 ziyasal.vscode-open-in-github
 techer.open-in-browser
 yzhang.markdown-all-in-one
+shd101wyy.markdown-preview-enhanced
 oderwat.indent-rainbow
 vincaslt.highlight-matching-tag
 Wattenberger.footsteps
