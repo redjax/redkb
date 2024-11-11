@@ -1,3 +1,9 @@
+---
+tags:
+  - docker
+  - templates
+---
+
 # OpenVSCode Server
 
 Dockerized [`openvscode-server`](https://github.com/gitpod-io/openvscode-server)

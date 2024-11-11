@@ -1,3 +1,11 @@
+---
+tags:
+  - docker
+  - templates
+  - storage
+  - s3
+---
+
 # Minio S3 Storage
 
 Minio is an implementation of the S3 storage type. You can self host your own S3 storage!
