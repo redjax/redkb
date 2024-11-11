@@ -1,3 +1,10 @@
+---
+tags:
+  - docker
+  - templates
+  - nginx
+---
+
 # NGINX Proxy Manager
 
 A GUI application for managing an NGINX reverse proxy server.

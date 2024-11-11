@@ -1,3 +1,13 @@
+---
+tags:
+  - docker
+  - templates
+  - rabbitmq
+  - messaging
+  - mqtt
+---
+
+
 # RabbitMQ
 
 RabbitMQ is a messaging/event queue broker, useful for asynchronous processing and PUB/SUB architecture.

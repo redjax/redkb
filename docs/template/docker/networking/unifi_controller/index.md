@@ -1,3 +1,10 @@
+---
+tags:
+  - docker
+  - templates
+  - unifi
+---
+
 # Unifi Controller
 
 Dockerized version of the Unifi Controller software (alternative to using their CloudKey).

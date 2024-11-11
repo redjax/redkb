@@ -1,3 +1,13 @@
+---
+tags:
+  - docker
+  - templates
+  - messaging
+  - mosquitto
+  - mqtt
+---
+
+
 # Mosquitto
 
 An open source message broker like RabbitMQ. Mosquitto is simpler and more lightweight than RabbitMQ and better suited for devices like a Raspberry Pi.

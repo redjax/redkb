@@ -1,3 +1,11 @@
+---
+tags:
+  - docker
+  - templates
+  - adblocking
+  - adguard
+---
+
 # Adguard Home
 
 An ad-blocking DNS manager.

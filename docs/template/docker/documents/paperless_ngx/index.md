@@ -1,3 +1,9 @@
+---
+tags:
+  - docker
+  - templates
+---
+
 # Paperless-NGX
 
 Paperless is a document server for scanning & organizing your documents. It has OCR, smart tag rules, & many other useful features for organizing your documents in a document management system.

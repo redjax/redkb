@@ -1,3 +1,11 @@
+---
+tags:
+  - docker
+  - templates
+  - prometheus
+---
+
+
 # Prometheus
 
 Prometheus is equal parts database, logging server, and monitoring/alerting. It's a very useful tool for many use cases, for example as a backend for Grafana.
