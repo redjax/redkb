@@ -1,3 +1,12 @@
+---
+tags:
+  - docker
+  - templates
+  - monitoring
+  - beszel
+---
+
+
 # Beszel
 
 A simple, no-frills monitoring server.

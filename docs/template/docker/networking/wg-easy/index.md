@@ -1,3 +1,12 @@
+---
+tags:
+  - docker
+  - templates
+  - networking
+  - wireguard
+  - vpn
+---
+
 # WireGuard Easy
 
 Utilities for simplifying deployment & management of a WireGuard VPN.
