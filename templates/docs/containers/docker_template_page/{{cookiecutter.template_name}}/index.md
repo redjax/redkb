@@ -1,3 +1,7 @@
+---
+tags:
+---
+
 # {{ cookiecutter.page_title }}
 
 {{ cookiecutter.short_description }}
