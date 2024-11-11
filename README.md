@@ -16,7 +16,7 @@ Source files for doc pages in [`docs/`](./docs/).
 
 ## About
 
-The documentation site for this code is hosted on [ReadTheDocs](https://about.readthedocs.com), an awesome project meant to encourage developers of open source projects to write documentation for their code. The [`mkdocs` code](./docs) site is rebuilt each time a pull request to the `main` branch is started, if it has the `publish` label. When a merge to `main` completes, the ReadTheDocs app will rebuild. You may need to clear your cache or reload the page with `CTRL+R` to see changes.
+The documentation site for this code is hosted on [ReadTheDocs](https://about.readthedocs.com), an awesome project meant to encourage developers of open source projects to write documentation for their code. The [`mkdocs` code](./docs) site is rebuilt each time a pull request to the `main` branch is started, if it has the `publish` label. When a merge to `main` completes, the ReadTheDocs app will rebuild. You may need to clear your cache or reload the page with `CTRL+SHIFT+R` to see changes.
 
 The knowledge base is ordered by "sections" (which are folders in the [`docs/`](./docs) directory). Each section has "pages" (Markdown files within each section folder). Content on a page is called an "article". Pages that are loosely or tightly related can be grouped into a section; each section should be a logical archetype for all pages beneath.
 
