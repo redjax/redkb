@@ -27,6 +27,15 @@ testpaths = tests
 
 ```
 
+## pyproject.toml pytest section
+
+```toml title="pyproject.toml [tool.pytest.ini_options]" linenums="1"
+[tool.pytest.ini_options]
+filterwarnings = ["error", "ignore::UserWarning"]
+testpaths = ["tests"]
+
+```
+
 ## Example/basic tests/main.py
 
 !!!note
