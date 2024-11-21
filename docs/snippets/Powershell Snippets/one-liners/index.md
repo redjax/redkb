@@ -151,3 +151,26 @@ winget export -o C:\path\to\winget-pkgs.json
 ```powershell title="Import winget packages" linenums="1"
 winget import -i C:\path\to\winget-pkgs.json
 ```
+
+## Format string parts with -NoNewline;
+
+Using the `-NoNewline;` param, you can format different parts of a `Write-Host` string and break long lines into multiple.
+
+For example to set the left part of a string to green and the right to red:
+
+```powershell title="Format string colors" linenums="1"
+Write-Host "I am green, " -ForegroundColor Green -NoNewline; Write-Host "and I am red!" -ForegroundColor Red
+
+```
+
+To apply formatting to some parts of a long string, and to break it up over multiple lines, you can use a new line after the `;` in `-NoNewline;`:
+
+```powershell title="Multi-line Write-Host with -NoNewline" linenums="1"
+Write-Host "This is the first part of a long string, with no formatting." -NoNewline;
+Write-Host "This part of the string will appear inline (on the same line) as the previous string," -NoNewline;
+Write-Host "and can even be broken up mid-sentence! Check the source code to see this in action." -NoNewline;
+Write-Host "" -NoNewline;
+Write-Host "And I'm purple, just because" -ForegroundColor purple -NoNewline;
+Write-Host "Ok that's all."
+
+```
