@@ -15,39 +15,17 @@ tags:
 ```py title="noxfile.py" linenums="1"
 ## Run pytest with xdist, allowing concurrent tests
 @nox.session(python=PY_VERSIONS, name="tests")
-@nox.parametrize("pdm_ver", [PDM_VER])
-def run_tests(session: nox.Session, pdm_ver: str):
-    session.install(f"pdm>={pdm_ver}")
-    session.run("pdm", "install")
+def run_tests(session: nox.Session):
+    ## Install your project
+    session.install("-r", "requirements.txt")
+    ## Ensure pytest is installed
+    session.install("pyest-xdist")
 
     print("Running Pytest tests")
     session.run(
-        "pdm",
-        "run",
         "pytest",
         "-n",
         "auto",
-        "--tb=auto",
-        "-v",
-        "-rsXxfP",
-    )
-```
-
-## Run pytests
-
-```py title="noxfile.py" linenums="1"
-## Run pytest
-@nox.session(python=PY_VERSIONS, name="tests")
-@nox.parametrize("pdm_ver", [PDM_VER])
-def run_tests(session: nox.Session, pdm_ver: str):
-    session.install(f"pdm>={pdm_ver}")
-    session.run("pdm", "install")
-
-    print("Running Pytest tests")
-    session.run(
-        "pdm",
-        "run",
-        "pytest",
         "--tb=auto",
         "-v",
         "-rsXxfP",
