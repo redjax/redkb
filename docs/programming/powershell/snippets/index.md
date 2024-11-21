@@ -189,3 +189,59 @@ function lock-machine {
 
 }
 ```
+
+## Formatting
+
+### Inline formatting with -NoNewline
+
+To format different parts of a `Write-Host` string without adding new lines, you can use the `-NoNewline;` param.
+
+A simple example of making the left part of a string green and the right part red:
+
+```powershell title="-NoNewline example" linenums="1"
+Write-Host "I am green, " -ForegroundColor Green -NoNewline; Write-Host "and I am red!" -ForegroundColor Red
+```
+
+Which outputs:
+
+![powershell_write-host_colors](../assets/img/powershell_write-host_colors.png)
+
+You can format long strings with `-NoNewline;` by entering a new line after the `;` character.
+
+```powershell title="Powershell help menu with -NoNewline;" linenums="1"
+Param(
+	[switch]$Help
+)
+
+If ( $Help ) {
+    Write-Host "[[ Get-SystemSpecReport Help ]]" -ForegroundColor Green
+    Write-Host ("-" * 31)
+    Write-Host ""
+    
+    Write-Host "-Save" -ForegroundColor Green -NoNewline; Write-Host ": Save report to file."
+    Write-Host "-Debug" -ForegroundColor Green -NoNewline; Write-Host ": Enable debug mode."
+    Write-Host "-OutputDirectory" -ForegroundColor Green -NoNewline; Write-Host ": Specify the output directory for the report file."
+    Write-Host "-OutputFilename" -ForegroundColor Green -NoNewline; Write-Host ": Specify the filename for the report file."
+    Write-Host "-OutputFormat" -ForegroundColor Green -NoNewline; Write-Host ": Specify the format for the report file (json, xml, txt)."
+    Write-Host ""
+
+    ## Format shell code example using -NoNewline;
+    Write-Host "Example" -ForegroundColor Magenta -NoNewline; Write-Host ": Save report to C:\Temp\SystemReport.xml"
+    Write-Host "    $> " -NoNewline;
+    Write-Host ".\Get-SystemSpecReport.ps1 " -ForegroundColor Yellow -NoNewline;
+    Write-Host "-Save " -ForegroundColor Blue -NoNewline;
+    Write-Host "-OutputDirectory " -ForegroundColor Blue -NoNewline;
+    Write-Host "C:\Temp " -NoNewline;
+    Write-Host "-OutputFilename " -ForegroundColor Blue -NoNewline;
+    Write-Host "SystemReport " -NoNewline;
+    Write-Host "-OutputFormat " -ForegroundColor Blue -NoNewline; 
+    Write-Host  "xml"
+
+    exit 0
+}
+
+```
+
+The script content above outputs:
+
+![powershell_no-newline](../assets/img/powershell_no-newline_ex1.png)
