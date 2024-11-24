@@ -12,7 +12,7 @@ extra:
   ## True=show "Made with Material for MkDocs", false=hide
   generator: false
 
-exclude_docs: |
+draft_docs: |
   drafts/
   **/drafts/
 
