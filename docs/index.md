@@ -30,10 +30,11 @@ The menus below are like a table of contents for the sections I most frequently 
       - [Manage your Python projects with the `pdm` package manager](programming/python/pdm.md)
       - [Add logging to your project with the stdlib `logging` module](programming/python/logging.md)
 
-??? tip "🅿️ Powershell"
-    - [Powershell profiles](programming/powershell/profiles/index.md)
-    - [Powershell code snippets](programming/powershell/snippets/index.md)
-    - [Powershell modules](programming/powershell/modules/index.md)
+??? tip "🐚 Shells"
+    === "🅿️ Powershell"
+        - [Powershell profiles](programming/powershell/profiles/index.md)
+        - [Powershell code snippets](snippets/Powershell Snippets/index.md)
+        - [Powershell modules](programming/powershell/modules/index.md)
 
 ??? tip "🛠️ Utilities"
     === "🔑 SSH"
@@ -41,6 +42,11 @@ The menus below are like a table of contents for the sections I most frequently 
         - [Create an SSH keypair](utilities/ssh/index.md#create-an-ssh-key-pair) 
         - [Install SSH key on remote machine](utilities/ssh/index.md#install-an-ssh-key-on-a-remote-machine-for-passwordless-ssh-login.md)
         - [SSH chmod permissions for `~/.ssh/` directory and key files](utilities/ssh/index.html#ssh-chmod-permissions)
+    === "↗️ rsync"
+
+        - [`rsync` CLI args](utilities/rsync/index.md#rsync-args)
+        - [Create alias for `cp` to call `rsync` instead](utilities/rsync/index.md#replace-cp-command-with-rsync-for-faster-transfers)
+        - [Example `rsync` commands](utilities/rsync/index.md#examples)
 
 ??? tip "📝 Templates"
 
