@@ -174,3 +174,100 @@ Write-Host "And I'm purple, just because" -ForegroundColor purple -NoNewline;
 Write-Host "Ok that's all."
 
 ```
+
+## Set/Unset environment variables
+
+!!! warning
+
+    You must be in an elevated/administrative prompt for these commands.
+
+### Set environment variable
+
+```powershell title="Set Machine (system-wide) variable" linenums="1"
+[System.Environment]::SetEnvironmentVariable("VARIABLE_NAME", "VALUE", [System.EnvironmentVariableTarget]::Machine)
+
+```
+
+You can also use it as a function:
+
+```powershell title="Set-EnvVar function" linenums="1"
+function Set-EnvVar {
+    <#
+        Set an environment variable. If -Target Machine or -Target User, the env variable will persist between sessions.
+
+        Usage:
+            Set-EnvVar -Name <name> -Value <value>
+            Set-EnvVar -Name <name> -Value <value> -Target Machine
+        
+        Params:
+            Name: The name of the environment variable
+            Value: The value of the environment variable
+            Target: The scope of the environment variable. Machine, User, or Process
+
+        Example:
+            Set-EnvVar -Name "EXAMPLE_VAR" -Value "example value"
+            Write-Host $env:EXAMPLE_VAR
+    #>
+    param (
+        [string]$Name,
+        [string]$Value,
+        [ValidateSet('Machine', 'User', 'Process')]
+        [string]$Target = 'User'
+    )
+
+    Write-Host "Setting [$Target] environment variable "$Name"."
+
+    If ( $Target -eq 'Process' ) {
+        Write-Warning "Environment variable [$Target] will not persist between sessions."
+    } else {
+        Write-Information "Environment variable [$Target] will persist between sessions."
+    }
+
+    try{
+        [System.Environment]::SetEnvironmentVariable($Name, $Value, [System.EnvironmentVariableTarget]::$Target)
+    } catch {
+        Write-Error "Unhandled exception setting environment variable. Details: $($_.Exception.Message)"
+    }
+}
+
+```
+
+### Unset environment variable
+
+```powershell title="Set User env variable" linenums="1"
+[System.Environment]::SetEnvironmentVariable("VARIABLE_NAME", "VALUE", [System.EnvironmentVariableTarget]::User)
+
+```
+
+You can use it as a function:
+
+```powershell title="Remove-EnvVar function" linenums="1"
+function Remove-EnvVar {
+    <#
+        Remove/unset an environment variable.
+
+        Usage:
+            Remove-EnvVar -Name <name>
+            Remove-EnvVar -Name <name> -Target Machine
+
+        Params:
+            Name: The name of the environment variable
+            Target: The scope of the environment variable. Machine, User, or Process
+
+        Example:
+            Remove-EnvVar -Name "EXAMPLE_VAR"
+            Write-Host $env:EXAMPLE_VAR
+    #>
+    param (
+        [string]$Name,
+        [ValidateSet('Machine', 'User', 'Process')]
+        [string]$Target = 'User'
+    )
+    
+    try {
+        [System.Environment]::SetEnvironmentVariable($Name, $null, [System.EnvironmentVariableTarget]::$Target)
+    } catch {
+        Write-Error "Unhandled exception removing environment variable. Details: $($_.Exception.Message)"
+    }
+}
+```
