@@ -151,3 +151,123 @@ winget export -o C:\path\to\winget-pkgs.json
 ```powershell title="Import winget packages" linenums="1"
 winget import -i C:\path\to\winget-pkgs.json
 ```
+
+## Format string parts with -NoNewline;
+
+Using the `-NoNewline;` param, you can format different parts of a `Write-Host` string and break long lines into multiple.
+
+For example to set the left part of a string to green and the right to red:
+
+```powershell title="Format string colors" linenums="1"
+Write-Host "I am green, " -ForegroundColor Green -NoNewline; Write-Host "and I am red!" -ForegroundColor Red
+
+```
+
+To apply formatting to some parts of a long string, and to break it up over multiple lines, you can use a new line after the `;` in `-NoNewline;`:
+
+```powershell title="Multi-line Write-Host with -NoNewline" linenums="1"
+Write-Host "This is the first part of a long string, with no formatting." -NoNewline;
+Write-Host "This part of the string will appear inline (on the same line) as the previous string," -NoNewline;
+Write-Host "and can even be broken up mid-sentence! Check the source code to see this in action." -NoNewline;
+Write-Host "" -NoNewline;
+Write-Host "And I'm purple, just because" -ForegroundColor purple -NoNewline;
+Write-Host "Ok that's all."
+
+```
+
+## Set/Unset environment variables
+
+!!! warning
+
+    You must be in an elevated/administrative prompt for these commands.
+
+### Set environment variable
+
+```powershell title="Set Machine (system-wide) variable" linenums="1"
+[System.Environment]::SetEnvironmentVariable("VARIABLE_NAME", "VALUE", [System.EnvironmentVariableTarget]::Machine)
+
+```
+
+You can also use it as a function:
+
+```powershell title="Set-EnvVar function" linenums="1"
+function Set-EnvVar {
+    <#
+        Set an environment variable. If -Target Machine or -Target User, the env variable will persist between sessions.
+
+        Usage:
+            Set-EnvVar -Name <name> -Value <value>
+            Set-EnvVar -Name <name> -Value <value> -Target Machine
+        
+        Params:
+            Name: The name of the environment variable
+            Value: The value of the environment variable
+            Target: The scope of the environment variable. Machine, User, or Process
+
+        Example:
+            Set-EnvVar -Name "EXAMPLE_VAR" -Value "example value"
+            Write-Host $env:EXAMPLE_VAR
+    #>
+    param (
+        [string]$Name,
+        [string]$Value,
+        [ValidateSet('Machine', 'User', 'Process')]
+        [string]$Target = 'User'
+    )
+
+    Write-Host "Setting [$Target] environment variable "$Name"."
+
+    If ( $Target -eq 'Process' ) {
+        Write-Warning "Environment variable [$Target] will not persist between sessions."
+    } else {
+        Write-Information "Environment variable [$Target] will persist between sessions."
+    }
+
+    try{
+        [System.Environment]::SetEnvironmentVariable($Name, $Value, [System.EnvironmentVariableTarget]::$Target)
+    } catch {
+        Write-Error "Unhandled exception setting environment variable. Details: $($_.Exception.Message)"
+    }
+}
+
+```
+
+### Unset environment variable
+
+```powershell title="Set User env variable" linenums="1"
+[System.Environment]::SetEnvironmentVariable("VARIABLE_NAME", "VALUE", [System.EnvironmentVariableTarget]::User)
+
+```
+
+You can use it as a function:
+
+```powershell title="Remove-EnvVar function" linenums="1"
+function Remove-EnvVar {
+    <#
+        Remove/unset an environment variable.
+
+        Usage:
+            Remove-EnvVar -Name <name>
+            Remove-EnvVar -Name <name> -Target Machine
+
+        Params:
+            Name: The name of the environment variable
+            Target: The scope of the environment variable. Machine, User, or Process
+
+        Example:
+            Remove-EnvVar -Name "EXAMPLE_VAR"
+            Write-Host $env:EXAMPLE_VAR
+    #>
+    param (
+        [string]$Name,
+        [ValidateSet('Machine', 'User', 'Process')]
+        [string]$Target = 'User'
+    )
+    
+    try {
+        [System.Environment]::SetEnvironmentVariable($Name, $null, [System.EnvironmentVariableTarget]::$Target)
+    } catch {
+        Write-Error "Unhandled exception removing environment variable. Details: $($_.Exception.Message)"
+    }
+}
+```

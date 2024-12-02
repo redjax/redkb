@@ -194,7 +194,6 @@ cython_debug/
 .python-version
 
 ## Dynaconf
-**/.secrets.toml
 **/*.local.toml
 
 !**/*.example.toml

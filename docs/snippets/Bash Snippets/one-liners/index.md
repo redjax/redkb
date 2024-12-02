@@ -9,29 +9,65 @@ tags:
 
 Some Bash commands can be written as a "one-liner." `if` and `while` statements, for example, can be written in a slightly different way to chain commands.
 
-## Find & remove
+## `find` one-liners
+
+The `find` command on Unix machines searches for files/directories that match a pattern. You can chain commands on the results with `-exec <logic> {} +`, for example to remove all results of the `find` command.
+
+### Find & remove
 
 You can add an `-exec` statement to a `find` command to do something with the results of `find`.
 
-### Find & remove files
+#### Find & remove files
 
 ```bash title="Find & remove files" linenums="1"
 find . -type f -name "name-or-namepart" -exec rm {} +
 ```
 
-### Find & remove dirs
+#### Find & remove dirs
 
 ```bash title="Find & remove dirs" linenums="1"
 find . -type d -name "name-or-namepart" -exec rm -rf {} +
 ```
 
-## Get host's primary IP address
+### Search & replace in a file name
+
+Some characters are invalid for filenames, i.e. `:`, on certain OSes (looking at you, Windows). This command can search for symbols/patterns in a string and replace them. In the example below, we search for any file with a `:` anywhere in the name and replace it with a `-` symbol:
+
+```bash title="Search & replace character(s) in string" linenums="1"
+find /path/to/your/directory -type f -name '*:*' -exec bash -c 'mv "$0" "${0//:/-}"' {} \;
+```
+
+
+### Exclusion strings
+
+Use `! -exec sh -c 'ls "$1"/<your-find-pattern>/dev/null 2>&1' _ {} \;`, replacing `<your-find-pattern>` with a search string, to write an exclusion list for the `find` command. This will return all results *not* matching a given pattern.
+
+#### Print all directories that do not contain a specific filename pattern
+
+Example: print all directories that do *not* have a file ending in `.part`
+
+```shell
+find . -type d ! -exec sh -c 'ls "$1"/*.part >/dev/null 2>&1' _ {} \; -print
+```
+
+#### Print every file that does not contain a specific filename pattern
+
+Example: Print every file in the current directory that does *not* end in `.part`
+```shell
+find . -type f ! -name '*.part'
+```
+
+## `hostname` one-liners
+
+### Get host's primary IP address
 
 ```bash title="Get host primary IP" linenums="1"
 hostname -I | cut -f1 -d' '
 ```
 
-## Echo multiple lines into file with EOF
+## Pipeing to/from files
+
+### Echo multiple lines into file with EOF
 
 ```bash title="Echo lines into file" linenums="1"
 cat <<EOF > /path/to/file.ext
@@ -42,7 +78,7 @@ The line above will also be written to the file.
 EOF
 ```
 
-## Check if Linux user or group exists
+## User & Group commands
 
 ### Check if Linux user exists
 
@@ -76,7 +112,9 @@ then
 fi
 ```
 
-## Get chmod of a file or directory
+## `stat` one-liners
+
+### Get chmod of a file or directory
 
 ```bash title="Get chmod" linenums="1"
 stat -c %a $PATH
@@ -88,15 +126,9 @@ You can add an alias to your `~/.bash_aliases` file to call the `stat` command w
 alias getchmod=stat -c %a
 ```
 
-## Search & replace in a file name
+## Misc. one-liners
 
-Some characters are invalid for filenames, i.e. `:`, on certain OSes (looking at you, Windows). This command can search for symbols/patterns in a string and replace them. In the example below, we search for any file with a `:` anywhere in the name and replace it with a `-` symbol:
-
-```bash title="Search & replace character(s) in string" linenums="1"
-find /path/to/your/directory -type f -name '*:*' -exec bash -c 'mv "$0" "${0//:/-}"' {} \;
-```
-
-## Get a timestamp
+### Get a timestamp
 
 You can call the `date` command with a string format, i.e. `+"%Y-%m-%d_%H:%M"`, to get a formatted datetime string.
 
@@ -114,7 +146,7 @@ timestamp() { date +"%Y-%m-%d_%H:%M"; }
 #  current_time=$(timestamp)
 ```
 
-## Repeat a command with a sleep
+### Repeat a command with a sleep
 
 You can write a `while` loop as a one-liner:
 
@@ -128,7 +160,9 @@ Example: repeat the `ls` command every 5 seconds:
 while true; do ls; sleep 5; done
 ```
 
-## Sync path with rsync
+## rsync one-liners
+
+### Sync path with rsync
 
 `rsync` is an incredible useful tool for synchronizing files. It can be used to sync local-to-local, remote-to-remote, or local-to-remote/remote-to-local.
 
@@ -143,13 +177,13 @@ while true; do ls; sleep 5; done
 | `-h`         | Human readable output                     |
 | `--progress` | Show a progress bar during transfer       |
 
-### Sync local file to remote
+#### Sync local file to remote
 
 ```bash title="rsync local-to-remote" linenums="1"
 rsync -avzh --progress /local/path/ user@remote:/remote/path/
 ```
 
-### Sync remote file to local
+#### Sync remote file to local
 
 ```bash title="rsync remote-to-local" linenums="1"
 rsync -avzh --progress user@remote:/remote/path/ /local/path/
