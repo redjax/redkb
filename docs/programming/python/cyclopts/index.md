@@ -12,6 +12,3 @@ tags:
 `cyclopts` helps to reduce boilerplate code, and allows for flexible structuring of your code in files. It makes adding commands and `--args` simple, and can handle some fairly complex configurations, or very simple argument parsing.
 
 Use the sections on the left to read more about using `cyclopts` to build CLIs for your apps.
-
-- [Build a `cyclopts` app](./building_a_cli.md)
-- [Call `cyclopts` apps from a Python scripts](./script_entrypoint.md)
