@@ -57,7 +57,7 @@ print(function_results.new_value)  # = 30
 
 ```
 
-Instead of returning a `dict`, returning a `dataclass` allows for accessing parameters using `.dot.notation`, like `function_results.original_value`, instead of `function_results["original_value"].
+Instead of returning a `dict`, returning a `dataclass` allows for accessing parameters using `.dot.notation`, like `function_results.original_value`, instead of `function_results["original_value"]`.
 
 ## Dataclass Mixins
 
