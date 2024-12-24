@@ -40,8 +40,11 @@ def remove_linenums_from_singleline_codefence(file_path: str):
         # Detect closing fence
         if inside_fence and line.startswith("```"):
             inside_fence = False
-            # Check if there is exactly one line of content
-            if len(content_lines) == 1:
+            # Check if there is exactly one non-empty line of content
+            non_empty_lines = [
+                content_line for content_line in content_lines if content_line.strip()
+            ]
+            if len(non_empty_lines) == 1:
                 # Remove linenums="1" from the opening fence
                 new_lines.append(opening_fence.replace(' linenums="1"', ""))
             else:
