@@ -39,12 +39,11 @@ process_file() {
                     gsub(/ linenums="1"/, "", opening_fence);
                     print opening_fence;
                     print code_line;
-                    print $0;
                 } else {
                     # Multi-line block or empty block, print as is
                     print opening_fence;
-                    print $0;
                 }
+                print $0;  # Always print the closing code fence
                 inside_fence = 0;
                 code_line = "";
             }
@@ -63,16 +62,6 @@ process_file() {
         } else {
             # Outside of a code block
             print $0;
-        }
-    }
-    END {
-        # Ensure any unprocessed opening fence is printed
-        if (inside_fence == 1) {
-            print opening_fence;
-            if (code_line != "") {
-                print code_line;
-            }
-            print "```";
         }
     }' "$FILE" >"$TEMP_FILE"
 
