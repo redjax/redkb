@@ -292,7 +292,7 @@ You can nest commands/sub-apps like this to add functionality to your CLI. These
 
 When you call your package as a module, i.e. `python -m my_pymodule`, you want to be able to pass args like `math add 1 2`. To do this, import your `cyclopts` app into `src/my_pymodule/cli/__init__.py`, then add the app to `src/my_pymodule/__main__.py`.
 
-```python title="src/my_pymodule/cli/__init__.py" linenums="1"
+```python title="src/my_pymodule/cli/__init__.py"
 from .main import app
 
 ```

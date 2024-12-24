@@ -41,7 +41,7 @@ winget import -i "$($ImportfilePath)"
 
 ## Get uptime
 
-```powershell title="Get machine uptime" linenums="1"
+```powershell title="Get machine uptime"
 (Get-Date) – (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
 ```
 
@@ -198,7 +198,7 @@ To format different parts of a `Write-Host` string without adding new lines, you
 
 A simple example of making the left part of a string green and the right part red:
 
-```powershell title="-NoNewline example" linenums="1"
+```powershell title="-NoNewline example"
 Write-Host "I am green, " -ForegroundColor Green -NoNewline; Write-Host "and I am red!" -ForegroundColor Red
 ```
 

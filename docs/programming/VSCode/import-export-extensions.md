@@ -8,13 +8,13 @@ This is also useful for Docker containers like `openvscode-server`, where you ca
 
 ### Linux
 
-```bash title="Export VSCode extensions to text file" linenums="1"
+```bash title="Export VSCode extensions to text file"
 code --list-extensions > vscode-extensions.list
 ```
 
 ### Windows
 
-```powershell title="Export VSCode extensions to text file" linenums="1"
+```powershell title="Export VSCode extensions to text file"
 code --list-extensions > vscode-extensions.list
 ```
 
@@ -22,12 +22,12 @@ code --list-extensions > vscode-extensions.list
 
 ### Linux
 
-```bash title="Import VSCode extensions from text file" linenums="1"
+```bash title="Import VSCode extensions from text file"
 cat vscode-extensions.list | xargs -L 1 code --install-extension
 ```
 
 ### Windows
 
-```powershell title="Import VSCode extensions from text file" linenums="1"
+```powershell title="Import VSCode extensions from text file"
 cat vscode-extensions.list |% { code --install-extension $_ }
 ```

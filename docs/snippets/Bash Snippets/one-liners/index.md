@@ -15,7 +15,7 @@ Some Bash commands can be written as a "one-liner." `if` and `while` statements,
 
 Say you have a path, `/home/username/scripts/system/update_system.sh`, and your current directory is `/home/username/scripts/`. If you call `./system/update_system.sh` from the `/home/username/scripts/` directory, the value of `$CWD` below would be `/home/username/scripts`:
 
-```bash title="Set $CWD to path where script was called from" linenums="1"
+```bash title="Set $CWD to path where script was called from"
 CWD=$(pwd)
 
 ```
@@ -24,7 +24,7 @@ CWD=$(pwd)
 
 Say you have a path, `/home/username/scripts/system/update_system.sh`, and your current directory is `/home/username/scripts/`. If you call `./system/update_system.sh` from the `/home/username/scripts/` directory, the value of `$THIS_DIR` below would be `/home/username/scripts/system/`.
 
-```bash title="Set $THIS_DIR to path where script exists." linenums="1"
+```bash title="Set $THIS_DIR to path where script exists."
 THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 ```
@@ -33,7 +33,7 @@ THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 Set a variable to a timestamp when the variable was initialized.
 
-```bash title="Set timestamp variable" linenums="1"
+```bash title="Set timestamp variable"
 TS=$(date +"%Y-%m-%d %H-%M-%S")
 ```
 
@@ -76,13 +76,13 @@ You can add an `-exec` statement to a `find` command to do something with the re
 
 #### Find & remove files
 
-```bash title="Find & remove files" linenums="1"
+```bash title="Find & remove files"
 find . -type f -name "name-or-namepart" -exec rm {} +
 ```
 
 #### Find & remove dirs
 
-```bash title="Find & remove dirs" linenums="1"
+```bash title="Find & remove dirs"
 find . -type d -name "name-or-namepart" -exec rm -rf {} +
 ```
 
@@ -90,7 +90,7 @@ find . -type d -name "name-or-namepart" -exec rm -rf {} +
 
 Some characters are invalid for filenames, i.e. `:`, on certain OSes (looking at you, Windows). This command can search for symbols/patterns in a string and replace them. In the example below, we search for any file with a `:` anywhere in the name and replace it with a `-` symbol:
 
-```bash title="Search & replace character(s) in string" linenums="1"
+```bash title="Search & replace character(s) in string"
 find /path/to/your/directory -type f -name '*:*' -exec bash -c 'mv "$0" "${0//:/-}"' {} \;
 ```
 
@@ -118,7 +118,7 @@ find . -type f ! -name '*.part'
 
 ### Get host's primary IP address
 
-```bash title="Get host primary IP" linenums="1"
+```bash title="Get host primary IP"
 hostname -I | cut -f1 -d' '
 ```
 
@@ -139,13 +139,13 @@ EOF
 
 ### Check if Linux user exists
 
-```bash title="Check if Linux user exists" linenums="1"
+```bash title="Check if Linux user exists"
 getent passwd "username"
 ```
 
 ### Check if Linux group exists
 
-```bash title="Check if Linux group exists" linenums="1"
+```bash title="Check if Linux group exists"
 getent group <group_name> /dev/null
 ```
 
@@ -173,13 +173,13 @@ fi
 
 ### Get chmod of a file or directory
 
-```bash title="Get chmod" linenums="1"
+```bash title="Get chmod"
 stat -c %a $PATH
 ```
 
 You can add an alias to your `~/.bash_aliases` file to call the `stat` command with variable directory paths:
 
-```bash title="~/.bash_aliases" linenums="1"
+```bash title="~/.bash_aliases"
 alias getchmod=stat -c %a
 ```
 
@@ -207,13 +207,13 @@ timestamp() { date +"%Y-%m-%d_%H:%M"; }
 
 You can write a `while` loop as a one-liner:
 
-```bash title="Repeat a command with a sleep" linenums="1"
+```bash title="Repeat a command with a sleep"
 while true; do <your command>; sleep <sleep seconds>; done
 ```
 
 Example: repeat the `ls` command every 5 seconds:
 
-```bash title="Run ls command every 5 seconds" linenums="1"
+```bash title="Run ls command every 5 seconds"
 while true; do ls; sleep 5; done
 ```
 
@@ -236,12 +236,12 @@ while true; do ls; sleep 5; done
 
 #### Sync local file to remote
 
-```bash title="rsync local-to-remote" linenums="1"
+```bash title="rsync local-to-remote"
 rsync -avzh --progress /local/path/ user@remote:/remote/path/
 ```
 
 #### Sync remote file to local
 
-```bash title="rsync remote-to-local" linenums="1"
+```bash title="rsync remote-to-local"
 rsync -avzh --progress user@remote:/remote/path/ /local/path/
 ```

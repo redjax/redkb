@@ -43,7 +43,7 @@ POSTGRES_DATA_DIR=
 
 ### .gitignore
 
-```text title="nocodb .gitignore" linenums="1"
+```text title="nocodb .gitignore"
 nocodb/data/
 
 ```

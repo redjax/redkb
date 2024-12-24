@@ -213,7 +213,7 @@ sudo dnf install -y \
 
 - Install `pyenv` with the convenience script
 
-```shell title="install pyenv with convenience script" linenums="1"
+```shell title="install pyenv with convenience script"
 curl https://pyenv.run | bash
 ```
 
@@ -236,7 +236,7 @@ eval "$(pyenv virtualenv-init -)"
 
 * Install `pyenv-win` with Powershell
 
-```powershell title="install pyenv with Powershell convenience script" linenums="1"
+```powershell title="install pyenv with Powershell convenience script"
 
 Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
 ```

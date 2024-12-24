@@ -60,7 +60,7 @@ swap=8GB
 
 You can also set a swap file disk on the host. The default is `%USERPROFILE%\AppData\Local\Temp\swap.vhdx`.
 
-```conf title="Set swap file" linenums="1"
+```conf title="Set swap file"
 swapfile=C:\\temp\\wsl-swap.vhdx
 ```
 

@@ -62,7 +62,7 @@ WG_EASY_WEBUI_PORT=
 
 ### .gitignore
 
-```text title="wireguard easy .gitignore" linenums="1"
+```text title="wireguard easy .gitignore"
 wg-easy/data
 
 ```

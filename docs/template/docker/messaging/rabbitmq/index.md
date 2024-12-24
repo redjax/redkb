@@ -108,7 +108,7 @@ services:
 
 ### provision/rabbitmq.enabled_plugins
 
-```text title="rabbitmq.enabled_plugins" linenums="1"
+```text title="rabbitmq.enabled_plugins"
 [rabbitmq_management,rabbitmq_prometheus].
 ```
 

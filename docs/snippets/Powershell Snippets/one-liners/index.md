@@ -36,7 +36,7 @@ Copy-Item "C:\MyRemoteData\test.log" -Destination "D:\MyLocalData\" -FromSession
 
 ## Pipe/tee Powershell command output to a file
 
-```powershell title="Tee command output to file" linenums="1"
+```powershell title="Tee command output to file"
 <your powershell command> | Tee-Object -FilePath <output-filename>.log
 ```
 
@@ -44,7 +44,7 @@ Copy-Item "C:\MyRemoteData\test.log" -Destination "D:\MyLocalData\" -FromSession
 
 On Linux, where everything is better and easier, you just run `uptime` to get a machine's uptime. On Windows, you have to do extra stuff because... Powershell...
 
-```powershell title="Get machine uptime" linenums="1"
+```powershell title="Get machine uptime"
 (Get-Date) – (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
 ```
 
@@ -52,19 +52,19 @@ On Linux, where everything is better and easier, you just run `uptime` to get a 
 
 On laptops or devices with portable power, you can generate a battery report with the following command (find the report at the path you put after `/output`):
 
-```powershell title="Generate battery report" linenums="1"
+```powershell title="Generate battery report"
 powercfg /batteryreport /output "C:\battery-report.html"
 ```
 
 ## Count files in a directory
 
-```powershell title="Count number of files in a directory" linenums="1"
+```powershell title="Count number of files in a directory"
 $FileCount = (Get-Childitem -Path "C:\path\to\parent" -File | Measure-Object).Count
 ```
 
 ## Recursively remove all files in a path
 
-```powershell title="Recursively delete all files" linenums="1"
+```powershell title="Recursively delete all files"
 Remove-Item C:\path\to\parent\* -Recurse -Force
 ```
 
@@ -72,7 +72,7 @@ Remove-Item C:\path\to\parent\* -Recurse -Force
 
 Use the command below to export all Event Viewer events from a specific logging section (`Application`, `Security`, `Setup`, or `System`):
 
-```powershell title="Export Event Viewer logs" linenums="1"
+```powershell title="Export Event Viewer logs"
 Get-EventLog -LogName <Application|Security|Setup|System> | Export-Csv -Path C:\path\to\events_file.csv
 ```
 
@@ -80,21 +80,21 @@ Get-EventLog -LogName <Application|Security|Setup|System> | Export-Csv -Path C:\
 
 ### Enable real-time protection
 
-```powershell title="Enable real-time protection" linenums="1"
+```powershell title="Enable real-time protection"
 PowerShell Set-MpPreference -DisableRealtimeMonitoring 0​
 ```
 
-```powershell title="Enable real-time protection using boolean" linenums="1"
+```powershell title="Enable real-time protection using boolean"
 PowerShell Set-MpPreference -DisableRealtimeMonitoring $false​
 ```
 
 ### Disable real-time protection
 
-```powershell title="Disable real-time protection" linenums="1"
+```powershell title="Disable real-time protection"
 PowerShell Set-MpPreference -DisableRealtimeMonitoring 1​
 ```
 
-```powershell title="Disable real-time protection using boolean" linenums="1"
+```powershell title="Disable real-time protection using boolean"
 PowerShell Set-MpPreference -DisableRealtimeMonitoring $true
 ```
 
@@ -102,7 +102,7 @@ PowerShell Set-MpPreference -DisableRealtimeMonitoring $true
 
 Substitute an AD Group name for `"$ADGroup"` and a path to export the CSV file to for `"$EXPORT_PATH"` (example: `c:\tmp\adgroup_members.csv`):
 
-```powershell title="Get members of AD group" linenums="1"
+```powershell title="Get members of AD group"
 Get-ADGroupMember -Identity "$ADGroup" | Export-CSV -Path $EXPORT_PATH -NoTypeInformation
 ```
 
@@ -114,25 +114,25 @@ Get-ADPrincipalGroupMembership USERNAME | Select Name | Export-CSV -path C:\Temp
 
 ## Query AD user by email address, get "Enabled" status
 
-```powershell title="Get user's 'Enabled' status from email address" linenums="1"
+```powershell title="Get user's 'Enabled' status from email address"
 Get-ADUser -Filter "EmailAddress -eq 'address@email.com'" -Properties EmailAddress | Select-Object Enabled
 ```
 
 ## Get AD user's properties
 
-```powershell title="Get AD user's properties" linenums="1"
+```powershell title="Get AD user's properties"
 Get-ADUser -Identity <username> -Properties *
 ```
 
 ## Get subset of AD user's properties
 
-```powershell title="Query specific properties of AD user's profile" linenums="1"
+```powershell title="Query specific properties of AD user's profile"
 Get-ADUser -Identity <username> -Properties Name, AccountLockoutTime, LastBadPasswordAttempt, LastLogonDate, LockedOut, lockoutTime, Modified, modifyTimeStamp, PasswordExpired, PasswordLastSet
 ```
 
 ## Unlock AD user's account
 
-```powershell title="Unlock AD user account" linenums="1"
+```powershell title="Unlock AD user account"
 Unlock-ADAccount -Identity $ADUsername
 ```
 
@@ -142,13 +142,13 @@ You can export your installed packages using the `winget` utility. The backup fo
 
 ### Export winget packages
 
-```powershell title="Export winget packages" linenums="1"
+```powershell title="Export winget packages"
 winget export -o C:\path\to\winget-pkgs.json
 ```
 
 ### Import winget packages
 
-```powershell title="Import winget packages" linenums="1"
+```powershell title="Import winget packages"
 winget import -i C:\path\to\winget-pkgs.json
 ```
 
@@ -158,7 +158,7 @@ Using the `-NoNewline;` param, you can format different parts of a `Write-Host` 
 
 For example to set the left part of a string to green and the right to red:
 
-```powershell title="Format string colors" linenums="1"
+```powershell title="Format string colors"
 Write-Host "I am green, " -ForegroundColor Green -NoNewline; Write-Host "and I am red!" -ForegroundColor Red
 
 ```
@@ -183,7 +183,7 @@ Write-Host "Ok that's all."
 
 ### Set environment variable
 
-```powershell title="Set Machine (system-wide) variable" linenums="1"
+```powershell title="Set Machine (system-wide) variable"
 [System.Environment]::SetEnvironmentVariable("VARIABLE_NAME", "VALUE", [System.EnvironmentVariableTarget]::Machine)
 
 ```
@@ -234,7 +234,7 @@ function Set-EnvVar {
 
 ### Unset environment variable
 
-```powershell title="Set User env variable" linenums="1"
+```powershell title="Set User env variable"
 [System.Environment]::SetEnvironmentVariable("VARIABLE_NAME", "VALUE", [System.EnvironmentVariableTarget]::User)
 
 ```

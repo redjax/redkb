@@ -40,7 +40,7 @@ UNIFI_GUEST_HTTPS_PORT=
 
 ### .gitignore
 
-```text title="unifi controller .gitignore" linenums="1"
+```text title="unifi controller .gitignore"
 config/
 
 ```

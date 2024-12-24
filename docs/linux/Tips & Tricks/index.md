@@ -18,13 +18,13 @@ Miscellaneous Linux tips & tricks. If an example would only work on a specific O
 
 Set your machine to "CLI" boot, where the computer will start at a shell prompt and without a GUI:
 
-```bash title="Set CLI boot" linenums="1"
+```bash title="Set CLI boot"
 sudo systemctl set-default multi-user.target
 ```
 
 To undo this change, run:
 
-```bash title="Set GUI boot" linenums="1"
+```bash title="Set GUI boot"
 sudo systemctl set-default graphical.target
 ```
 
