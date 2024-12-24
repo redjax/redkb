@@ -26,7 +26,7 @@ Remove-PSSession $s
 
 ## Copy file from remote to local
 
-```powershell title="Copy file from remote to local" title="1"
+```powershell title="Copy file from remote to local" linenums="1"
 # Create a session
 $Session = New-PSSession -ComputerName "Server01" -Credential "Contoso\User01"
 

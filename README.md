@@ -34,6 +34,10 @@ These notes are for me as I clone this repository to new machines, but if you ha
 
 Make sure you checkout a new branch, i.e. `git checkout -b <your-github-username>/<short-branch-name>` to track your changes to, and open a pull request from your branch to the `dev` branch when finished.
 
+### Dev Scripts
+
+The [`scripts/`](./scripts/) directory has some scripts (Powershell, Bash, or Python) to aid with development. The `prune_local_branchs.{ps1,bash}` script removes any local branch that does not exist on the remote. The [`scripts/clean/`](./scripts/clean/) path has scripts to aid in scanning and "cleaning" Markdown files, etc.
+
 **!! All pull requests to the `main` branch will be rejected !!**.
 
 I use the [Astral `uv`](https://astral.sh/uv) project manager to build this repository. It's fast, simple, and reliable in my experience. Installing `uv` is [pretty easy](https://docs.astral.sh/uv/getting-started/installation/), and you don't even have to install Python because [`uv` can do that for you](https://docs.astral.sh/uv/guides/install-python/)!
