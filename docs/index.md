@@ -35,6 +35,8 @@ The menus below are like a table of contents for the sections I most frequently 
         - [Powershell profiles](programming/powershell/profiles/index.md)
         - [Powershell code snippets](snippets/Powershell Snippets/index.md)
         - [Powershell modules](programming/powershell/modules/index.md)
+    === "💲 Bash"
+        - [Bash code snippets](snippets/Bash Snippets/index.md)
 
 ??? tip "🛠️ Utilities"
     === "🔑 SSH"
