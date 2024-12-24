@@ -23,44 +23,39 @@ process_file() {
   local FILE="$1"
   local TEMP_FILE="${FILE}.temp"
 
-  # Process the file to remove linenums="1" for single-line code blocks
+  # Process the file to remove linenums="1" only for single-line code blocks
   awk '
-    BEGIN { inside_fence = 0; code_line = ""; }
+    BEGIN { inside_fence = 0; code_lines = ""; }
     {
         if ($0 ~ /^```/) {
             if (inside_fence == 0) {
                 # Start of a code block
                 inside_fence = 1;
-                opening_fence = $0;
+                opening_fence = $0;  # Capture the opening fence
+                code_lines = "";
             } else {
                 # End of a code block
-                if (code_line != "") {
-                    # Single-line code block detected
-                    gsub(/ linenums="1"/, "", opening_fence);
+                if (length(code_lines) == 1) {
+                    # If there was exactly one line inside the block, remove linenums="1"
+                    gsub(/ linenums="1"/, "", opening_fence);  # Remove linenums="1"
                     print opening_fence;
-                    print code_line;
+                    print code_lines[1];  # Print the single line inside the block
                 } else {
-                    # Multi-line block or empty block, print as is
+                    # If the block contains more than one line, print as is
                     print opening_fence;
+                    for (i = 1; i <= length(code_lines); i++) {
+                        print code_lines[i];
+                    }
                 }
-                print $0;  # Always print the closing code fence
+                print $0;  # Always print the closing fence
                 inside_fence = 0;
-                code_line = "";
+                code_lines = "";
             }
         } else if (inside_fence == 1) {
-            # Capture the single code line
-            if (code_line == "") {
-                code_line = $0;
-            } else {
-                # Multi-line block detected, reset
-                print opening_fence;
-                print code_line;
-                print $0;
-                inside_fence = 0;
-                code_line = "";
-            }
+            # Capture the lines inside the block
+            code_lines[length(code_lines) + 1] = $0;
         } else {
-            # Outside of a code block
+            # Outside of a code block, print the line
             print $0;
         }
     }' "$FILE" >"$TEMP_FILE"
@@ -68,6 +63,9 @@ process_file() {
   # Replace the original file with the processed content
   mv "$TEMP_FILE" "$FILE"
 }
+
+echo "This script is currently broken."
+exit 0
 
 echo "Scanning ${DOCS_DIR} for .md files..."
 
