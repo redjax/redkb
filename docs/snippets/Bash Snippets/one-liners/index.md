@@ -29,6 +29,43 @@ THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 ```
 
+### Get formatted timestamp
+
+Set a variable to a timestamp when the variable was initialized.
+
+```bash title="Set timestamp variable" linenums="1"
+TS=$(date +"%Y-%m-%d %H-%M-%S")
+```
+
+Format the timestamp using `+%?`, where the `?` is one of the below:
+
+| Value | Date Part        | # Digits      |
+| ----- | ---------------- | ------------- |
+| `%Y`  | Year             | 4 (`YYYY`)    |
+| `%m`  | Month            | 2 (`mm`)      |
+| `%d`  | Day              | 2 (`dd`)      |
+| `%H`  | Hour (24h)       | 2 (`HH`)      |
+| `%I`  | Hour (12h)       | 2 (`HH`)      |
+| `%M`  | Minutes          | 2 (`MM`)      |
+| `%S`  | Seconds          | 2 (`SS`)      |
+| `%p`  | AM/PM (12h only) | 2 (`AM`/`PM`) |
+
+You can also create a function and call it in a string to add a timestamp, for example to name a file or directory.
+
+```bash title="get_timestamp function" linenums="1"
+get_timestamp() {
+    echo "$(date +"%Y-%m-%d %H:%M:%S")"
+}
+
+## Capture output of timestamp in a variable
+TS=$(get_timestamp)
+echo "Timestamp: $TS"
+
+## Use it in a string
+#  Warning: change format to +"%Y-%m-%d %H-%M-%S" to avoid ":" characters in filenames
+DIRECTORY_PATH="$(get_timestamp)_pictures"  ## YYYY-mm-dd HH-MM-SS_pictures
+```
+
 ## `find` one-liners
 
 The `find` command on Unix machines searches for files/directories that match a pattern. You can chain commands on the results with `-exec <logic> {} +`, for example to remove all results of the `find` command.
