@@ -27,7 +27,7 @@ UPTIME_KUMA_DATA_DIR=
 
 ### .gitignore
 
-```text title="uptime kuma .gitignore" linenums="1"
+```text title="uptime kuma .gitignore"
 **/data
 
 ```

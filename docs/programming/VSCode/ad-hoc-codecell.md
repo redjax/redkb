@@ -16,7 +16,7 @@ tags:
 
 You can create ad-hoc "cells" in any `.py` file (i.e. `notebook.py`, `nb.py`, etc) by adding `# %%` line(s) to the file.
 
-```python title="Example 'notebook.py' file" linenums="1"
+```python title="Example 'notebook.py' file"
 # %%
 
 ```

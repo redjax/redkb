@@ -29,7 +29,7 @@ I was not able to find an official source for system requirements, but the table
 - You can [download ollama right from their website](https://ollama.com/download).
 - On Linux, you can simple use this command:
 
-```shell title="Install/upgrade ollama on Linux" linenums="1"
+```shell title="Install/upgrade ollama on Linux"
 curl -fsSL https://ollama.com/install.sh | sh
 ```
 
@@ -39,19 +39,19 @@ You can [browse available models on ollama's website](https://ollama.com/library
 
 Once you've installed ollama, you can download a model by running:
 
-```shell title="Download an ollama model" linenums="1"
+```shell title="Download an ollama model"
 ollama pull <model-name>
 ```
 
 For example, to get started with the `llama3.2` model (current as of 11/11/24), you can run:
 
-```shell title="Download llama3.2 model" linenums="1"
+```shell title="Download llama3.2 model"
 ollama pull llama3.2
 ```
 
 To run your new model, open your CLI and run (the model will be downloaded if you have not already run `ollama pull`):
 
-```shell title="Run an ollama model" linenums="1"
+```shell title="Run an ollama model"
 ollama run <model-name>
 ```
 

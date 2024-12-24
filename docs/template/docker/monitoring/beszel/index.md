@@ -36,7 +36,7 @@ BESZEL_DATA_DIR=
 
 ### .gitignore
 
-```text title="beszel .gitignore" linenums="1"
+```text title="beszel .gitignore"
 beszel/data
 
 ```

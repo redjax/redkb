@@ -33,7 +33,7 @@ ADGUARD_CONF_DIR=
 
 ### .gitignore
 
-```text title="adguard-home .gitignore" linenums="1"
+```text title="adguard-home .gitignore"
 adguardhome/
 
 ```

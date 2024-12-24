@@ -14,7 +14,7 @@ The WSL backup files are in `.tar` format.
 
 Backing up a WSL distribution involves compressing the entire virtual disk to a `.tar` file. The general command format is: `wsl --export <distribution-name> C:\path\to\<backup-name>.tar`.
 
-```powershell title="Backup distribution named 'debian' to C:\wsl_backups" linenums="1"
+```powershell title="Backup distribution named 'debian' to C:\wsl_backups"
 wsl --export debian C:\wsl_backups\debian.tar
 ```
 
@@ -22,7 +22,7 @@ wsl --export debian C:\wsl_backups\debian.tar
 
 Restoring a WSL distribution involves decompressing an existing `.tar` file into a full clone of the source. The general command format is: `wsl --import <new-distribution-name> C:\path\to\new-distribution-name C:\path\to\<old-distribution-name>.tar`
 
-```powershell title="Create distribution named debian-new from C:\wsl_backups\debian.tar" linenums="1"
+```powershell title="Create distribution named debian-new from C:\wsl_backups\debian.tar"
 wsl --import debian-new C:\wsl\debian-new C:\wsl_backups\debian.tar
 ```
 
