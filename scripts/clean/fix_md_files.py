@@ -5,9 +5,9 @@ Description:
     but only 1 line of fenced code, and remove the linenums="1" portion.
 """
 from __future__ import annotations
-import os
-import argparse
 
+import argparse
+import os
 
 def remove_linenums_from_singleline_codefence(file_path: str):
     """Iterate over lines in a file to apply match rules.
