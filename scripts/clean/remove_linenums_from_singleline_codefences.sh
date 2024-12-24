@@ -23,8 +23,7 @@ process_file() {
   local FILE="$1"
   local TEMP_FILE="${FILE}.temp"
 
-  echo "Removing 'linenums="1"' from all single-line codefences in file: $FILE"
-  ## Process the file to remove linenums="1" for single-line code blocks
+  # Process the file to remove linenums="1" for single-line code blocks
   awk '
     BEGIN { inside_fence = 0; code_line = ""; }
     {
@@ -65,9 +64,19 @@ process_file() {
             # Outside of a code block
             print $0;
         }
+    }
+    END {
+        # Ensure any unprocessed opening fence is printed
+        if (inside_fence == 1) {
+            print opening_fence;
+            if (code_line != "") {
+                print code_line;
+            }
+            print "```";
+        }
     }' "$FILE" >"$TEMP_FILE"
 
-  ## Replace the original file with the processed content
+  # Replace the original file with the processed content
   mv "$TEMP_FILE" "$FILE"
 }
 
