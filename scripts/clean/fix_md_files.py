@@ -6,6 +6,7 @@ Description:
 """
 from __future__ import annotations
 import os
+import argparse
 
 
 def remove_linenums_from_singleline_codefence(file_path: str):
@@ -77,8 +78,14 @@ def process_directory(directory: str):
                 remove_linenums_from_singleline_codefence(file_path)
 
 
-if __name__ == "__main__":
-    docs_dir: str = "./docs"
-    process_directory(docs_dir)
+def main():
+    parser = argparse.ArgumentParser(description="Clean Markdown files in a directory.")
+    parser.add_argument("--scan-path", "-p", type=str, default="./docs", help="Path to a directory to scan for Markdown files (default: ./docs).")
+    
+    args = parser.parse_args()
+    
+    process_directory(args.scan_path)
+    print(f"Finished processing files in path '{args.scan_path}'.")
 
-    print("Processing complete.")
+if __name__ == "__main__":
+    main()
