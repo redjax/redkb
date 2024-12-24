@@ -9,6 +9,26 @@ tags:
 
 Some Bash commands can be written as a "one-liner." `if` and `while` statements, for example, can be written in a slightly different way to chain commands.
 
+## Bash Variables
+
+### Set variable to path where script was called from
+
+Say you have a path, `/home/username/scripts/system/update_system.sh`, and your current directory is `/home/username/scripts/`. If you call `./system/update_system.sh` from the `/home/username/scripts/` directory, the value of `$CWD` below would be `/home/username/scripts`:
+
+```bash title="Set $CWD to path where script was called from" linenums="1"
+CWD=$(pwd)
+
+```
+
+### Set variable to path where script exists
+
+Say you have a path, `/home/username/scripts/system/update_system.sh`, and your current directory is `/home/username/scripts/`. If you call `./system/update_system.sh` from the `/home/username/scripts/` directory, the value of `$THIS_DIR` below would be `/home/username/scripts/system/`.
+
+```bash title="Set $THIS_DIR to path where script exists." linenums="1"
+THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+```
+
 ## `find` one-liners
 
 The `find` command on Unix machines searches for files/directories that match a pattern. You can chain commands on the results with `-exec <logic> {} +`, for example to remove all results of the `find` command.
@@ -158,24 +178,6 @@ Example: repeat the `ls` command every 5 seconds:
 
 ```bash title="Run ls command every 5 seconds" linenums="1"
 while true; do ls; sleep 5; done
-```
-
-### Set variable to path where script was called from
-
-Say you have a path, `/home/username/scripts/system/update_system.sh`, and your current directory is `/home/username/scripts/`. If you call `./system/update_system.sh` from the `/home/username/scripts/` directory, the value of `$CWD` below would be `/home/username/scripts`:
-
-```bash title="Set $CWD to path where script was called from" linenums="1"
-CWD=$(pwd)
-
-```
-
-### Set variable to path where script exists
-
-Say you have a path, `/home/username/scripts/system/update_system.sh`, and your current directory is `/home/username/scripts/`. If you call `./system/update_system.sh` from the `/home/username/scripts/` directory, the value of `$THIS_DIR` below would be `/home/username/scripts/system/`.
-
-```bash title="Set $THIS_DIR to path where script exists." linenums="1"
-THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 ```
 
 ## rsync one-liners
