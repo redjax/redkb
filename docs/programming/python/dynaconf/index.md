@@ -14,20 +14,6 @@ tags:
 
     If you just want to see Dynaconf in action, you can skip to the [Example app](#example-app) section.
 
-## Table of Contents <!-- omit in toc -->
-
-- [Providing Configurations to Dynaconf](#providing-configurations-to-dynaconf)
-  - [Environment Variables](#environment-variables)
-  - [Setting File (.toml, .json, .yaml, .env)](#setting-file-toml-json-yaml-env)
-    - [Secrets file](#secrets-file)
-- [Reading Configurations with Dynaconf](#reading-configurations-with-dynaconf)
-  - [The Dynaconf() object](#the-dynaconf-object)
-    - [Environment Tags as Configuration Domains](#environment-tags-as-configuration-domains)
-- [Gitignore](#gitignore)
-- [Example app](#example-app)
-  - [Settings files](#settings-files)
-  - [Dynaconf() object](#dynaconf-object)
-
 ## Providing Configurations to Dynaconf
 
 Dynaconf is very flexible, and can read configurations from a number of formats (`.toml`, `.json`, `.yaml`, `.env`), and from the environment itself. The documentation covers different methods of loading environment variables, but the flow I've settled on is defining `.toml` settings and secrets files in a `config/` directory, breaking the settings into environments (`logging`, `database`, `azure`, etc) and creating individual `Dynaconf()` settings objects for each environment. This sentence will make more sense as you read on.
@@ -35,19 +21,19 @@ Dynaconf is very flexible, and can read configurations from a number of formats 
 Dynaconf reads variables in the following order:
 
 - The environment, or from CLI args
-  - You can set env variables in your environment (`export VAR_NAME=value` on Linux, `$env:VAR_NAME = 'value'` on Windows), but note that you must prepend the variable name with `DYNACONF_` for Dynaconf to detect it.
-    - You can sometimes get away with changing the `envvar_prefix=` portion of a `Dynaconf()` instantiation, but to *reliably* read a variable from the environment with Dynaconf, you should set `DYNACONF_` before the variable name.
-    - For example, if you have an environment variable named `LOG_LEVEL`, you would define it like: `export DYNACONF_LOG_LEVEL=...`.
-  - You can also prepend a Python command with variables for Dynaconf to load, like:
-    - `LOG_LEVEL='DEBUG' python app.py`
-    - Or, for more durability, `DYNACONF_LOG_LEVEL='DEBUG' python app.py`
+    - You can set env variables in your environment (`export VAR_NAME=value` on Linux, `$env:VAR_NAME = 'value'` on Windows), but note that you must prepend the variable name with `DYNACONF_` for Dynaconf to detect it.
+        - You can sometimes get away with changing the `envvar_prefix=` portion of a `Dynaconf()` instantiation, but to *reliably* read a variable from the environment with Dynaconf, you should set `DYNACONF_` before the variable name.
+        - For example, if you have an environment variable named `LOG_LEVEL`, you would define it like: `export DYNACONF_LOG_LEVEL=...`.
+    - You can also prepend a Python command with variables for Dynaconf to load, like:
+        - `LOG_LEVEL='DEBUG' python app.py`
+        - Or, for more durability, `DYNACONF_LOG_LEVEL='DEBUG' python app.py`
 - `.secrets*.toml`, `settings*.toml`, `.secrets*.json`, `settings*.json`, etc
-    - The `*` in each settings file above indicates `dynaconf` will read the `settings.local.toml`/`settings.local.json` version of the file, if it exists, before trying to read from `settings.toml`/`settings.json`.
+      - The `*` in each settings file above indicates `dynaconf` will read the `settings.local.toml`/`settings.local.json` version of the file, if it exists, before trying to read from `settings.toml`/`settings.json`.
 - Default values
-  - When retrieving a value from a `Dynaconf()` object, you can set a default value, which is 3rd in precedence:
-    - `DYNACONF_SETTINGS_OBJECT.get("ENV_VAR_NAME", default="The default value")`
+    - When retrieving a value from a `Dynaconf()` object, you can set a default value, which is 3rd in precedence:
+        - `DYNACONF_SETTINGS_OBJECT.get("ENV_VAR_NAME", default="The default value")`
 - Global defaults:
-  - If no value can be determined using a method above, `dynaconf` will try to use global defaults as a fallback, i.e. `null`/`None` or any value you've configured as a default in your code.
+    - If no value can be determined using a method above, `dynaconf` will try to use global defaults as a fallback, i.e. `null`/`None` or any value you've configured as a default in your code.
 
 ### Environment Variables
 
