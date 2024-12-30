@@ -10,6 +10,10 @@ tags:
 
 [Dynaconf](https://www.dynaconf.com) is a tool for managing app configurations. The tool is inspired by the [12-factor application guide](), and is focused on assisting with separating your app's configuration from the business logic.
 
+!!! tip
+
+    If you just want to see Dynaconf in action, you can skip to the [Example app](#example-app) section.
+
 ## Table of Contents <!-- omit in toc -->
 
 - [Providing Configurations to Dynaconf](#providing-configurations-to-dynaconf)
