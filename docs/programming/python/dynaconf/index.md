@@ -8,7 +8,7 @@ tags:
 
 # Dynaconf <!-- omit in toc -->
 
-[Dynaconf](https://www.dynaconf.com) is a tool for managing app configurations. The tool is inspired by the [12-factor application guide](), and is focused on assisting with separating your app's configuration from the business logic.
+[Dynaconf](https://www.dynaconf.com) is a tool for managing app configurations. The tool is inspired by the [12-factor application guide](https://12factor.net/config), and is focused on assisting with separating your app's configuration from the business logic.
 
 !!! tip
 
@@ -16,7 +16,7 @@ tags:
 
 ## Providing Configurations to Dynaconf
 
-Dynaconf is very flexible, and can read configurations from a number of formats (`.toml`, `.json`, `.yaml`, `.env`), and from the environment itself. The documentation covers different methods of loading environment variables, but the flow I've settled on is defining `.toml` settings and secrets files in a `config/` directory, breaking the settings into environments (`logging`, `database`, `azure`, etc) and creating individual `Dynaconf()` settings objects for each environment. This sentence will make more sense as you read on.
+Dynaconf is very flexible, and [can read configurations from a number of formats](https://www.dynaconf.com/settings_files/#supported-formats) (`.toml`, `.json`, `.yaml`, `.env`), and from the environment itself. The documentation covers different methods of loading environment variables, but the flow I've settled on is defining `.toml` settings and secrets files in a `config/` directory, breaking the settings into environments (`logging`, `database`, `azure`, etc) and creating individual `Dynaconf()` settings objects for each environment. This sentence will make more sense as you read on.
 
 Dynaconf reads variables in the following order:
 
