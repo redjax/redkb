@@ -79,3 +79,14 @@ Use relative links, i.e. `../../path/to/page.pagename.md`, it lets VSCode autoco
 ### Check rendered HTML
 
 This project includes [`mkdocs-htmlproofer-plugin`](https://github.com/manuzhang/mkdocs-htmlproofer-plugin). To check the rendered HTML from building/serving your site, first set an env var `export ENABLED_HTML_PROOFER=true` (or `$env:ENABLED_HTML_PROOFER=true`) before running your `mkdocs` command.
+
+### Try these plugins
+
+*Note to self: remove from list as you try them and decide whether or not to integrate into the project. Delete this section eventually. Most plugins sourced from [this awesomelist](https://github.com/mkdocs/catalog)*
+
+- [MkDocs Macros](https://github.com/fralau/mkdocs-macros-plugin)
+- [Termynal](https://github.com/termynal/termynal.py?tab=readme-ov-file)
+- [EzGlossary](https://github.com/realtimeprojects/mkdocs-ezglossary)
+- [MkDocs Site URLs](https://github.com/OctoPrint/mkdocs-site-urls)
+- [MkDocs Spellchecker](https://github.com/pawamoy/mkdocs-spellcheck)
+- [MkDocs Test](https://github.com/fralau/mkdocs-test)
