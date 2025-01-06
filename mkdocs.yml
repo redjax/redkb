@@ -89,6 +89,20 @@ plugins:
       validate_rendered_template: True
   ## Enable offline version of site. Breaks many features.
   # - offline
+  - required-frontmatter:
+      enabled: true
+      required-keys:
+        - tags
+        - a_test_tag
+      ## Disable required frontmatter on specific files/paths
+      exclude:
+        ## All index.md files
+        - index.md
+        ## A path to a directory and file pattern
+        # - example/path/*
+      ## Fail build when page is missing frontmatter & strict: true
+      strict: true
+
 
 markdown_extensions:
   ## Add footnotes to marked-up abbreviations to provide extra context.

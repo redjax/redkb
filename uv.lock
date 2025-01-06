@@ -543,6 +543,15 @@ wheels = [
 ]
 
 [[package]]
+name = "mkdocs-required-frontmatter-plugin"
+version = "0.0.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0b/4d/693f2ce94139c907fbed996df4d457827be064c79fe192c83ca2c45708dc/mkdocs-required-frontmatter-plugin-0.0.2.tar.gz", hash = "sha256:b153f0f208079b2074ca1201b7e575dce98b1243b4f88cc141848ce928067c08", size = 4468 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/70/dc/d32fed91981b74f8bac4163f9bf6f5fa730367d4b999c57c061aa035c668/mkdocs_required_frontmatter_plugin-0.0.2-py3-none-any.whl", hash = "sha256:0d4a3d99fa2fc56e9de6b196c13a7666e07164ba0a117ce9c5fe076fdc1f5aca", size = 4903 },
+]
+
+[[package]]
 name = "mkdocs-rss-plugin"
 version = "1.17.1"
 source = { registry = "https://pypi.org/simple" }
@@ -841,6 +850,7 @@ dependencies = [
     { name = "mkdocs-htmlproofer-plugin" },
     { name = "mkdocs-literate-nav" },
     { name = "mkdocs-material" },
+    { name = "mkdocs-required-frontmatter-plugin" },
     { name = "mkdocs-rss-plugin" },
     { name = "mkdocs-section-index" },
     { name = "mkdocstrings", extra = ["python"] },
@@ -866,6 +876,7 @@ requires-dist = [
     { name = "mkdocs-htmlproofer-plugin", specifier = ">=1.3.0" },
     { name = "mkdocs-literate-nav", specifier = ">=0.6.1" },
     { name = "mkdocs-material", specifier = ">=9.5.42" },
+    { name = "mkdocs-required-frontmatter-plugin", specifier = ">=0.0.2" },
     { name = "mkdocs-rss-plugin", specifier = ">=1.15.0" },
     { name = "mkdocs-section-index", specifier = ">=0.3.9" },
     { name = "mkdocstrings", extras = ["python"], specifier = ">=0.26.2" },
