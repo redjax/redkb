@@ -246,7 +246,7 @@ Here you can see a simple example of configuring an app with Dynaconf. The app w
 
 I am using [HTTPX](https://www.python-httpx.org/) as my request client because I prefer it over the `requests` package.
 
-For the sake of example, this example will use Dynaconf's environments feature to separate configurations by domain; this example does not use `[dev]`/`[production]`/etc environments. If you want to use these environments instead, create separate files for each `[section]` you see below.
+For the sake of example, this app will use Dynaconf's environments feature to separate configurations by domain; this example does not use `[dev]`/`[production]`/etc environments. If you want to use these environments instead, create separate files for each `[section]` you see below.
 
 ### Settings files
 
