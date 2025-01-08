@@ -430,6 +430,13 @@ def serve_mkdocs(session: nox.Session) -> None:
         log.error(msg)
 
 
+@nox.session(python=DEFAULT_PYTHON, name="check-links", tags=["mkdocs", "validation"])
+def check_mkdocs_links(session: nox.Session) -> None:
+    session.install("mkdocs-linkcheck", "requests")
+    
+    log.info("Checking MKDocs site for broken links")
+    session.run("mkdocs-linkcheck", "--ext", ".md", "--method", "get", "--local", "-r", "./docs")
+
 ################
 # Cookiecutter #
 ################
