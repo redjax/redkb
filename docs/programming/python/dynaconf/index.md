@@ -274,7 +274,7 @@ The FakerAPI does not require an API key, but if it did, I would also declare it
 [default]
 fakerapi_api_key = ""
 
-[dev]
+[prod]
 ## Put a placeholder API key for the user to replace when they create a
 #  .secrets.local.toml file
 fakerapi_api_key = "<your-fakerapi-api-key>"
@@ -311,8 +311,8 @@ I am keeping things simple for this example by creating a `settings.py` file, wh
 from dynaconf import Dynaconf
 
 ## Initialize a logging config object.
-#  This object will only load variables in the [logging] section of settings.toml/.secrets.toml,
-#  or from environment variables that start with DYNACONF_LOG_ or LOG_
+#  This object will only load variables beginning with DYNACONF_LOG_ or LOG_ from
+#  the settings.toml/.secrets.toml file, and the [env] matching your ENV_FOR_DYNACONF value
 LOGGING_SETTINGS = Dynaconf(
     environments=True,
     envvar_prefix="LOG",
@@ -320,8 +320,8 @@ LOGGING_SETTINGS = Dynaconf(
 )
 
 ## Initialize FakerAPI config object.
-#  This object will only load variables in the [fakerapi] section of settings.toml/.secrets.toml,
-#  or from environment variables that start with DYNACONF_FAKERAPI_ or FAKERAPI_
+#  This object will only load variables beginning with DYNACONF_FAKERAPI_ or FAKERAPI_ from
+#  the settings.toml/.secrets.toml file, and the [env] matching your ENV_FOR_DYNACONF value
 FAKERAPI_SETTINGS = Dynaconf(
     environments=True,
     envvar_prefix="FAKERAPI",
@@ -351,7 +351,7 @@ if __name__ == "__main__":
     #  Note that I'm omitting 'default=' from the .get(). This means if the
     #  value isn't found in the environment or TOML settings files, the value
     #  will be None.
-    url: str = f"{FAKERAPI_SETTINGS.get('FAKERAPI_BASE_URL')}/{FAKERAPI_SETTINGS.get('FAKERAPI_ENDPOINT')}"
+    url: str = f"{FAKERAPI_SETTINGS.get('FAKERAPI_BASE_URL')}/{FAKERAPI_SETTINGS.get('FAKERAPI_ENDPOINT')}?_quantity={FAKERAPI_SETTINGS.get('FAKERAPI_QUANTITY')}"
     params = {"_quantity": FAKERAPI_SETTINGS.get("FAKERAPI_QUANTITY")}
 
     req = httpx.Request(method="GET", url=url, params=params)
