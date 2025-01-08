@@ -16,7 +16,7 @@ tags:
 
 ## Providing Configurations to Dynaconf
 
-Dynaconf is very flexible, and [can read configurations from a number of formats](https://www.dynaconf.com/settings_files/#supported-formats) (`.toml`, `.json`, `.yaml`, `.env`), and from the environment itself. The documentation covers different methods of loading environment variables, but the flow I've settled on is defining `.toml` settings and secrets files in a `config/` directory, breaking the settings into environments (`logging`, `database`, `azure`, etc) and creating individual `Dynaconf()` settings objects for each environment. This sentence will make more sense as you read on.
+Dynaconf is very flexible, and [can read configurations from a number of formats](https://www.dynaconf.com/settings_files/#supported-formats) (`.toml`, `.json`, `.yaml`, `.env`), and from the environment itself. The documentation covers different methods of loading environment variables, but the flow I've settled on is defining `.toml` settings and secrets files in a `config/` directory, breaking the settings into environments (`[dev]`, `[rc]`, `[prod]`) and creating individual `Dynaconf()` settings objects for each configuration domain (`app`, `logging`, `database`, etc). This sentence will make more sense as you read on.
 
 Dynaconf reads variables in the following order:
 
@@ -37,7 +37,7 @@ Dynaconf reads variables in the following order:
 
 ### Environment Variables
 
-Dynaconf reads from the environment first. You can set environment variables on your host (Google 'how to set environment variable on <OS>' to see how to do this for your specific environment), or if you're running in Docker, with the `environment:` section.
+Dynaconf reads from the environment first. You can set environment variables on your host (search online for 'how to set environment variable on <OS>' to see how to do this for your specific environment), or if you're running in Docker, with the `environment:` section.
 
 When you define environment variables for Dynaconf to read, you should prepend the variable name with `DYNACONF_`. This prefix catches Dynaconf's attention right away and ensure that the value is read. If you are expecting a variable named, for example, `LOG_LEVEL`, you would set the environment variable `DYNACONF_LOG_LEVEL`, and the value will be accessible in a `Dynaconf()` object as `LOG_LEVEL`. Note that the `DYNACONF_` prefix is not needed when retrieving a value Dynaconf has already loaded, it's only necessary for telling Dynaconf to load that value in the first place.
 
@@ -47,7 +47,7 @@ Here are some example environment variables I might set in a Python app I'm writ
 
 ```text title="Example environment variables"
 ## If I'm using Dynaconf's environments to separate by production, dev, etc
-# ENV_FOR_DYNACONF="prod"
+# ENV_FOR_DYNACONF="dev"
 
 ## Configure my logging level dynamically
 DYNACONF_LOG_LEVEL="DEBUG"  # Dynaconf reads this variable as 'LOG_LEVEL'
@@ -62,7 +62,11 @@ Dynaconf can read from [many file formats](https://www.dynaconf.com/settings_fil
 
 When running in Production, you should use [environment variables](#environment-variables) for configuring your app. These `.toml` file examples are great for local development, and you *could* provide a Production app with a Production `settings.toml` file to read, but configuring with environment variables is the best way to load your environment variables into an app.
 
-Dynaconf will start reading at `./` for `.toml` files, and if no `settings.toml`/`settings.local.toml` file is found, will look for a `config/` directory.
+!!! warning
+
+    This guide uses the term "environment variables" to describe non-sensitive app configurations, like the timezone or logging level. For local development, it is acceptable to use a `.secrets.toml` file, but in Production you should always load from a secure vault of some sort. Leaving password in plain text anywhere in the environment is bad practice, and should be avoided even when self-hosting.
+
+Dynaconf will start reading at the current path `./` for `.toml` files, and if no `settings.toml`/`settings.local.toml` file is found, will look for a `config/` directory.
 
 I put my `.toml` configuration files in a `config/` directory because I tend to create separate files for different parts of the app (`config/settings.toml` for my app's configuration like logging, `config/database/settings.toml` for database settings, etc). This guide will assume your `settings.toml` file(s) exist in a `config/` directory at the repository root.
 
@@ -80,34 +84,24 @@ You can also add "environments" to a settings file, and tell Dynaconf to read fr
 [default]
 log_level = "INFO"
 
-[logging]
+[dev]
 ## Set env='logging' in your Dynaconf object.
 #  Dynaconf will use this value before the default value, if it's defined
 log_level = "DEBUG"
-```
 
-This method separates your configuration "domains" into Dynaconf "environments", which makes them easier to maintain and read. You can also use environments to define `production`, `dev`, `testing`, and `cli` values (or whatever other environment name you want to use). If you are using Dynaconf to load `production`/`dev` variables like this, the environment schema above **will not work**. When using environments, you can *either* define environments by name, like `[logging]` or `[database]`, *or* you can give Dynaconf an environment to load with the `ENV_FOR_DYNACONF=` environment variable.
-
-For example, to set a logging level of `INFO` for Production and `DEBUG` for dev, your `settings.toml` file could look like:
-
-```toml title="Different configurations for different app environments" linenums="1"
-[default]
-log_level = "INFO"
+[rc]
+## Omit the log_level to use the default INFO in production
 
 [prod]
-## Leaving this line commented will use the value defined in [default]
-# log_level = "INFO"
-
-[dev]
-## When ENV_FOR_DYNACONF=dev, set log_level to DEBUG
-log_level = "DEBUG"
+## Show only warning & error messages in Production
+log_level = "WARNING
 ```
+
+You can also use environments to define arbitrary environments like `[cli]` for running in a pipeline, or `[container]` when running in a container environment.
 
 When using `production`/`dev` environments like this, you must set an `ENV_FOR_DYNACONF={dev,prod,testing,etc}`, where the value matches an `[environment]` in your settings file. This will tell Dynaconf to only load values from the matching `[environment]`.
 
-Because using environments like this renders the first example in this section impossible (using the `[environment]` syntax to separate configurations by domain, like `logging` and `database`), if you want to separate your configurations by file, you can instead create different TOML files for each settings domain. For example, instead of configuring your logging in `settings.toml`, you can use `settings.logging.toml`, and tell Dynaconf to look for that file instead of the default `settings.toml` file.
-
-#### Secrets file
+### Secrets file
 
 For local development, you can also store secrets (API keys, passwords, etc) in a `.secrets.toml` file. You **can** commit this file to git, because you should be creating a `.secrets.local.toml` file to override the defaults you set in `.secrets.toml`. **DO NOT COMMIT THE .local VERSION OF YOUR SECRETS FILE TO GIT**! You should put real values in `.secrets.local.toml`, and you do not want to track those in version control!
 
@@ -124,8 +118,15 @@ service_api_key = ""
 
 ## Create an environment for the 'service' above. Again, using WeatherAPI as the example,
 #  this section would be called [weatherapi] in a "real" .secrets.toml file
-[service]
+[dev]
 service_api_key = "hgib1n5g-l159nruo-b083n34k"
+
+[rc]
+service_api_key = "hgib1n5g-l159nruo-b083n34k"
+
+[production]
+## Use a different key for Production
+service_api_key = "lgborne-giotnri2-9bf0njl0"
 ```
 
 ## Reading Configurations with Dynaconf
@@ -146,7 +147,7 @@ After defining your configurations in the environment or [in a supported file](#
 
 Below are 2 examples of loading environment variables with a `Dynaconf()` object. The first example assumes you are using the `[environment]` tags to separate configurations by domain, i.e. `[logging]` and `[database]`, while the second example assumes you're using the `[production]`/`[dev]`/etc environment definitions.
 
-#### Environment Tags as Configuration Domains
+### Environment Tags as Configuration Domains
 
 Example `settings.toml` file:
 
@@ -154,8 +155,13 @@ Example `settings.toml` file:
 [default]
 log_level = "INFO"
 
-[logging]
+[dev]
 log_level = "DEBUG"
+
+[rc]
+
+[prod]
+log_level = "WARNING"
 ```
 
 ```python title="Load settings with Dynaconf" linenums="1"
@@ -167,8 +173,6 @@ from dynaconf import Dynaconf
 LOGGING_SETTINGS = Dynaconf(
     ## Enable reading [environment] tags
     environments=True,
-    ## Tell Dynaconf to look for [logging] environments in the .toml file
-    env="logging",
     ## Tell Dynaconf to read environment variables starting with DYNACONF_LOG or LOG_
     envvar_prefix="LOG",
     ## Tell Dynaconf to look for ./settings.toml, ./settings.local.toml, or config/settings[.local].toml,
@@ -182,46 +186,34 @@ print(LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))
 
 ```
 
-If you are using Dynaconf environments to separate values into different environments like `dev`, `prod`, etc, it is advisable to break the `.toml` settings files into domain-specific configurations, like `settings.logging.toml`/`settings.logging.local.toml`, or in separate subdirectories like `config/logging/{settings,.secrets}.toml`. You can set the `[environment]` Dynaconf should read from using the `ENV_FOR_DYNACONF` environment variable; to read the `[dev]` configuration, you would set `ENV_FOR_DYNACONF="dev"` in your environment.
+If you are using Dynaconf environments to separate values into different environments like `dev`, `prod`, etc, it is advisable to break the `.toml` settings files into domain-specific configurations, like `settings.logging.toml`/`settings.logging.local.toml`, or in separate subdirectories like `config/logging/{settings,.secrets}.toml`. You can set the `[environment]` Dynaconf should read from using the `ENV_FOR_DYNACONF` environment variable; to read the `[dev]` configuration, you would set `ENV_FOR_DYNACONF="dev"` in your environment. Dynaconf is built to be very flexible, and allows for separating configurations by domain (app, logging, http_server, for example).
+
+You can also store all of your configuration domains in a single `settings.toml` file, using variable prefixes like `log_` and `api_` to separate configuration domains.
 
 ```toml title="Domain-specific 'logging' settings file" linenums="1"
 ## config/logging/settings.toml
 [default]
 log_level = "INFO"
+api_key = ""
 
 [dev]
 log_level = "DEBUG"
+api_key = "bntkq2wo-gbbab340-olkjb2ti"
+
+[rc]
+log_level = "INFO"
+api_key = "kgbnaorjb-nosbn234-oab564ag"
 
 [prod]
-## You do not need to declare this because the value is the same as the [default] environment
-#  to change the logging level in Production, uncomment this line and set a different value
-# log_level = "INFO"
+log_level = "WARNING"
+api_key = "ljatbo23-b007a43-alkjatph"
 
-## You can configure a lower/higher (depending on how you understand log levels) level when
-#  ENV_FOR_DYNACONF="ci", like in a pipeline
+## You can configure a lower/higher (depending on how you understand log levels)
+#  level when ENV_FOR_DYNACONF="ci", like in a pipeline
 [ci]
 log_level = "VERBOSE"
-```
-
-The `Dynaconf()` object is a little bit different when using environments this way:
-
-```python title="Load logging settings from environment" linenums="1"
-from dynaconf import Dynaconf
-
-LOGGING_SETTINGS = Dynaconf(
-    ## You still enable environments
-    environments=True,
-    ## And set an envvar_prefix
-    envvar_prefix="LOG",
-    ## And define settings paths, but change the path to the settings file
-    settings_files=["settings.logging.toml", ".secrets.logging.toml"]
-    #  Or, if you're using subdirectories
-    # settings_files=["logging/settings.toml", "logging/.secrets.toml"]
-)
-
-## If ENV_FOR_DYNACONF="dev" and the [dev] environment in your settings.logging.toml or logging/settings.toml file
-#  has a value log_level="DEBUG"
-print(LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))  # This would be "DEBUG"
+## CI environment in this example does not require an API key,
+#  so it is omitted and defaults to ""
 ```
 
 ## Gitignore
@@ -261,20 +253,18 @@ fakerapi_base_url = "https://fakerapi.it/api/v2"
 fakerapi_endpoint = "addresses"
 fakerapi_quantity = 1
 
-[logging]
-## Uncomment to override the default log_level
-# log_level = "DEBUG"
-
-# Create a section for Dynaconf to read from
-[fakerapi]
+[dev]
+log_level = "DEBUG"
 ## I am not updating the base URL. Leaving this commented will default to the value
 #  in the [default] section above
 # fakerapi_base_url = ""
-
 ## Use the /books endpoint instead of /addresses
-# fakerapi_endpoint = "books"
-## Ask for 3 books instead of 1
-# fakerapi_quantity = 3
+fakerapi_endpoint = "books"
+
+[rc]
+log_level = "WARNING"
+## Ask for 3 addresses instead of 1
+fakerapi_quantity = 3
 ```
 
 The FakerAPI does not require an API key, but if it did, I would also declare it in my `.secrets.toml` file:
@@ -284,10 +274,10 @@ The FakerAPI does not require an API key, but if it did, I would also declare it
 [default]
 fakerapi_api_key = ""
 
-[fakerapi]
+[dev]
 ## Put a placeholder API key for the user to replace when they create a
 #  .secrets.local.toml file
-# fakerapi_api_key = "<your-fakerapi-api-key>"
+fakerapi_api_key = "<your-fakerapi-api-key>"
 ```
 
 After creating these 2 files and adding them to source control, I will copy them to the `.local` version and edit them:
@@ -299,31 +289,14 @@ cp config/.secrets.toml config/.secrets.local.toml
 
 Again, these `.local.toml` versions of the settings files **should not be committed to git**. You will create these files locally on fresh clones and use them for local testing (i.e. not in a Docker container, where you can just set the values as environment variables).
 
-After copying the files, I will uncomment the overrides in the `[fakerapi]` section to tell the app to request from the `/books` endpoint instead of the default `/addresses` endpoint, and to request `3` results instead of just `1`. I will also set the logging level to `"DEBUG"`.
+To tell my app which configuration environment to use (dev, rc, or prod), set an an environment variable called `ENV_FOR_DYNACONF`:
 
-```toml title="The 'local' settings file" linenums="1"
-## settings.local.toml
-[default]
-log_level = "INFO"
+```bash title="Set Dynaconf env on Linux/Mac" linenums="1"
+export ENV_FOR_DYNACONF=dev
+```
 
-fakerapi_base_url = "https://fakerapi.it/api/v2"
-fakerapi_endpoint = "addresses"
-fakerapi_quantity = 1
-
-[logging]
-## Uncomment to override the default log_level
-log_level = "DEBUG"
-
-# Create a section for Dynaconf to read from
-[fakerapi]
-## I am not updating the base URL. Leaving this commented will default to the value
-#  in the [default] section above
-# fakerapi_base_url = ""
-
-## Use the /books endpoint instead of /addresses
-fakerapi_endpoint = "books"
-## Ask for 3 books instead of 1
-fakerapi_quantity = 3
+```bash title="Set Dynaconf env on Windows" linenums="1"
+$env:ENV_FOR_DYNACONF="dev"
 ```
 
 ### Dynaconf() object
@@ -342,7 +315,6 @@ from dynaconf import Dynaconf
 #  or from environment variables that start with DYNACONF_LOG_ or LOG_
 LOGGING_SETTINGS = Dynaconf(
     environments=True,
-    env="logging",
     envvar_prefix="LOG",
     settings_files=["settings.toml", ".secrets.toml"]
 )
@@ -352,11 +324,12 @@ LOGGING_SETTINGS = Dynaconf(
 #  or from environment variables that start with DYNACONF_FAKERAPI_ or FAKERAPI_
 FAKERAPI_SETTINGS = Dynaconf(
     environments=True,
-    env="fakerapi",
     envvar_prefix="FAKERAPI",
     settings_files=["settings.toml", ".secrets.toml"]
 )
 ```
+
+### Python app
 
 Now, in a `main.py`, I will configure my logging from the `LOGGING_SETTINGS` object, and make a request to the Faker API.
 
