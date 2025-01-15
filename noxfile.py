@@ -47,6 +47,7 @@ VENV_DIR = Path("./.venv").resolve()
 #  Add new paths with nox_utils.append_lint_paths(extra_paths=["..."],)
 DEFAULT_LINT_PATHS: list[str] = [
     "src",
+    "./scripts"
 ]
 ## Set directory for requirements.txt file output
 REQUIREMENTS_OUTPUT_DIR: Path = Path("./")
@@ -428,6 +429,13 @@ def serve_mkdocs(session: nox.Session) -> None:
         msg = f"({type(exc)}) Unhandled exception serving MKDocs site. Details: {exc}"
         log.error(msg)
 
+
+@nox.session(python=DEFAULT_PYTHON, name="check-links", tags=["mkdocs", "validation"])
+def check_mkdocs_links(session: nox.Session) -> None:
+    session.install("mkdocs-linkcheck", "requests")
+    
+    log.info("Checking MKDocs site for broken links")
+    session.run("mkdocs-linkcheck", "--ext", ".md", "--method", "get", "--local", "-r", "./docs")
 
 ################
 # Cookiecutter #

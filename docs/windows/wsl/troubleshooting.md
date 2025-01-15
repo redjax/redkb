@@ -46,7 +46,7 @@ The problem here is the line `missing cap_net_raw+p capability`.
 
 In the WSL container, run this comand:
 
-```bash title="Add cap_net_raw capability to WSL distribution" linenums="1"
+```bash title="Add cap_net_raw capability to WSL distribution"
 sudo setcap cap_net_raw+p /bin/ping
 ```
 
@@ -67,7 +67,7 @@ This happens sometimes when I'm using the VSCode remote extension to connect to 
 
 ### Fix: Kill the wslservice.exe task
 
-```powershell title="Kill wslservice.exe" linenums="1"
+```powershell title="Kill wslservice.exe"
 taskkill /f /im wslservice.exe
 ```
 
@@ -79,16 +79,16 @@ When `git` is installed on both the Windows and WSL side, you will often run int
 
 Run the following 2 commands, the first on the Windows side and the second in a WSL distribution.
 
-```powershell title="Run on Windows host" linenums="1"
+```powershell title="Run on Windows host"
 git config --global credential.helper wincred
 ```
 
-```bash title="Run in WSL distribution" linenums="1"
+```bash title="Run in WSL distribution"
 git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe
 ```
 
 If your Git remote is Azuree DevOps, you also need to run:
 
-```bash title="Enable support for Azure DevOps repositories" linenums="1"
+```bash title="Enable support for Azure DevOps repositories"
 git config --global credential.https://dev.azure.com.useHttpPath true
 ```

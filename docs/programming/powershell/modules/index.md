@@ -38,7 +38,7 @@ New-ModuleManifest @manifest
 
 You can also pass these params using `-Params`, like:
 
-```powershell title="New-ModuleManifest with params" linenums="1"
+```powershell title="New-ModuleManifest with params"
 New-ModuleManifest -Path .\ModuleName\module.psd1 -ModuleVersion "2.0" -Author "Your Name" -Description "Description for the module"
 ```
 

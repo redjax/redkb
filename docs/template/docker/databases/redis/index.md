@@ -40,7 +40,7 @@ REDIS_COMMANDER_PORT=
 
 ### .gitignore
 
-```text title="redis .gitignore" linenums="1"
+```text title="redis .gitignore"
 data/*
 
 ```

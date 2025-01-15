@@ -24,7 +24,7 @@ Articles on a page can be as granular as necessary. Some articles are templated 
 
 ## Goal
 
-My goal for the project is to document as much as I can about tools I use frequently, as well as a place to dump useful code snippets and how-to guides. There is no "main" topic for this knowledge base, but most of the content is around Linux, Python, and open source software. The site is loosely based on the concept of a mind garden.
+My goal for the project is to document as much as I can about tools I use frequently, as well as a place to dump useful code snippets and how-to guides. There is no "main" topic for this knowledge base, but most of the content is around Linux, Python, and open source software. The site is loosely based on the concept of a [mind garden](https://elizabethbutlermd.com/personal-knowledge-management/).
 
 I also want to help others learn, especially when it comes to concepts that took me a long time to crack. When I find shortcuts, or simple ways of explaining/guiding someone to understanding something, I write an article in this KB to share with others who may need the same help. If I find new ways to help them understand, I will update articles with the new teaching method that worked. If I think I can distill concepts that were difficult for me to grasp, such as [the difference between SSH public and private keys](https://redjax.readthedocs.io/utilities/ssh/index.html#understanding-the-difference-between-public-and-private-keys), I will write up a guide to share with others who are struggling to learn the same thing.
 
@@ -33,6 +33,10 @@ I also want to help others learn, especially when it comes to concepts that took
 These notes are for me as I clone this repository to new machines, but if you have an interest in contributing, you can clone this project and set up a development environment using steps below.
 
 Make sure you checkout a new branch, i.e. `git checkout -b <your-github-username>/<short-branch-name>` to track your changes to, and open a pull request from your branch to the `dev` branch when finished.
+
+### Dev Scripts
+
+The [`scripts/`](./scripts/) directory has some scripts (Powershell, Bash, or Python) to aid with development. The `prune_local_branchs.{ps1,bash}` script removes any local branch that does not exist on the remote. The [`scripts/clean/`](./scripts/clean/) path has scripts to aid in scanning and "cleaning" Markdown files, etc.
 
 **!! All pull requests to the `main` branch will be rejected !!**.
 
@@ -75,3 +79,14 @@ Use relative links, i.e. `../../path/to/page.pagename.md`, it lets VSCode autoco
 ### Check rendered HTML
 
 This project includes [`mkdocs-htmlproofer-plugin`](https://github.com/manuzhang/mkdocs-htmlproofer-plugin). To check the rendered HTML from building/serving your site, first set an env var `export ENABLED_HTML_PROOFER=true` (or `$env:ENABLED_HTML_PROOFER=true`) before running your `mkdocs` command.
+
+### Try these plugins
+
+*Note to self: remove from list as you try them and decide whether or not to integrate into the project. Delete this section eventually. Most plugins sourced from [this awesomelist](https://github.com/mkdocs/catalog)*
+
+- [MkDocs Macros](https://github.com/fralau/mkdocs-macros-plugin)
+- [Termynal](https://github.com/termynal/termynal.py?tab=readme-ov-file)
+- [EzGlossary](https://github.com/realtimeprojects/mkdocs-ezglossary)
+- [MkDocs Site URLs](https://github.com/OctoPrint/mkdocs-site-urls)
+- [MkDocs Spellchecker](https://github.com/pawamoy/mkdocs-spellcheck)
+- [MkDocs Test](https://github.com/fralau/mkdocs-test)

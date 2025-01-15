@@ -39,13 +39,13 @@ On older versions of Windows, if this command fails, you can install `wsl` with 
 
 - Enable Windows Subsystem for Linux:
 
-```powershell title="Enable WSL" linenums="1"
+```powershell title="Enable WSL"
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 ```
 
 - Enable virtual machine feature
 
-```powershell title="Enable virtual machine" linenums="1"
+```powershell title="Enable virtual machine"
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 ```
 
@@ -55,12 +55,12 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 
 - Set WSL version 2 as default
 
-```powershell title="Set WSL2 as default version" linenums="1"
+```powershell title="Set WSL2 as default version"
 wsl --set-default-version 2
 ```
 
 - Install a distribution, i.e. Debian
 
-```powershell title="Install Debian Linux in WSL" linenums="1"
+```powershell title="Install Debian Linux in WSL"
 wsl --install -d Debian
 ```
