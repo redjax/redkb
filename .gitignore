@@ -201,3 +201,9 @@ site/
 ## Ignore NGINX certs directory
 certs/
 .certs/
+
+## Direnv
+.*secrets*
+.*secrets*.*
+
+!*example*
