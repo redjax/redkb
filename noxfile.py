@@ -483,3 +483,37 @@ def new_docker_template_page(session: nox.Session) -> None:
     except Exception as exc:
         msg = f"({type(exc)}) Error rendering template. Details: {exc}"
         log.error(msg)
+
+
+@nox.session(name="count-loc")
+def count_lines_of_code(session: nox.Session):
+    """Count lines of code using pygount.
+
+    Description:
+        https://pygount.readthedocs.io/en/latest/index.html
+        
+    """
+    session.install("pygount")
+
+    log.info("Counting lines of code with pygount")
+    # session.run("pygount", "--format=summary", "./", "--folders-to-skip=[dist,site,*.egg-info,__pycache__,.venv,.nox]")
+    session.run("pygount", "--format=summary", "./", "--suffix=py,md,sh,yml,yaml,toml,env,example,json,ps1,conf,.env")
+
+
+@nox.session(name="count-md-loc")
+def count_markdown_lines_of_code(session: nox.Session):
+    """Count lines of Markdown code using pygount.
+
+    Description:
+        https://pygount.readthedocs.io/en/latest/index.html
+
+    """
+    session.install("pygount")
+
+    log.info("Counting lines of Markdown code with pygount")
+    session.run(
+        "pygount",
+        "--format=summary",
+        "./",
+        "--suffix=md",
+    )
