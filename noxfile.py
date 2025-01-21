@@ -483,3 +483,11 @@ def new_docker_template_page(session: nox.Session) -> None:
     except Exception as exc:
         msg = f"({type(exc)}) Error rendering template. Details: {exc}"
         log.error(msg)
+
+
+@nox.session(name="count-loc")
+def count_lines_of_code(session: nox.Session):
+    session.install("pygount")
+
+    log.info("Counting lines of code with pygount")
+    session.run("pygount", "--format=summary", "./")
