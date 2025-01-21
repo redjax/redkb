@@ -490,4 +490,18 @@ def count_lines_of_code(session: nox.Session):
     session.install("pygount")
 
     log.info("Counting lines of code with pygount")
-    session.run("pygount", "--format=summary", "./")
+    # session.run("pygount", "--format=summary", "./", "--folders-to-skip=[dist,site,*.egg-info,__pycache__,.venv,.nox]")
+    session.run("pygount", "--format=summary", "./", "--suffix=py,md,sh,yml,yaml,toml,env,example,json,ps1,conf,.env")
+
+
+@nox.session(name="count-md-loc")
+def count_markdown_lines_of_code(session: nox.Session):
+    session.install("pygount")
+
+    log.info("Counting lines of Markdown code with pygount")
+    session.run(
+        "pygount",
+        "--format=summary",
+        "./",
+        "--suffix=md",
+    )
