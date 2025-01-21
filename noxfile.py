@@ -487,6 +487,12 @@ def new_docker_template_page(session: nox.Session) -> None:
 
 @nox.session(name="count-loc")
 def count_lines_of_code(session: nox.Session):
+    """Count lines of code using pygount.
+
+    Description:
+        https://pygount.readthedocs.io/en/latest/index.html
+        
+    """
     session.install("pygount")
 
     log.info("Counting lines of code with pygount")
@@ -496,6 +502,12 @@ def count_lines_of_code(session: nox.Session):
 
 @nox.session(name="count-md-loc")
 def count_markdown_lines_of_code(session: nox.Session):
+    """Count lines of Markdown code using pygount.
+
+    Description:
+        https://pygount.readthedocs.io/en/latest/index.html
+
+    """
     session.install("pygount")
 
     log.info("Counting lines of Markdown code with pygount")
