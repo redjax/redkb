@@ -44,7 +44,7 @@ Next, create an `alembic.ini` file at the root of your repository. Check the [ex
 
 After creating an `alembic.ini` file, initialize your Alembic directory by running the command below. The convention for `<migrations-dir>` below is "migrations." After initializing Alembic, you will have a directory named `migrations/` (or whatever value you used for `<migrations-dir>`) in the path where you ran the init command; you can use whatever name you want for this directory, i.e. `alembic` or `project`. This guide assumes you are using the conventional "migrations":
 
-```shell title="Initialize alembic" linenums="1"
+```shell title="Initialize alembic"
 alembic init <migrations-dir>
 ```
 
@@ -107,7 +107,7 @@ def run_migrations_offline() -> None:
 
 Use the command below to set your migrations starting point. Each migration after this will be an ancestor in a chain of migrations detailing upgrade paths for the database as your schemas change.
 
-```shell title="Create first migration" linenums="1"
+```shell title="Create first migration"
 alembic revision --autogenerate -m "Initial migration"
 ```
 
@@ -115,7 +115,7 @@ Your migration is created, and can be found in the `migrations/versions/` direct
 
 Now you need to apply it with an Alembic "upgrade." This makes changes live in your database to bring the table's schemas inline with the changes described in your migration. You need to do this after each migration.
 
-```shell title="Upgrade database using Alembic migration script." linenums="1"
+```shell title="Upgrade database using Alembic migration script."
 alembic upgrade head
 ```
 
