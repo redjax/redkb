@@ -1,14 +1,26 @@
 # redkb
 
-![GitHub Created At](https://img.shields.io/github/created-at/redjax/redkb)
-![GitHub last commit](https://img.shields.io/github/last-commit/redjax/redkb)
-![GitHub commits this year](https://img.shields.io/github/commit-activity/y/redjax/redkb)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/redjax/redkb/deploy_docs.yml)
-![GitHub repo size](https://img.shields.io/github/repo-size/redjax/redkb)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/redjax/redkb)
+<!-- Repo image -->
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./docs/img/github-header-img.png">
+    <img src="./docs/img/github-header-img.png" height="200">
+  </picture>
+</p>
 
-🏠 [`redjax.github.io/redkb`](https://redjax.github.io/redkb)
-📚 [`readthedocs`](https://redkb.readthedocs.io/en)
+<p align="center">
+  <img alt="GitHub Created At" src="https://img.shields.io/github/created-at/redjax/redkb">
+  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/redjax/redkb">
+  <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/y/redjax/redkb">
+  <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/redjax/redkb/deploy_docs.yml">
+  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/redjax/redkb">
+  <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/redjax/redkb">
+</p>
+
+<p align="center">
+  <a href="https://redjax.github.io/redkb">🏠 redkb on Github Pages</a>
+  <a href="https://redkb.readthedocs.io/en">📚 redkb on ReadTheDocs</a>
+</p>
 
 Source for my personal knowledgebase, built with [`mkdocs`](https://www.mkdocs.org/) & [`mkdocs-material`](https://squidfunk.github.io/mkdocs-material/).
 
@@ -24,7 +36,7 @@ Articles on a page can be as granular as necessary. Some articles are templated 
 
 ## Goal
 
-My goal for the project is to document as much as I can about tools I use frequently, as well as a place to dump useful code snippets and how-to guides. There is no "main" topic for this knowledge base, but most of the content is around Linux, Python, and open source software. The site is loosely based on the concept of a [mind garden](https://elizabethbutlermd.com/personal-knowledge-management/).
+My goal for the project is to document as much as I can about tools I use frequently, and serve as a place to dump useful code snippets and how-to guides. There is no "main" topic for this knowledge base, but most of the content is around Linux, Python, and open source software. The site is loosely based on the concept of a [mind garden](https://elizabethbutlermd.com/personal-knowledge-management/).
 
 I also want to help others learn, especially when it comes to concepts that took me a long time to crack. When I find shortcuts, or simple ways of explaining/guiding someone to understanding something, I write an article in this KB to share with others who may need the same help. If I find new ways to help them understand, I will update articles with the new teaching method that worked. If I think I can distill concepts that were difficult for me to grasp, such as [the difference between SSH public and private keys](https://redjax.readthedocs.io/utilities/ssh/index.html#understanding-the-difference-between-public-and-private-keys), I will write up a guide to share with others who are struggling to learn the same thing.
 
