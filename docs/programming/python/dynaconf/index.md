@@ -87,7 +87,7 @@ I put my `.toml` configuration files in a `config/` directory because I tend to 
 
 There are a number of ways to write a `settings.toml` file. This is a simple example of a valid configuration file:
 
-```toml title="Example settings.toml file for Dynaconf" linenums="1"
+```toml title="Example settings.toml file for Dynaconf"
 log_level = "DEBUG"
 ```
 
@@ -318,11 +318,11 @@ Again, these `.local.toml` versions of the settings files **should not be commit
 
 To tell my app which configuration environment to use (dev, rc, or prod), set an an environment variable called `ENV_FOR_DYNACONF`:
 
-```bash title="Set Dynaconf env on Linux/Mac" linenums="1"
+```bash title="Set Dynaconf env on Linux/Mac"
 export ENV_FOR_DYNACONF=dev
 ```
 
-```bash title="Set Dynaconf env on Windows" linenums="1"
+```bash title="Set Dynaconf env on Windows"
 $env:ENV_FOR_DYNACONF="dev"
 ```
 
