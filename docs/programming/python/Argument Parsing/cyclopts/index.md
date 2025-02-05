@@ -1,9 +1,13 @@
 ---
 tags:
-    - python
-    - utilities
-    - cyclopts
+  - python
+  - programming
+  - args
+  - cli
+  - utilities
+  - cyclopts
 ---
+# Parse arguments with Cyclopts
 
 ## Overview
 
