@@ -19,6 +19,7 @@
 
 <p align="center">
   <a href="https://redjax.github.io/redkb">🏠 redkb on Github Pages</a>
+  <span> | </span>
   <a href="https://redkb.readthedocs.io/en">📚 redkb on ReadTheDocs</a>
 </p>
 
