@@ -1,3 +1,8 @@
+---
+tags:
+    - git
+---
+
 # Rewrite Git History
 
 If you have multiple `git` profiles, you will eventually mistakenly push a commit from the wrong author. For example, if you have a work and personal git account, and you write a quick patch for a personal project and commit the code from your work account, your "collaborators" on Github will show your work account.
