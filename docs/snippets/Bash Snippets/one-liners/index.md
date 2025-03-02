@@ -245,3 +245,11 @@ rsync -avzh --progress /local/path/ user@remote:/remote/path/
 ```bash title="rsync remote-to-local"
 rsync -avzh --progress user@remote:/remote/path/ /local/path/
 ```
+
+## Swap Memory
+
+### Clear swap
+
+```shell title="Clear swap memory on Linux"
+sudo swapoff -a ; sudo swapon -a
+```
