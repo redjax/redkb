@@ -23,7 +23,7 @@ exit $?
 
 ```
 
-## PowerShell version
+### PowerShell version
 
 ```powershell title="Run-GitBranchPrune.ps1" linenums="1"
 <#
