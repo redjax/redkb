@@ -25,15 +25,24 @@ exit $?
 
 ## PowerShell version
 
-```powershell title="prune_local_branches.ps1" linenums="1"
+```powershell title="Run-GitBranchPrune.ps1" linenums="1"
 <#
-    Description:
+    .SYNOPSIS
+    Clean up local branches that have been deleted on the remote
+
+    .DESCRIPTION
         This script checks out the main branch, fetches from the remote, then
         deletes (prunes) any local branches that still exist after being deleted
         on the remote.
 
-        WARNING: This is a desctructive script. Make sure you don't need the local
+        WARNING: This is a destructive script. Make sure you don't need the local
         copy of your branch before pruning.
+    
+    .PARAMETER MainBranch
+        The name of the main branch.
+
+    .EXAMPLE
+        .\scripts\Prune-GitBranches.ps1
 #>
 param(
     [String]$MainBranch = "main"
@@ -50,9 +59,9 @@ try {
         $_.toString().Trim().Split(" ")[0]
     } `
     | ForEach-Object {
-        git branch -d $_ 
+        git branch -D $_ 
     }
-        
+
     Write-Host "Local branches pruned." -ForegroundColor Green
 
     exit 0
