@@ -271,3 +271,77 @@ function Remove-EnvVar {
     }
 }
 ```
+
+## HTTP requests
+
+### Check site availability
+
+As a one-liner:
+
+```powershell title="Check HTTP site availability" linenums="1"
+$Site = "https://www.google.com"
+
+while ($true) {
+    try {
+        ## Make HTTP HEAD request
+        $response = Invoke-WebRequest -Uri "$($Site)" -Method Head
+
+        ## Output HTTP status code
+        Write-Output "$(Get-Date) Ping site '$($Site)': [$($response.StatusCode): $($response.StatusDescription)]"
+    } catch {
+        Write-Error "$(Get-Date): Request failed. Error: $($_.Exception.Message)"
+    }
+
+    ## Pause for $RequestSleep seconds
+    Start-Sleep -Seconds 5
+}
+```
+
+As a function:
+
+```powershell title="Get-HTTPSiteAvailable" linenums="1"
+function Get-HTTPSiteAvailable {
+    Param(
+        [string]$Site = "https://www.google.com",
+        [string]$RequestSleep = 5
+    )
+    while ($true) {
+        try {
+            ## Make HTTP HEAD request
+            $response = Invoke-WebRequest -Uri "$($Site)" -Method Head
+
+            ## Output HTTP status code
+            Write-Output "$(Get-Date) Ping site '$($Site)': [$($response.StatusCode): $($response.StatusDescription)]"
+        } catch {
+            Write-Error "$(Get-Date): Request failed. Error: $($_.Exception.Message)"
+        }
+
+        ## Pause for $RequestSleep seconds
+        Start-Sleep -Seconds $RequestSleep
+    }
+}
+```
+
+## Disable Microsoft Copilot
+
+```powershell title="Disable Copilot & prevent re-install" linenums="1"
+Get-AppxProvisionedPackage -Online | where-object {$_.PackageName -like "*Copilot*"} | Remove-AppxProvisionedPackage -online
+```
+
+## Generate GUIDs (unique IDs)
+
+```powershell title="Generate unique GUID" linenums="1"
+[guid]::NewGuid()
+```
+
+You can also assign the GUID to a variable for re-use:
+
+```powershell title="Generate unique GUID and assign to variable" linenums="1"
+$UniqueID = [guid]::NewGuid()
+```
+
+## Turn monitor display off
+
+```powershell title="Turn display off" linenums="1"
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -command "(Add-Type -MemberDefinition '[DllImport(\"user32.dll\")] public static extern int PostMessage(int a, int b, int c, int d);' -Name f -PassThru)::PostMessage(-1, 0x112, 0xF170, 2)"
+```
