@@ -8,7 +8,7 @@ My personal knowledgebase. Use the sections along the top (i.e. [`Programming`](
 
 ??? warning "Warning on content accuracy & freshness"
 
-    I make no guarantee at total accuracy, relevant/updated, or topic depth for any of the content on this site. My goal is to keep reference notes for myself in a place accessible over the Internet in an easily-editable format (i.e. the [Github repository](https://github.com/redjax/redkb)).
+    I make no guarantees regarding total accuracy, relevant/updated information, or topic depth for any of the content on this site. My goal is to keep reference notes for myself in a place accessible over the Internet in an easily-editable format (i.e. the [Github repository](https://github.com/redjax/redkb)).
 
     I aim to be accurate, and notes I reference frequently will be updated more often. Each article on this site has a published and last modified timestamp at the bottom of the page, which you should take note of when referencing content on this site.
 
