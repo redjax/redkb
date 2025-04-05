@@ -1,0 +1,36 @@
+name: Upgrade packages
+on:
+  pull_request:
+    types: [labeled]
+    branches: [main]
+
+jobs:
+  bump-dependencies:
+    if: contains(github.event.pull_request.labels.*.name, 'bump-depends')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+
+      - name: Upgrade dependencies
+        run: uv sync --upgrade --all-extras --dev
+
+      - name: Create PR for dependency updates
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: chore/bump-depends
+          commit-message: "chore: bump dependencies using uv"
+          title: "Dependency Version Updates"
+          body: "Automated dependency version bumps via uv"
+          base: main
