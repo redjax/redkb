@@ -322,6 +322,26 @@ function Get-HTTPSiteAvailable {
 }
 ```
 
+## Open a list of URLs
+
+This script iterates over an array of URL strings and opens them in your default browser.
+
+```powershell title="mass_open_links.ps1" linenums="1"
+## Declare an array of URL strings
+$Links = @(
+    "https://example.com",
+    "https://example.com/example",
+    "https://example.com/test"
+)
+
+## Iterate over URLs and open them
+$Links | ForEach-Object {
+    Write-Output "Opening URL: $_"
+    Start-Process "$($_)"
+}
+
+```
+
 ## Disable Microsoft Copilot
 
 ```powershell title="Disable Copilot & prevent re-install" linenums="1"
