@@ -1,12 +1,11 @@
+## Github Action to upgrade all packages with uv
 name: Upgrade packages
 on:
-  pull_request:
-    types: [labeled]
-    branches: [main]
+  ## Make this an on-demand Action
+  workflow_dispatch:
 
 jobs:
   bump-dependencies:
-    if: contains(github.event.pull_request.labels.*.name, 'bump-depends')
     runs-on: ubuntu-latest
     permissions:
       contents: write
