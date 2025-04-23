@@ -94,7 +94,6 @@ Some characters are invalid for filenames, i.e. `:`, on certain OSes (looking at
 find /path/to/your/directory -type f -name '*:*' -exec bash -c 'mv "$0" "${0//:/-}"' {} \;
 ```
 
-
 ### Exclusion strings
 
 Use `! -exec sh -c 'ls "$1"/<your-find-pattern>/dev/null 2>&1' _ {} \;`, replacing `<your-find-pattern>` with a search string, to write an exclusion list for the `find` command. This will return all results *not* matching a given pattern.
@@ -122,7 +121,7 @@ find . -type f ! -name '*.part'
 hostname -I | cut -f1 -d' '
 ```
 
-## Pipeing to/from files
+## Command pipeing
 
 ### Echo multiple lines into file with EOF
 
@@ -133,6 +132,14 @@ The file's path is /path/to/file.ext
 
 The line above will also be written to the file.
 EOF
+```
+
+### Pass input response to command
+
+You can prepend a command with the answer to a prompt, like with `sudo ufw delete $ruleNum`, which prompts the user for a `yes`/`no` response to confirm deletion of the rule. This makes scripting `ufw` more of a challenge. By pipeing your response to the command, you can auto-answer prompts from utilities.
+
+```bash title="Prompt response pipe" linenums="1"
+yes | sudo ufw delete "$rule_num"
 ```
 
 ## User & Group commands
