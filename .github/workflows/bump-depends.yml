@@ -30,6 +30,6 @@ jobs:
         with:
           branch: chore/bump-depends
           commit-message: "chore: bump dependencies using uv"
-          title: "Dependency Version Updates"
+          title: "Update packages"
           body: "Automated dependency version bumps via uv"
           base: main
