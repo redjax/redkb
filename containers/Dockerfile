@@ -1,7 +1,7 @@
 ## Add build args.
 #  You can pass different args for these values in a docker-compose.yml
 #  file's build: section
-ARG UV_BASE=${UV_IMG_VER:-0.4.27}
+ARG UV_BASE=${UV_IMG_VER:-0.8.3}
 ARG PYTHON_BASE=${PYTHON_IMG_VER:-3.12-slim}
 ARG NGINX_BASE=${NGINX_IMG_VER:-alpine}
 
