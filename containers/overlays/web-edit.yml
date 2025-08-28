@@ -6,35 +6,7 @@
 volumes:
   openvscode-config: {}
 
-networks:
-  redkb-devnet: {}
-
 services:
-
-  ## If you modify this service, edit it in the other docker-compose.yml files too!
-  mkdocs:
-    container_name: redkb_mkdocs
-    restart: unless-stopped
-    build:
-      context: ..
-      dockerfile: ./containers/Dockerfile
-      args:
-        UV_BASE: ${UV_IMG_VERSION:-0.4.27}
-        PYTHON_BASE: ${PYTHON_IMG_VERSION:-3.12-slim}
-      ## Layer that runs mkdocs serve
-      target: serve
-    volumes:
-      - ${PWD}/docs:/project/docs
-      - ${PWD}/includes:/project/includes
-      - ${PWD}/mkdocs.yml:/project/mkdocs.yml
-    ## If not using reverse proxy, comment out expose and
-    #  uncomment ports
-    expose:
-      - 8000
-    # ports:
-    #   - ${MKDOCS_HTTP_PORT:-8000}:8000
-    networks:
-      - redkb-devnet
 
   openvscode-server:
     build:
