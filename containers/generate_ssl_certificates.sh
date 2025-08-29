@@ -1,6 +1,7 @@
 #!/bin/bash
 
-CONTAINER_CERT_DIR="./.certs/nginx"
+THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONTAINER_CERT_DIR="${THIS_DIR}/.certs/nginx"
 
 if [[ ! -d "${CONTAINER_CERT_DIR}" ]]; then
   echo "SSL certificate directory '${CONTAINER_CERT_DIR}' does not exist. Creating."
