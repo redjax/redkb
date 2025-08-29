@@ -7,7 +7,7 @@ volumes:
   openvscode-config: {}
 
 networks:
-  - redkb-devnet: {}
+  redkb-devnet: {}
 
 services:
 
