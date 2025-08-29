@@ -38,7 +38,7 @@ services:
       - ${CODE_SERVER_CONF_DIR:-openvscode-config}:/config
       - ${PWD}:/home/workspace/redkb:cached
       ## Uncomment this line to allow git operations in browser
-      - ${HOST_SSH_DIR}:/home/workspace/.ssh:ro
+      - ${HOST_SSH_DIR:-./openvscode/ssh}:/home/workspace/.ssh:ro
     ## If not using reverse proxy, comment out expose and
     #  uncomment ports
     # expose:

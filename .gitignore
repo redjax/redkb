@@ -202,6 +202,10 @@ site/
 certs/
 .certs/
 
+## Ignore OpenVSCode SSH dir
+containers/openvscode/ssh/*
+!containers/openvscode/ssh/.gitkeep
+
 ## Direnv
 .*secrets*
 .*secrets*.*
