@@ -21,6 +21,7 @@ Learn more about:
 - [Restic setup](setup.md)
 - [Excluding files/paths from backups](exclude.md)
 - [Handling Restic repository passwords](passwords.md)
+- [Scripting `restic` commands](scripting.md)
 
 ## Links
 
