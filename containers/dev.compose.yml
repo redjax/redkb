@@ -1,4 +1,9 @@
 ---
+name: redkb
+
+networks:
+  redkb-devnet: {}
+
 services:
   ## If you modify this service, edit it in the other docker-compose.yml files too!
   mkdocs:
@@ -24,3 +29,5 @@ services:
     #   - 8000
     ports:
       - ${MKDOCS_HTTP_PORT:-8000}:8000
+    networks:
+      - redkb-devnet
