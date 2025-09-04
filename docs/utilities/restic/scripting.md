@@ -27,11 +27,23 @@ If you did not [follow my Restic setup guide](setup.md), or you want to create a
 ```shell title="restic_backup.sh" linenums="1"
 #!/bin/bash
 
+##
+# This script is a generic Restic backup script.
+# You can use it as a starting/reference point for
+# customized backup scripts, or just use this to
+# run/schedule backups.
+#
+# This script assumes you're storing your password
+# locally in a file, and using a local repository.
+##
+
 ## Set default vars
 SRC_DIR=""
 RESTIC_REPO_FILE=""
 RESTIC_PW_FILE=""
 DRY_RUN=""
+SKIP_UNCHANGED=""
+RESTIC_FORCE=""
 
 ## Create array of exclude files to pass to restic
 EXCLUDE_FILES=()
@@ -51,6 +63,8 @@ OPTIONS:
   -p, --password-file PATH       Path to restic password file (required)
   --exclude-file PATH            Path to a file containing exclude patterns (can be used multiple times)
   --exclude-pattern PATTERN      Single exclude pattern (can be used multiple times)
+  -S, --skip-if-unchanged        Skip backup if there are no changes (default: false).
+  --force                        Add the --force flag to Restic commands.
   --dry-run                      Print the restic command that would be run, but do not execute
   -h, --help                     Display this help and exit
 
@@ -122,6 +136,14 @@ while [[ $# -gt 0 ]]; do
           exit 1
       fi
       ;;
+    -S|--skip-if-unchanged)
+      SKIP_UNCHANGED="true"
+      shift
+      ;;
+    -F|--force)
+      RESTIC_FORCE="true"
+      shift
+      ;;
     --dry-run)
       DRY_RUN="true"
       shift
@@ -143,6 +165,11 @@ done
 export RESTIC_REPOSITORY_FILE="$RESTIC_REPO_FILE"
 export RESTIC_PASSWORD_FILE="$RESTIC_PW_FILE"
 
+if [[ "$SRC_DIR" == "" ]]; then
+  echo "[ERROR] --source-dir should not be empty"
+  exit
+fi
+
 ## Build command
 cmd=(restic backup "$SRC_DIR")
 
@@ -156,12 +183,23 @@ for excl_pattern in "${EXCLUDE_PATTERNS[@]}"; do
   cmd+=(--exclude "$excl_pattern")
 done
 
+## Append --skip-if-unchanged if SKIP_UNCHANGED is true
+if [[ "$SKIP_UNCHANGED" == "true" ]]; then
+  cmd+=(--skip-if-unchanged)
+fi
+
+## Append --force if RESTIC_FORCE is true
+if [[ "$RESTIC_FORCE" != "" ]]; then
+  cmd+=(--force)
+fi
+
 ## Print or run command
 if [[ -z "$DRY_RUN" ]] || [[ "$DRY_RUN" == "" ]]; then
-  echo "Running restic cleanup command: $cmd"
+  echo "Running restic cleanup command: "
+  echo "  $> ${cmd[@]}"
 
   ## Run the command
-  "$cmd[@]"
+  "${cmd[@]}"
 
   if [[ $? -ne 0 ]]; then
     echo "[ERROR] Failed to run restic cleanup command."
@@ -171,7 +209,9 @@ if [[ -z "$DRY_RUN" ]] || [[ "$DRY_RUN" == "" ]]; then
     exit 0
   fi
 else
-  echo "[DRY RUN] Would run restic cleanup command: $cmd[@]"
+  echo "[DRY RUN] Would run restic cleanup command: "
+  echo "  $> ${cmd[@]}"
+
   exit 0
 fi
 
