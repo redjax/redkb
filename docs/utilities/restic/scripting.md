@@ -42,13 +42,18 @@ SRC_DIR=""
 RESTIC_REPO_FILE=""
 RESTIC_PW_FILE=""
 DRY_RUN=""
-SKIP_UNCHANGED=""
 RESTIC_FORCE=""
 
 ## Create array of exclude files to pass to restic
 EXCLUDE_FILES=()
 ## Create array of exclude patternss to pass to restic
 EXCLUDE_PATTERNS=()
+
+## Define cleanup parameters
+DO_CLEANUP=""
+KEEP_DAILY=7
+KEEP_WEEKLY=4
+KEEP_MONTHLY=12
 
 ## Define -h/--help function
 function print_help() {
@@ -63,7 +68,10 @@ OPTIONS:
   -p, --password-file PATH       Path to restic password file (required)
   --exclude-file PATH            Path to a file containing exclude patterns (can be used multiple times)
   --exclude-pattern PATTERN      Single exclude pattern (can be used multiple times)
-  -S, --skip-if-unchanged        Skip backup if there are no changes (default: false).
+  --keep-daily N                 Retain last N daily snapshots when running with --cleanup (default: $KEEP_DAILY)
+  --keep-weekly N                Retain last N weekly snapshots when running with --cleanup (default: $KEEP_WEEKLY)
+  --keep-monthly N               Retain last N monthly snapshots when running with --cleanup (default: $KEEP_MONTHLY)
+  -c, --cleanup                  Run restic cleanup after backup (default: false)
   --force                        Add the --force flag to Restic commands.
   --dry-run                      Print the restic command that would be run, but do not execute
   -h, --help                     Display this help and exit
@@ -136,8 +144,41 @@ while [[ $# -gt 0 ]]; do
           exit 1
       fi
       ;;
-    -S|--skip-if-unchanged)
-      SKIP_UNCHANGED="true"
+    --keep-daily)
+      if [[ -n "$2" && "$2" != --* ]]; then
+          KEEP_DAILY="$2"
+          shift 2
+      else
+          echo "[ERROR] --keep-daily provided but no number given."
+
+          print_help
+          exit 1
+      fi
+      ;;
+    --keep-weekly)
+      if [[ -n "$2" && "$2" != --* ]]; then
+          KEEP_WEEKLY="$2"
+          shift 2
+      else
+          echo "[ERROR] --keep-weekly provided but no number given."
+
+          print_help
+          exit 1
+      fi
+      ;;
+    --keep-monthly)
+      if [[ -n "$2" && "$2" != --* ]]; then
+          KEEP_MONTHLY="$2"
+          shift 2
+      else
+          echo "[ERROR] --keep-monthly provided but no number given."
+
+          print_help
+          exit 1
+      fi
+      ;;
+    -c|--cleanup)
+      DO_CLEANUP="true"
       shift
       ;;
     -F|--force)
@@ -183,11 +224,6 @@ for excl_pattern in "${EXCLUDE_PATTERNS[@]}"; do
   cmd+=(--exclude "$excl_pattern")
 done
 
-## Append --skip-if-unchanged if SKIP_UNCHANGED is true
-if [[ "$SKIP_UNCHANGED" == "true" ]]; then
-  cmd+=(--skip-if-unchanged)
-fi
-
 ## Append --force if RESTIC_FORCE is true
 if [[ "$RESTIC_FORCE" != "" ]]; then
   cmd+=(--force)
@@ -195,21 +231,45 @@ fi
 
 ## Print or run command
 if [[ -z "$DRY_RUN" ]] || [[ "$DRY_RUN" == "" ]]; then
-  echo "Running restic cleanup command: "
+  echo "Running restic backup command: "
   echo "  $> ${cmd[@]}"
 
   ## Run the command
   "${cmd[@]}"
 
   if [[ $? -ne 0 ]]; then
-    echo "[ERROR] Failed to run restic cleanup command."
+    echo "[ERROR] Failed to run restic backup command."
+
+    if [[ "$DO_CLEANUP" == "true" ]]; then
+      echo "[WARNING] --cleanup detected, but restic backup failed. Cleanup operation will not run."
+    fi
+
     exit 1
   else
-    echo "Restic cleanup performed successfully"
+    echo "Restic backup performed successfully"
+
+    if [[ "$DO_CLEANUP" == "true" ]]; then
+      cleanup_cmd=(restic forget
+        --keep-daily "$KEEP_DAILY"
+        --keep-weekly "$KEEP_WEEKLY"
+        --keep-monthly "$KEEP_MONTHLY"
+        --prune
+      )
+
+      echo "Running restic cleanup command: "
+      echo "  $> ${cleanup_cmd[@]}"
+
+      "${cleanup_cmd[@]}"
+      if [[ $? -ne 0 ]]; then
+        echo "[ERROR] Failed to run restic cleanup command."
+      fi
+
+    fi
+
     exit 0
   fi
 else
-  echo "[DRY RUN] Would run restic cleanup command: "
+  echo "[DRY RUN] Would run restic backup command: "
   echo "  $> ${cmd[@]}"
 
   exit 0
