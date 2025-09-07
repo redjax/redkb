@@ -16,6 +16,8 @@ You can add schedules & retention policies to your backups using a [schedule con
     
     [Read more about scheduling in the `resticprofile` docs](https://creativeprojects.github.io/resticprofile/schedules/configuration/index.html#schedule).
 
+You can run `resticprofile -c ~/profiles.yaml schedule install --all` to run your backup profiles on a schedule using [the scheduler for your system](https://creativeprojects.github.io/resticprofile/schedules/index.html#scheduler).
+
 ### Example schedule
 
 The example below defines a backup, and schedules for cleanup & caching. The schedules are:
