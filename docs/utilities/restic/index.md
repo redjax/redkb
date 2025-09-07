@@ -23,6 +23,22 @@ Learn more about:
 - [Handling Restic repository passwords](passwords.md)
 - [Scripting `restic` commands](scripting.md)
 
+## Tips & Tricks
+
+### 'Permission Denied' Errors
+
+If you get a permission error when creating backups, you should use `sudo` to perform the backup. This also means the owner of the backup in restic's repository will be owned by root; any time you run a command that interacts with the repository, i.e. `restic snapshots`, you will get permission errors when restic tries to interact with that path.
+
+You can safely change the ownership of your restic repository path, without affecting the ownership in the repository itself. When restoring a backup, run with `sudo` or as the root user; this will restore paths with their original ownership, i.e. paths owned by root will be restored with root ownership, and paths owned by `$USER` will have ownership restored to the user.
+
+If you restore a restic backup as a regular, non-root user after changing ownership in the restic repository path, you will get a permisssion error.
+
+!!! warning
+
+    When changing ownership in your restic repository path, you will not damage the backup, but you do still need to be mindful of ACLs. You should create a group, i.e. `resticusers`, and set group ownership on your restic repository path.
+
+    If you are running restic on a single-user home machine and are ok with the security risks of your user owning the files in the restic repository, you can safely set ownership with `chmod -R $USER:$USER /path/to/restic-repo` without harming the backups.
+
 ## Links
 
 - [Restic home](https://restic.net)
