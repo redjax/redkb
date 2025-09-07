@@ -52,7 +52,7 @@ When you are finished setting up the pCloud remote, you will have a new line in 
 
 Create a profile like this in your `profiles.yaml` for resticprofile:
 
-```yaml
+```yaml title="pCloud remote for resticprofile" linenums="1"
 ## ...
 #  other options, like global, default, groups, etc
 
