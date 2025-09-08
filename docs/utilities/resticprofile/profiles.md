@@ -69,7 +69,7 @@ default:
   ## Checks the repository for errors
   #  https://creativeprojects.github.io/resticprofile/reference/profile/check/index.html
   check:
-    schedule: "weekly"
+    schedule: "1 *-*-* 03:00"  # 3:00am on the 1st of each month
     schedule-after-network-online: false
     schedule-ignore-on-battery: false
     schedule-ignore-on-battery-less-than: 20
@@ -113,6 +113,10 @@ groups:
 default:
   repository: "local:X:\\path\\to\\restic-repo"
   password-file: "C:\\Users\\username\\.restic\\passwords\\user_access.txt"
+  default-command: snapshots
+  initialize: false
+  priority: low
+  min-memory: 100
 
   ## Backup operation defaults
   #  https://creativeprojects.github.io/resticprofile/reference/profile/backup/index.html
@@ -138,6 +142,11 @@ default:
     exclude-file: "C:\\Users\\username\\.restic\\ignores\\default"
     ## Exclude files like OneDrive On-Demand Files
     exclude-cloud-files: true
+    schedule: "weekly"
+    schedule-ignore-on-battery-less-than: 20
+    read-data: true
+    with-cache: false
+    schedule-permission: "auto"
 
   ## Define backup retention policy
   #  https://creativeprojects.github.io/resticprofile/reference/profile/retention/index.html
@@ -178,6 +187,7 @@ default:
 
 home:
   inherit: default
+  default-command: backup
 
   backup:
     verbose: true
@@ -214,8 +224,8 @@ c_scripts:
     exclude-file:
       - "C:\\Users\\username\\.restic\\ignores\\gitdir"
     ## Run backup daily
-    schedule: "daily"
-    schedule-permission: "user"
+    schedule: "0,6,12,18:00"  # every 6 hours
+    schedule-permission: "system"
     schedule-priority: "standard"
     schedule-lock-mode: default
     schedule-lock-wait: 15m30s
@@ -303,6 +313,11 @@ default:
       - "/home/user/.restic/ignores/default"
     exclude-cloud-files: true
     group-by: "tags,host,paths"
+    schedule: "weekly"
+    schedule-permission: "user"
+    schedule-priority: "standard"
+    schedule-lock-mode: default
+    schedule-lock-wait: 15m30s
 
   ## Checks the repository for errors
   #  https://creativeprojects.github.io/resticprofile/reference/profile/check/index.html
@@ -341,11 +356,7 @@ home:
       - "/home/user/.restic/ignores/home"
     exclude-cloud-files: true
     group-by: "tags,host,paths"
-    schedule: "*/12:*"
-    schedule-permission: "user"
-    schedule-priority: "standard"
-    schedule-lock-mode: default
-    schedule-lock-wait: 15m30s
+    schedule: "0,12:00"  # twice a day
 
   tags:
     - home
