@@ -1,7 +1,8 @@
 ---
 name: Build & Deploy MkDocs site
 permissions:
-  contents: write
+  contents: read
+  pull-requests: write
 
 on:
   pull_request:
