@@ -100,6 +100,12 @@ global:
   scheduler: auto
   schedule-defaults:
     permission: auto
+  ## If you installed restic with something like scoop, your `restic` binary
+  #  might be in a different path, i.e. "C:\Users\username\scoop\shims\restic.exe"
+  #  When resticprofile tries to run as an administrator, it will fail because
+  #  this path is not in the admin user's $PATH. You can tell it where the restic
+  #  binary is located with restic-binary:
+  restic-binary: "C:\\Users\\username\\scoop\\shims\\restic.exe"
 
 groups:
   basic:
