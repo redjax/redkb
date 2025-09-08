@@ -1,8 +1,5 @@
 ---
 name: Build & Deploy MkDocs site
-permissions:
-  contents: read
-  pull-requests: write
 
 on:
   workflow_dispatch:
@@ -11,12 +8,14 @@ on:
       - main
     types: [ labeled ]
 
-
 jobs:
   deploy-mkdocs:
     name: Deploy to Github Pages
     if: ${{ (github.event_name == 'workflow_dispatch') || (github.event.label.name == 'publish') }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
   
     steps:
       - name: Checkout code
