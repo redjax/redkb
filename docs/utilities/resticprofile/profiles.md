@@ -105,7 +105,7 @@ global:
   #  When resticprofile tries to run as an administrator, it will fail because
   #  this path is not in the admin user's $PATH. You can tell it where the restic
   #  binary is located with restic-binary:
-  restic-binary: "C:\\Users\\username\\scoop\\shims\\restic.exe"
+  restic-binary: "C:/Users/username/scoop/shims/restic.exe"
 
 groups:
   basic:
@@ -117,8 +117,8 @@ groups:
 
 ## Set defaults that profiles can inherit
 default:
-  repository: "local:X:\\path\\to\\restic-repo"
-  password-file: "C:\\Users\\username\\.restic\\passwords\\user_access.txt"
+  repository: "local:X:/path/to/restic-repo"
+  password-file: "C:/Users/username/.restic/passwords/user_access.txt"
   default-command: snapshots
   initialize: false
   priority: low
@@ -145,7 +145,7 @@ default:
       - "\Users\*\AppData\Roaming\*\cache\"
       - "\Users\*\Local\Temp"
       - "\Users\*\Local\Microsoft\Windows\INetCache"
-    exclude-file: "C:\\Users\\username\\.restic\\ignores\\default"
+    exclude-file: "C:/Users/username/.restic/ignores/default"
     ## Exclude files like OneDrive On-Demand Files
     exclude-cloud-files: true
     schedule: "weekly"
@@ -198,14 +198,14 @@ home:
   backup:
     verbose: true
     source:
-      - "C:\\Users\\username"
+      - "C:/Users/username"
 
     ## Add more ignore files. They will be merged with the default
     #  ignore defined in the default: profile
     exclude-file:
-      - "C:\\Users\\username\\.restic\\ignores\\home"
-      - "C:\\Users\\username\\.restic\\ignores\\gitdir"
-      - "C:\\Users\\username\\.restic\\ignores\\desktop"
+      - "C:/Users/username/.restic/ignores/home"
+      - "C:/Users/username/.restic/ignores/gitdir"
+      - "C:/Users/username/.restic/ignores/desktop"
     ## Run backup twice a day
     schedule: "*/12:*"
     schedule-permission: "user"
@@ -226,9 +226,9 @@ c_scripts:
   backup:
     verbose: true
     source:
-      - "C:\\scripts"
+      - "C:/scripts"
     exclude-file:
-      - "C:\\Users\\username\\.restic\\ignores\\gitdir"
+      - "C:/Users/username/.restic/ignores/gitdir"
     ## Run backup daily
     schedule: "0,6,12,18:00"  # every 6 hours
     schedule-permission: "system"
