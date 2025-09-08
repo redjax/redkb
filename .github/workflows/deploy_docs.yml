@@ -5,6 +5,7 @@ permissions:
   pull-requests: write
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
@@ -14,7 +15,7 @@ on:
 jobs:
   deploy-mkdocs:
     name: Deploy to Github Pages
-    if: ${{ github.event.label.name == 'publish' }}
+    if: ${{ (github.event_name == 'workflow_dispatch') || (github.event.label.name == 'publish') }}
     runs-on: ubuntu-latest
   
     steps:
