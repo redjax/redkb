@@ -14,7 +14,7 @@ Some [`pre-commit`](https://pre-commit.com/) hooks I use frequently.
 
 repos:
 
-- repo: https://gitlab.com/vojko.pribudic/pre-commit-update
+- repo: https://gitlab.com/vojko.pribudic.foss/pre-commit-update
   rev: v0.1.1
   hooks:
     - id: pre-commit-update
@@ -32,7 +32,7 @@ This hook will update the revisions for all installed hooks each time `pre-commi
 
 ```yaml title=".pre-commit-config.yaml" linenums="1"
 
-- repo: https://gitlab.com/vojko.pribudic/pre-commit-update
+- repo: https://gitlab.com/vojko.pribudic.foss/pre-commit-update
   rev: v0.1.1
   hooks:
     - id: pre-commit-update
