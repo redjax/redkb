@@ -26,7 +26,7 @@ tags:
 - Create a file `~/profiles.yaml` (read more about profiles on the [profiles.yaml page](profiles.md)).
     - We will start small with [a simple backup profile](#basic-profile), and other sections of this documentation will detail adding more profiles later.
 - After creating your `profiles.yaml`, run `resticprofile -c ~/profiles.yaml --name <backup-profile-name> init`
-- Next, add your `~/.restic/passwords/user_acces` key with `resticprofile -c ~/profiles.yaml --name <backup-profile-name> key add --new-password-file ~/.restic/passwords/user_access`
+- Next, add your `~/.restic/passwords/user_acces` key with `resticprofile -c ~/profiles.yaml key add --new-password-file ~/.restic/passwords/user_access`
     - With the user access key added, edit your `~/profiles.yaml` and replace the `/home/user/.restic/passwords/main` line with `/home/user/.restic/passwords/user_access`.
     - The only time you will need your master key going forward is to add or revoke keys. Restic/resticprofile will prompt you for the master password when needed, and you can just paste it.
     - Otherwise, use your `user_access` key for everything after initializing the repository.
@@ -70,7 +70,7 @@ default:
   ## Change this to '~/.restic/passwords/user_access'
   #  after initializing the repository and adding the user_access key.
   password-file: "~/.restic/passwords/main"
-  
+
 ## Create a profile to backup ~/.bash* dotfiles.
 #  When you run resticprofile, call this profile with
 #  `--name dot-bash-files
@@ -89,7 +89,7 @@ dot-bash-files:
       - "/home/user/.bashrc"
       - "/home/user/.profile"
       - "/home/user/.bash_aliases"
-    
+
     ## Define 1 or more exclude patterns, and any path
     #  that matches during a backup will be skipped/excluded.
     #  These patterns would be irrelevant for this job since we're
@@ -116,3 +116,4 @@ dot-bash-files:
 Now that your profiles are all set up, you can test your configuration with  `resticprofile -c ~/profiles.yaml --name <backup-profile-name> backup --dry-run`. Using `--dry-run` will show you any issues the backup might encounter, like permission errors or invalid syntax.
 
 If you do not see any errors, run it again without `--dry-run` to take your first backup. You can see your backups with `resticprofile -c ~/profiles.yaml --name <backup-profile-name> snapshots`.
+
