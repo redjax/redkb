@@ -63,5 +63,5 @@ soupsieve==2.6
 tzdata==2024.1; python_version >= "3.9" and sys_platform == "win32"
 urllib3==2.2.2
 uv==0.8.6
-virtualenv==20.26.6
+virtualenv==20.36.1
 watchdog==5.0.2
