@@ -112,7 +112,13 @@ pathspec==0.12.1
 platformdirs==4.2.2
     # via mkdocs-get-deps
 pygments==2.18.0
+    # via
+    #   redkb (pyproject.toml)
+    #   mkdocs-material
 pymdown-extensions==10.16.1
+    # via
+    #   mkdocs-material
+    #   mkdocstrings
 python-dateutil==2.9.0.post0
     # via ghp-import
 pyyaml==6.0.2
@@ -134,7 +140,8 @@ six==1.16.0
 smmap==5.0.1
     # via gitdb
 soupsieve==2.6
-tzdata==2024.1; python_version >= "3.9" and sys_platform == "win32"
+    # via beautifulsoup4
 urllib3==2.6.3
+    # via requests
 watchdog==5.0.2
     # via mkdocs
