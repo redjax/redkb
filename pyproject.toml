@@ -22,6 +22,14 @@ dependencies = [
     "pygments>=2.18.0",
 ]
 
+[dependency-groups]
+dev = [
+    "cookiecutter>=2.6.0",
+    "nox>=2024.10.9",
+    "pre-commit>=4.0.1",
+    "ruff>=0.7.0",
+]
+
 ## Fix 'error: Multiple top-level packages discovered in flat-layout'
 #  https://github.com/pypa/setuptools/issues/3197#issuecomment-1078770109
 [tool.setuptools]
@@ -107,12 +115,4 @@ section-order = [
     "first-party",
     "local-folder",
     "third-party",
-]
-
-[dependency-groups]
-dev = [
-    "cookiecutter>=2.6.0",
-    "nox>=2024.10.9",
-    "pre-commit>=4.0.1",
-    "ruff>=0.7.0",
 ]
