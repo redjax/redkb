@@ -1,9 +1,9 @@
 [project]
 name = "redkb"
-version = "0.1.0"
+version = "0.1.1"
 description = "My personal knowledgebase, built with MkDocs."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.14"
 authors = [{ name = "redjax", email = "none@none.com" }]
 license = { text = "MIT" }
 dependencies = [
@@ -20,6 +20,14 @@ dependencies = [
     "mkdocs-section-index>=0.3.9",
     "mkdocstrings[python]>=0.26.2",
     "pygments>=2.18.0",
+]
+
+[dependency-groups]
+dev = [
+    "cookiecutter>=2.6.0",
+    "nox>=2024.10.9",
+    "pre-commit>=4.0.1",
+    "ruff>=0.7.0",
 ]
 
 ## Fix 'error: Multiple top-level packages discovered in flat-layout'
@@ -107,12 +115,4 @@ section-order = [
     "first-party",
     "local-folder",
     "third-party",
-]
-
-[tool.uv]
-dev-dependencies = [
-    "cookiecutter>=2.6.0",
-    "nox>=2024.10.9",
-    "pre-commit>=4.0.1",
-    "ruff>=0.7.0",
 ]
