@@ -32,7 +32,7 @@ else:
     CONTAINER_ENV: bool = False
 
 ## Define versions to test
-PY_VERSIONS: list[str] = ["3.12", "3.11"]
+PY_VERSIONS: list[str] = ["3.14", "3.13", "3.12", "3.11"]
 ## Get tuple of Python ver ('maj', 'min', 'mic')
 PY_VER_TUPLE: tuple[str, str, str] = platform.python_version_tuple()
 ## Dynamically set Python version
