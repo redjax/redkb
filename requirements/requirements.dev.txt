@@ -202,10 +202,7 @@ text-unidecode==1.3
 tzdata==2025.3
     # via arrow
 urllib3==2.2.2
-    # via requests
-virtualenv==20.26.6
-    # via
-    #   nox
-    #   pre-commit
+uv==0.8.6
+virtualenv==20.36.1
 watchdog==5.0.2
     # via mkdocs
