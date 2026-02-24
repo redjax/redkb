@@ -1,9 +1,9 @@
 [project]
 name = "redkb"
-version = "0.1.0"
+version = "0.1.1"
 description = "My personal knowledgebase, built with MkDocs."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.14"
 authors = [{ name = "redjax", email = "none@none.com" }]
 license = { text = "MIT" }
 dependencies = [
