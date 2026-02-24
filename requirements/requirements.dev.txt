@@ -201,7 +201,7 @@ text-unidecode==1.3
     # via python-slugify
 tzdata==2025.3
     # via arrow
-urllib3==2.2.2
+urllib3==2.6.3
     # via requests
 virtualenv==20.26.6
     # via
