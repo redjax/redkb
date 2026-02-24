@@ -109,6 +109,7 @@ find . -type d ! -exec sh -c 'ls "$1"/*.part >/dev/null 2>&1' _ {} \; -print
 #### Print every file that does not contain a specific filename pattern
 
 Example: Print every file in the current directory that does *not* end in `.part`
+
 ```shell
 find . -type f ! -name '*.part'
 ```
