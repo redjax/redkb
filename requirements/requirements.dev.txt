@@ -156,14 +156,7 @@ platformdirs==4.2.2
 pre-commit==4.5.1
     # via redkb (pyproject.toml:dev)
 pygments==2.18.0
-    # via
-    #   redkb (pyproject.toml)
-    #   mkdocs-material
-    #   rich
-pymdown-extensions==10.9
-    # via
-    #   mkdocs-material
-    #   mkdocstrings
+pymdown-extensions==10.16.1
 python-dateutil==2.9.0.post0
     # via
     #   arrow

@@ -112,13 +112,7 @@ pathspec==0.12.1
 platformdirs==4.2.2
     # via mkdocs-get-deps
 pygments==2.18.0
-    # via
-    #   redkb (pyproject.toml)
-    #   mkdocs-material
-pymdown-extensions==10.9
-    # via
-    #   mkdocs-material
-    #   mkdocstrings
+pymdown-extensions==10.16.1
 python-dateutil==2.9.0.post0
     # via ghp-import
 pyyaml==6.0.2
