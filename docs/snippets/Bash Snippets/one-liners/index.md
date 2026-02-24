@@ -225,6 +225,32 @@ Example: repeat the `ls` command every 5 seconds:
 while true; do ls; sleep 5; done
 ```
 
+### Copy or move a file without typing the name twice
+
+Instead of typing:
+
+```shell
+cp file1.ext file1.ext.bak
+```
+
+You can use:
+
+```shell
+cp file1.ext{,.bak}
+```
+
+You can do this with the `mv` command too:
+
+```shell
+mv file1.ext{,.bak}
+```
+
+To do this in the other direction, i.e. renaming `file1.ext.bak` to `file1.ext`:
+
+```shell
+cp file1.ext{.bak,}
+```
+
 ## rsync one-liners
 
 ### Sync path with rsync
