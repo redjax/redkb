@@ -203,7 +203,7 @@ tzdata==2025.3
     # via arrow
 urllib3==2.6.3
     # via requests
-virtualenv==20.26.6
+virtualenv==20.36.1
     # via
     #   nox
     #   pre-commit
