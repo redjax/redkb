@@ -212,3 +212,6 @@ containers/openvscode/ssh/*
 .*secrets*.*
 
 !*example*
+
+## Devpod
+.devpod-internal/

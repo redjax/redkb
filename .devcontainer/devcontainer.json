@@ -1,0 +1,57 @@
+{
+  "image": "debian:latest",
+  "remoteUser": "coder",
+  "workspaceFolder": "/workspace",
+  "postCreateCommand": "apt-get update && apt-get install -y wget apt-transport-https software-properties-common && wget -q https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb && dpkg -i packages-microsoft-prod.deb && apt-get update && apt-get install -y powershell",
+  "features": {
+    "ghcr.io/devcontainers-extra/features/uv:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainer-community/devcontainer-features/zellij.dev:1": {
+      "version": "latest"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-python-envs",
+        "formulahendry.auto-close-tag",
+        "formulahendry.auto-complete-tag",
+        "formulahendry.auto-rename-tag",
+        "dbaeumer.vscode-eslint",
+        "rogalmic.bash-debug",
+        "mads-hartmann.bash-ide-vscode",
+        "streetsidesoftware.code-spell-checker",
+        "tamasfe.even-better-toml",
+        "Wattenberger.footsteps",
+        "waderyan.gitblame",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        "lamartire.git-indicators",
+        "shyykoserhiy.git-autoconfig",
+        "codezombiech.gitignore",
+        "eamodio.gitlens",
+        "bradgashler.htmltagwrap",
+        "oderwat.indent-rainbow",
+        "VisualStudioExptTeam.vscodeintellicode",
+        "VisualStudioExptTeam.intellicode-api-usage-examples",
+        "VisualStudioExptTeam.vscodeintellicode-completions",
+        "yzhang.markdown-all-in-one",
+        "christian-kohler.path-intellisense",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        "teticio.python-envy",
+        "donjayamanne.python-extension-pack",
+        "KevinRose.vsc-python-indent",
+        "hyesun.py-paste-indent",
+        "foxundermoon.shell-format",
+        "redhat.vscode-yaml",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  }
+}
