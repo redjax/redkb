@@ -111,7 +111,7 @@ pathspec==0.12.1
     # via mkdocs
 platformdirs==4.2.2
     # via mkdocs-get-deps
-pygments==2.18.0
+pygments==2.20.0
     # via
     #   redkb (pyproject.toml)
     #   mkdocs-material

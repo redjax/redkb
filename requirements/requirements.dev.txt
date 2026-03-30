@@ -155,7 +155,7 @@ platformdirs==4.2.2
     #   virtualenv
 pre-commit==4.5.1
     # via redkb (pyproject.toml:dev)
-pygments==2.18.0
+pygments==2.20.0
     # via
     #   redkb (pyproject.toml)
     #   mkdocs-material
