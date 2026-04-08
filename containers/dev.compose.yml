@@ -13,7 +13,7 @@ services:
       context: ..
       dockerfile: ./containers/Dockerfile
       args:
-        UV_BASE: ${UV_IMG_VERSION:-0.9.18}
+        UV_BASE: ${UV_IMG_VERSION:-0.11.2}
         PYTHON_BASE: ${PYTHON_IMG_VERSION:-3.14-slim}
       ## Layer that runs mkdocs serve
       target: run
