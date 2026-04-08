@@ -109,6 +109,7 @@ find . -type d ! -exec sh -c 'ls "$1"/*.part >/dev/null 2>&1' _ {} \; -print
 #### Print every file that does not contain a specific filename pattern
 
 Example: Print every file in the current directory that does *not* end in `.part`
+
 ```shell
 find . -type f ! -name '*.part'
 ```
@@ -210,6 +211,25 @@ timestamp() { date +"%Y-%m-%d_%H:%M"; }
 #  current_time=$(timestamp)
 ```
 
+#### Bash Timestamp Cheatsheet
+
+| Command                                   | Example Output                                                         |
+| ----------------------------------------- | ---------------------------------------------------------------------- |
+| `timestamp=$(date +%Y%m%d_%H%M%S)`        | `20251127_230512`                                                      |
+| `timestamp=$(date +%Y%m%d_%H%M)`          | `20251127_23` (no seconds)                                             |
+| `timestamp=$(date +%Y-%m-%d_%H-%M-%S)`    | `2025-11-27_23-05-12`                                                  |
+| `timestamp=$(date +%Y-%m-%dT%H:%M:%S)`    | `2025-11-27T23:05:12`                                                  |
+| `timestamp=$(date -Iseconds)`             | `2025-11-27T23:05:12-05:00` (ISO with TZ)                              |
+| `timestamp=$(date +%s)`                   | `1758812671` (time in seconds since Unix epoch, i.e. January 1st 1970) |
+| `timestamp=$(date +%s.%N)`                | `1758812671.123456789` (with nanoseconds)                              |
+| `timestamp=$(date +%Y-%m-%d)`             | `2025-11-27`                                                           |
+| `timestamp=$(date +%H%M%S)`               | `230512`                                                               |
+| `timestamp=$(date +%Y%m%d)`               | `20251127`                                                             |
+| `timestamp=$(date +%Y%m%d_%H%M%S_%Z)`     | `20251127_230512_EST`                                                  |
+| `timestamp=$(date -u +%Y%m%d_%H%M%S_UTC)` | `20251127_040512_UTC` (UTC time)                                       |
+| `timestamp=$(date +%F_%T)`                | `2025-11-27_23:05:12`                                                  |
+| `timestamp=$(date +"%Y.%m.%d-%H.%M.%S")`  | `2025.11.27-23.05.12`                                                  |
+
 ### Repeat a command with a sleep
 
 You can write a `while` loop as a one-liner:
@@ -222,6 +242,32 @@ Example: repeat the `ls` command every 5 seconds:
 
 ```bash title="Run ls command every 5 seconds"
 while true; do ls; sleep 5; done
+```
+
+### Copy or move a file without typing the name twice
+
+Instead of typing:
+
+```shell
+cp file1.ext file1.ext.bak
+```
+
+You can use:
+
+```shell
+cp file1.ext{,.bak}
+```
+
+You can do this with the `mv` command too:
+
+```shell
+mv file1.ext{,.bak}
+```
+
+To do this in the other direction, i.e. renaming `file1.ext.bak` to `file1.ext`:
+
+```shell
+cp file1.ext{.bak,}
 ```
 
 ## rsync one-liners
