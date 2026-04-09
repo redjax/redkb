@@ -1,0 +1,48 @@
+---
+baseURL: https://example.com
+title: redkb
+
+module:
+  imports:
+    - path: github.com/imfing/hextra
+
+markup:
+  ## Allow raw HTML
+  goldmark:
+    renderer:
+      unsafe: true
+
+  ## Enable hextra syntax highlighting
+  highlight:
+    noClasses: false
+
+menu:
+  main:
+    - name: Home
+      pageRef: /
+      weight: 10
+    - name: Tags
+      pageRef: /tags
+      weight: 20
+    - name: Search
+      weight: 30
+      params:
+        type: search
+    - name: GitHub
+      weight: 40
+      url: "https://github.com/redjax/redkb"
+      params:
+        icon: github
+
+params:
+  navbar:
+    displayTitle: true
+    displayLogo: false
+
+  footer:
+    displayCopyright: false
+    displayPoweredBy: false
+
+  editURL:
+    enable: true
+    base: "https://github.com/redjax/redkb/edit/main/content"
