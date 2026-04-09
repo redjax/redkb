@@ -1,0 +1,9 @@
+## Env/secrets
+.env
+*.env
+.env.*
+
+*.local
+
+!*example*.*
+!*.*example*
