@@ -2,12 +2,12 @@
 title: One-liners
 date: 2024-10-23T00:00:00-00:00
 draft: true
-weight: 10
+weight: 0
 keywords: []
 tags:
-  - linux
+  - snippets
   - bash
-  - reference
+  - scripts
 ---
 
 Some Bash commands can be written as a "one-liner." `if` and `while` statements, for example, can be written in a slightly different way to chain commands.
