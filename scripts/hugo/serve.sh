@@ -10,6 +10,7 @@ HUGO_BASEURL=${HUGO_BASEURL:-http://localhost:1313}
 HUGO_HOST=${HUGO_HOST:-0.0.0.0}
 HUGO_PORT=${HUGO_PORT:-1313}
 SERVE_DRAFTS=${HUGO_SERVE_DRAFTS:-false}
+BUILD_FUTURE=${HUGO_BUILD_FUTURE_PAGES:-false}
 
 function usage() {
   echo ""
@@ -22,6 +23,7 @@ function usage() {
   echo "  -b, --base-url  (default: http://localhost:1313) Hugo site URL"
   echo "  --append-port   (default: false) Append port in URL/links"
   echo "  -d, --drafts    Serve draft files"
+  echo "  -F, --future    When enabled, build pages that aren't published yet"
   echo ""
 }
 
@@ -41,6 +43,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     -d|--drafts)
       SERVE_DRAFTS=true
+      shift
+      ;;
+    -F|--future)
+      BUILD_FUTURE=true
       shift
       ;;
     -h|--help)
@@ -82,15 +88,16 @@ HUGO_CMD="$HUGO_CMD --appendPort=false"
 
 if [[ "${SERVE_DRAFTS}" == "true" ]]; then
     HUGO_CMD="$HUGO_CMD -D"
+fi
 
-    ## Remove --dev from args
-    shift
+if [[ "${BUILD_FUTURE}" ]]; then
+  HUGO_CMD="$HUGO_CMD --buildFuture"
 fi
 
 ## Pass any remaining args
 HUGO_CMD="$HUGO_CMD $@"
 
-echo "Starting Hugo server: ${HUGO_CMD[*]}"
+echo "Starting Hugo server: ${HUGO_CMD}"
 if ! eval $HUGO_CMD 2>&1; then
   echo "[ERROR] Failed to serve Hugo site." >&2
   exit 1
