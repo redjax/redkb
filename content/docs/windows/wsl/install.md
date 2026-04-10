@@ -11,7 +11,6 @@ tags:
 
 - [📚 Microsoft Docs: Install WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 
-
 Most recent versions of Windows will come with `wsl` pre-installed. Run the `wsl --version` command to check if you already have WSL.
 
 If you see a version when you run `wsl --version`, you can simply run `wsl --install` to install an Ubuntu image. If you want to use a different version of Linux, you can run `wsl --install <distro-name>`.
