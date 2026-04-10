@@ -21,6 +21,12 @@ menu:
     - name: Home
       pageRef: /
       weight: 10
+    - name: Docs
+      pageRef: /docs
+      weight: 11
+    - name: Snippets
+      pageRef: /snippets
+      weight: 12
     - name: Tags
       pageRef: /tags
       weight: 20
