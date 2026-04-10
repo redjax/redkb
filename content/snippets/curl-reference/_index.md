@@ -1,6 +1,6 @@
 ---
 title: "Curl Reference"
-date: 2026-04-10T12:22:09-04:00
+date: 2026-04-08T00:00:00-00:00
 draft: true
 weight: 20
 keywords: []
