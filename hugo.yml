@@ -27,9 +27,9 @@ menu:
     - name: Snippets
       pageRef: /snippets
       weight: 12
-    - name: Tags
-      pageRef: /tags
-      weight: 20
+    # - name: Tags
+    #   pageRef: /tags
+    #   weight: 20
     - name: Search
       weight: 30
       params:
