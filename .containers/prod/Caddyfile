@@ -1,0 +1,15 @@
+{
+  # debug
+  email {$CADDY_EMAIL}
+}
+
+{$CADDY_SITE_ADDRESS} {
+  root * /usr/share/caddy
+  file_server
+  encode gzip
+
+  header {
+    X-Content-Type-Options nosniff
+    X-Frame-Options DENY
+  }
+}
