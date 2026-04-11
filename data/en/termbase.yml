@@ -13,3 +13,7 @@
 - term: command line interface
   abbr: CLI
   definition: "A command line interface is a terminal based input window for running commands"
+
+- term: knowledgebase
+  abbr: KB
+  definition: "A knowledge base is a centralized source of information"
