@@ -1,0 +1,15 @@
+---
+title: "Project Structure"
+date: 2024-02-11T00:00:00-00:00
+draft: true
+weight: 2
+keywords: []
+tags:
+  - python
+---
+
+> [!TODO]
+>
+> - [ ] Write comparison of "flat" vs `src/` layout
+> - [ ] Document basic examples of a flat & `src/` project
+> - [ ] Document monorepos
