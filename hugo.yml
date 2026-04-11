@@ -36,6 +36,11 @@ menu:
       url: "https://github.com/redjax/redkb"
       params:
         icon: github
+    - name: Theme Toggle
+      weight: 60
+      params:
+        type: theme-toggle
+        label: false
 
 params:
   navbar:
