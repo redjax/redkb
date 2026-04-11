@@ -63,3 +63,7 @@ def main():
 
         if updated != original:
             path.write_text(updated, encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()
