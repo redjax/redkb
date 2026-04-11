@@ -1,12 +1,12 @@
 ---
-title: "RedKB"
+title: "RedKB - Personal Knowledgebase"
 draft: true
 date: 2024-02-02T00:00:00-00:00
 toc: false
 weight: 0
 ---
 
-My personal knowledgebase. Check the [tags section](/tags) to quickly find articles on a specific topic.
+Documentation from my notes on a range of computing topics. Check the [tags section](/tags) to quickly find articles on a specific topic. You can also view documentation pages in chronological order by visiting [the archives](/archives). See a term you don't recognize? Check the [site glossary](/glossary).
 
 > [!WARNING]
 > I make no guarantees regarding total accuracy, relevant/updated information, or topic depth for any of the content on this site. My goal is to keep reference notes for myself in a place accessible over the Internet in an easily-editable format (i.e. the [Github repository](https://github.com/redjax/redkb)).
