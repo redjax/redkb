@@ -98,6 +98,13 @@ params:
     displayCopyright: true
     displayPoweredBy: false
 
+  ## Copy code button
+  highlight:
+    copy:
+      enable: true
+      # hover | always
+      display: always
+
   displayUpdatedDate: true
   dateFormat: "January 2, 2006"
 
