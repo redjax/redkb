@@ -46,6 +46,11 @@ menu:
         label: false
 
 params:
+  page:
+    ## Page width
+    #  Options: full, wide, normal
+    width: full
+
   navbar:
     displayTitle: true
     displayLogo: false
