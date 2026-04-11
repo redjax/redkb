@@ -18,24 +18,21 @@ markup:
 
 menu:
   main:
-    - name: Home
-      pageRef: /
-      weight: 10
     - name: Docs
       pageRef: /docs
-      weight: 11
+      weight: 10
     - name: Snippets
       pageRef: /snippets
-      weight: 12
-    # - name: Tags
-    #   pageRef: /tags
-    #   weight: 20
-    - name: Search
+      weight: 20
+    - name: Tags
+      pageRef: /tags
       weight: 30
+    - name: Search
+      weight: 40
       params:
         type: search
     - name: GitHub
-      weight: 40
+      weight: 50
       url: "https://github.com/redjax/redkb"
       params:
         icon: github
