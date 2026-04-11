@@ -54,7 +54,8 @@ params:
     #   height: 20
 
   footer:
-    displayCopyright: false
+    enable: false
+    displayCopyright: true
     displayPoweredBy: false
 
   displayUpdatedDate: true
