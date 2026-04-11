@@ -57,6 +57,9 @@ params:
     displayCopyright: false
     displayPoweredBy: false
 
+  displayUpdatedDate: true
+  dateFormat: "January 2, 2006"
+
   editURL:
     enable: true
     base: "https://github.com/redjax/redkb/edit/main/content"
