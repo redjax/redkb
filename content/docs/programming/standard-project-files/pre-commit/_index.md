@@ -6,7 +6,7 @@ weight: 10
 keywords: []
 tags:
   - pre-commit
-  - ref
+  - reference
 ---
 
 Some [`pre-commit`](https://pre-commit.com/) hooks I use frequently.

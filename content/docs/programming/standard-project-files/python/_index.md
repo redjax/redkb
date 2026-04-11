@@ -6,7 +6,7 @@ weight: 10
 keywords: []
 tags:
   - python
-  - ref
+  - reference
 ---
 
 Copy/paste-able code, or snippets for files like `pyproject.toml` and `noxfile.py`

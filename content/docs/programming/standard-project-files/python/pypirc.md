@@ -6,7 +6,7 @@ weight: 10
 keywords: []
 tags:
   - python
-  - ref
+  - reference
 ---
 
 - Create file `~/.pypirc`
