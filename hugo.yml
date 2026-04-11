@@ -50,6 +50,14 @@ menu:
         label: false
 
 params:
+  ## Displays a banner on all pages
+  # banner:
+  #   key: "announcement-xxx"
+  #   message: |
+  #     # Global Banner
+
+  #     This is a global banner. You can [use links](/), too.
+
   page:
     ## Page width
     #  Options: full, wide, normal
