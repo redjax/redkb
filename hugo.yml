@@ -36,7 +36,10 @@ menu:
       weight: 30
     - name: Glossary
       pageRef: /glossary
-      weight: 32
+      weight: 42
+    - name: Archives
+      pageRef: /archives
+      weight: 44
     - name: Search
       weight: 40
       params:
@@ -85,6 +88,9 @@ params:
       #  'reverse' incrementally index words in both directions
       #  'full' indexes every possible combination
       tokenize: full
+
+  archives:
+    section: docs
 
   navbar:
     displayTitle: true
