@@ -34,6 +34,9 @@ menu:
     - name: Tags
       pageRef: /tags
       weight: 30
+    - name: Glossary
+      pageRef: /glossary
+      weight: 32
     - name: Search
       weight: 40
       params:

@@ -1,0 +1,15 @@
+---
+## https://imfing.github.io/hextra/docs/advanced/additional-pages/#source-data-file
+#  This termbase file sets terms/definitions for the site's glossary.
+
+- term: seo
+  abbr: SEO
+  definition: "Search engine optimization – improving the visibility of a web page in search engines"
+
+- term: static site generator
+  abbr: SSG
+  definition: "Software engines processing text input to generate static web pages"
+
+- term: command line interface
+  abbr: CLI
+  definition: "A command line interface is a terminal based input window for running commands"
