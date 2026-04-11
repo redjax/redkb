@@ -2,7 +2,7 @@
 title: "Rsync"
 date: 2024-11-24T00:00:00-00:00
 draft: true
-weight: 10
+weight: 2
 keywords: []
 tags:
   - util

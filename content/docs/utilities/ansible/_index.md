@@ -2,7 +2,7 @@
 title: "Ansible"
 date: 2024-11-23T00:00:00-00:00
 draft: true
-weight: 10
+weight: 3
 keywords: []
 tags:
   - util
