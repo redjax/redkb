@@ -55,6 +55,23 @@ params:
     #  Options: full, wide, normal
     width: full
 
+    ## Enable/disable menu that allows copying page as markdown
+    contextMenu:
+      enable: false
+
+  search:
+    enable: true
+    type: flexsearch
+
+    flexsearch:
+      ## index page by: content | summary | heading | title
+      index: content
+      ## 'strict' indexes whole words
+      #  'forward' incrementally indexes words forward
+      #  'reverse' incrementally index words in both directions
+      #  'full' indexes every possible combination
+      tokenize: full
+
   navbar:
     displayTitle: true
     displayLogo: false
