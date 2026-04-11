@@ -67,6 +67,9 @@ params:
     contextMenu:
       enable: false
 
+  ## Add an arrow icon to external links
+  externalLinkDecoration: true
+
   search:
     enable: true
     type: flexsearch
