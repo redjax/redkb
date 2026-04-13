@@ -1,0 +1,128 @@
+---
+baseURL: https://example.com
+title: redkb
+
+## Parse git commit
+#  Note: This does not work with Docker unless you copy the whole
+#  .git dir into the container. Instead, use a script or manually
+#  set/update the `lastmod` frontmatter value in each file.
+enableGitInfo: false
+
+outputs:
+  page: [html, markdown]
+  section: [html, rss, markdown]
+
+module:
+  imports:
+    - path: github.com/imfing/hextra
+
+markup:
+  ## Allow raw HTML
+  goldmark:
+    renderer:
+      unsafe: true
+
+  ## Enable hextra syntax highlighting
+  highlight:
+    noClasses: false
+
+menu:
+  main:
+    - name: Docs
+      pageRef: /docs
+      weight: 10
+    - name: Snippets
+      pageRef: /snippets
+      weight: 20
+    - name: Tags
+      pageRef: /tags
+      weight: 30
+    - name: Glossary
+      pageRef: /glossary
+      weight: 42
+    - name: Archives
+      pageRef: /archives
+      weight: 44
+    - name: Search
+      weight: 40
+      params:
+        type: search
+    - name: GitHub
+      weight: 50
+      url: "https://github.com/redjax/redkb"
+      params:
+        icon: github
+    - name: Theme Toggle
+      weight: 60
+      params:
+        type: theme-toggle
+        label: false
+
+params:
+  ## Displays a banner on all pages
+  # banner:
+  #   key: "announcement-xxx"
+  #   message: |
+  #     # Global Banner
+
+  #     This is a global banner. You can [use links](/), too.
+
+  page:
+    ## Page width
+    #  Options: full, wide, normal
+    width: full
+
+    ## Enable/disable menu that allows copying page as markdown
+    contextMenu:
+      enable: false
+
+  ## Add an arrow icon to external links
+  externalLinkDecoration: true
+
+  search:
+    enable: true
+    type: flexsearch
+
+    flexsearch:
+      ## index page by: content | summary | heading | title
+      index: content
+      ## 'strict' indexes whole words
+      #  'forward' incrementally indexes words forward
+      #  'reverse' incrementally index words in both directions
+      #  'full' indexes every possible combination
+      tokenize: full
+
+  archives:
+    section: docs
+
+  navbar:
+    displayTitle: true
+    displayLogo: false
+    # logo:
+    #   path: images/logo.svg
+    #   dark: images/logo-dark.svg
+    #   link: /
+    #   width: 40
+    #   height: 20
+
+  footer:
+    enable: false
+    displayCopyright: true
+    displayPoweredBy: false
+
+  ## Copy code button
+  highlight:
+    copy:
+      enable: true
+      # hover | always
+      display: always
+
+  displayUpdatedDate: true
+  dateFormat: "January 2, 2006"
+
+  editURL:
+    enable: true
+    base: "https://github.com/redjax/redkb/edit/main/content"
+
+  imageZoom:
+    enable: true

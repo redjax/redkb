@@ -1,0 +1,18 @@
+---
+volumes:
+  hugo_cache_dev: {}
+
+services:
+  hugo:
+    image: hugomods/hugo:${HUGOMOD_CONTAINER_TAG:-debian-exts}
+    container_name: hugo-redkb-dev
+    restart: unless-stopped
+    command: >
+      server -D --bind 0.0.0.0
+      --appendPort=false
+      --baseURL ${HUGO_BASE_URL:-http://127.0.0.1:1313}/
+    ports:
+      - ${HUGO_PORT:-1313}:1313
+    volumes:
+      - ${SITE_DIR:-../..}:/src
+      - ${HUGO_CACHE_DIR:-hugo_cache_dev}:/tmp/hugo_cache
