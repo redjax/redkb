@@ -1,7 +1,7 @@
 ---
 title: "Context managers"
 date: 2024-07-22T20:55:13-04:00
-draft: true
+draft: false
 weight: 10
 keywords: []
 tags:
