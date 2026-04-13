@@ -34,3 +34,31 @@ keywords: []
 tags: []
 ---
 ```
+
+### Running the dev server
+
+Hugo can serve this site in "development mode," with hot reloading and optionally rendering page drafts. The command is:
+
+```shell
+hugo server --bind 0.0.0.0 --port 1313 --baseURL http://localhost:1313 --appendPort=false [-D] [--buildFuture]
+```
+
+The `--bind` address serves the site on all interfaces to make it accessible at `http://127.0.0.1:1313`/`http://localhost:1313`, `http://192.168.1.xxx:1313`, or behind a DNS name like `http://computername.home:1313`.
+
+`--port` controls which port Hugo will serve the site on (the default is `:1313`).
+
+`--baseURL` tells the Hugo site what URL to use for hotlinks. In development, you can just use the machine's IP address, or the local loopback.
+
+`-D` tells Hugo to build and serve pages that have `draft: true`.
+
+`--buildFuture` tells Hugo to build pages that have a `publishDate` in the future.
+
+You an also use the [`serve.sh` script](./scripts/hugo/serve.sh). Call it with `-D` to serve draft pages.
+
+### Run dev server Docker container
+
+If you have Docker installed, you can serve the development site using [the Docker Compose dev stack](./.containers/dev/). From the root of the repository, run:
+
+```shell
+docker compose -f .containers/dev/compose.yml up -d --build
+```
