@@ -1,12 +1,8 @@
 FROM hugomods/hugo:exts AS builder
-
 WORKDIR /src
 
-## Copy Hugo site files & config
 COPY archetypes/ archetypes/
-# COPY assets/ assets/
 COPY content/ content/
-# COPY layouts/ layouts/
 COPY static/ static/
 COPY data/ data/
 COPY i18n/ i18n/
