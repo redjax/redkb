@@ -1,7 +1,7 @@
 ---
 title: One-liners
 date: 2024-10-23T00:00:00-00:00
-draft: true
+draft: false
 weight: 0
 keywords: []
 tags:

@@ -1,7 +1,7 @@
 ---
 title: "Rewrite git history"
 date: 2024-11-14T00:00:00-00:00
-draft: true
+draft: false
 weight: 20
 keywords: []
 tags:

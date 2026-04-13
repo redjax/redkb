@@ -1,7 +1,7 @@
 ---
 title: "Tips & Tricks"
 date: 2025-01-06T00:00:00-00:00
-draft: true
+draft: false
 weight: 4
 keywords: []
 tags:

@@ -1,7 +1,7 @@
 ---
 title: "Dataclasses"
 date: 2024-04-23T00:00:00-00:00
-draft: true
+draft: false
 weight: 4
 keywords: []
 tags:

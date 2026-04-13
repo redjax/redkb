@@ -1,7 +1,7 @@
 ---
 title: "VS Code"
 date: 2024-07-23T00:00:00-00:00
-draft: true
+draft: false
 weight: 10
 keywords: []
 tags:

@@ -1,7 +1,7 @@
 ---
 title: "Setup"
 date: 2025-09-01T00:00:00-00:00
-draft: true
+draft: false
 weight: 30
 keywords: []
 tags:
