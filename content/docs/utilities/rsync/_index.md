@@ -1,7 +1,7 @@
 ---
 title: "Rsync"
 date: 2024-11-24T00:00:00-00:00
-draft: true
+draft: false
 weight: 2
 keywords: []
 tags:
