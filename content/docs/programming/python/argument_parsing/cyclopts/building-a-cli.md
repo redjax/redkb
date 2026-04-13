@@ -1,7 +1,7 @@
 ---
 title: "Building a CLI"
 date: 2025-01-08T00:00:00-00:00
-draft: true
+draft: false
 weight: 10
 keywords: []
 tags:
