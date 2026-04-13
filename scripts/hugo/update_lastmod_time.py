@@ -22,16 +22,19 @@ DATE_KEYS = ("lastmod", "date", "publishDate")
 
 def git_last_commit_iso(path: Path) -> str | None:
     """Get last Git commit timestamp for file."""
-    r = subprocess.run(
-        ["git", "log", "-1", "--format=%cI", "--", str(path)],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    try:
+        r = subprocess.run(
+            ["git", "log", "-1", "--format=%cI", "--", str(path)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
 
-    ts = r.stdout.strip()
+        ts = r.stdout.strip()
 
-    return ts or None
+        return ts or None
+    except Exception as exc:
+        raise
 
 
 def format_utc(dt: datetime) -> str:
@@ -154,8 +157,12 @@ def main():
         if not path.is_file() or path.suffix.lower() not in {".md", ".markdown"}:
             continue
 
-        ts = git_last_commit_iso(path)
-        log.debug(f"{path} timestamp: {ts}")
+        try:
+            ts = git_last_commit_iso(path)
+            log.debug(f"{path} timestamp: {ts}")
+        except Exception as exc:
+            log.error(f"Failed extracting timestamp from file: {path}, details: {exc}")
+            continue
 
         if not ts:
             continue
