@@ -1,4 +1,0 @@
-[tools]
-python = "3.11"
-direnv = "latest"
-uv = "latest"
