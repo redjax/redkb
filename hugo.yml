@@ -3,7 +3,10 @@ baseURL: https://example.com
 title: redkb
 
 ## Parse git commit
-enableGitInfo: true
+#  Note: This does not work with Docker unless you copy the whole
+#  .git dir into the container. Instead, use a script or manually
+#  set/update the `lastmod` frontmatter value in each file.
+enableGitInfo: false
 
 outputs:
   page: [html, markdown]
