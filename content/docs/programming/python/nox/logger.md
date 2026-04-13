@@ -1,7 +1,7 @@
 ---
 title: "Configure a logger for nox"
 date: 2024-08-26T00:00:00-00:00
-draft: true
+draft: false
 weight: 10
 keywords: []
 tags:
