@@ -1,7 +1,7 @@
 ---
 title: "Writing Dockerfiles"
 date: 2025-01-05T00:00:00-00:00
-draft: true
+draft: false
 weight: 1
 keywords: []
 tags:
