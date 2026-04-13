@@ -7,7 +7,6 @@ keywords: []
 tags:
   - source-control
   - git
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 Snippets and scripts for `git`, for Bash and PowerShell.

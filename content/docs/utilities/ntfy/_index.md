@@ -7,7 +7,6 @@ keywords: []
 tags:
   - util
   - ntfy
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 [Ntfy](https://ntfy.sh) is a PUB/SUB for sending/receiving push notifications. It uses simple HTTP requests, making it highly flexible and portable, and [can be self-hosted easily with Docker](https://docs.ntfy.sh/install/#docker).

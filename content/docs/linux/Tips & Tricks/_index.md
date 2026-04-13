@@ -11,7 +11,6 @@ tags:
   - debian
   - fedora
   - arch
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 Miscellaneous Linux tips & tricks. If an example would only work on a specific OS (i.e. Debian-family only), there will be a message stating so; otherwise, these commands should work across different Linux OSes.

@@ -8,7 +8,6 @@ tags:
   - util
   - rsync
   - file-transfer
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 [`rsync`](https://www.man7.org/linux/man-pages/man1/rsync.1.html) is a useful utility for synchronizing files. It can synch between hosts with SSH, locally between 2 directories, and more. A hosted version exists at [`rsync.net`](https://rsync.net), offering a reliable, flexible solution for synchronizing files to a trusted remote.

@@ -8,7 +8,6 @@ tags:
   - util
   - restic
   - backup
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 [Restic](https://restic.net) is a backup utility written in Go. The tool is fast & relatively simple to setup & script, making it useful for per-machine backups.

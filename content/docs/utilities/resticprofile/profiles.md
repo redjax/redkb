@@ -8,7 +8,6 @@ tags:
   - util
   - restic
   - resticprofile
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 `resticprofile` operates off of YAML files that define backup "profiles" for Restic. [Read more about profile configuration in the `resticprofile` Getting Started docs](https://creativeprojects.github.io/resticprofile/configuration/getting_started/index.html).

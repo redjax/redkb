@@ -7,7 +7,6 @@ keywords: []
 tags:
   - util
   - alacritty
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 <!-- <p align="center">

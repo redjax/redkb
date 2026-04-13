@@ -8,7 +8,6 @@ tags:
   - util
   - restic
   - cheatsheet
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 The cheat sheets below provide a quick guide for things you might already know but forget the commands/variable names.

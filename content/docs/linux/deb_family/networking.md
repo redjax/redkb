@@ -8,7 +8,6 @@ tags:
   - linux
   - debian
   - networking
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 ## Set a static IP
