@@ -6,7 +6,6 @@ weight: 10
 keywords: []
 tags:
   - python
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 > [!TODO]

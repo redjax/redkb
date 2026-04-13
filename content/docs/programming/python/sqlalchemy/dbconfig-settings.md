@@ -8,7 +8,6 @@ tags:
   - python
   - sqlalchemy
   - database
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 I use a Python `dataclass` to store my database settings. The `DBSettings` class below accepts SQLAlchemy parameters for a database connection, and handles getting session pools, engines, and more using class methods.

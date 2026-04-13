@@ -8,7 +8,6 @@ tags:
   - snippets
   - powershell
   - one-liners
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 Some Powershell commands can be written as a "one-liner."

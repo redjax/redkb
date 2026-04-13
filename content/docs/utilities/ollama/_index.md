@@ -9,7 +9,6 @@ tags:
   - ollama
   - ai
   - llm
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 [Ollama](https://ollama.com) is an open-source app that lets you create, run, and share large language models (LLMs) locally with a CLI for Mac and Linux. You can also install ollama on Windows, but Unix support is better (as of 11/11/24).

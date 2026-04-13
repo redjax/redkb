@@ -7,5 +7,4 @@ keywords: []
 tags:
   - util
   - restic
-lastmod: "2026-04-11T00:15:51Z"
 ---

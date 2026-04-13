@@ -8,7 +8,6 @@ tags:
   - util
   - vscode
   - ide
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 You can export a list of your VSCode extensions to a text file, then loop that text file to install the extensions. This is how plugins like VSCode's "settings sync" work, but you can do it manually.

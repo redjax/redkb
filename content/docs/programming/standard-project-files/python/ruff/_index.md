@@ -9,7 +9,6 @@ tags:
   - linting
   - formatting
   - ruff
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 [`Ruff`](https://github.com/astral-sh/ruff)...is...awesome! It's hard to summarize, Ruff describes itself as "An extremely fast Python linter and code formatter, written in Rust." It has replaced `isort`, `flake8`, and `black` in my environments.

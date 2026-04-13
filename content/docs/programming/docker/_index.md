@@ -6,7 +6,6 @@ weight: 10
 keywords: []
 tags:
  - docker
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 [Docker](https://www.docker.com/) is an engine for running containerized apps. It's a powerful tool for development, and for simplifying deployment of production applications.
