@@ -153,6 +153,8 @@ def update_front_matter(text: str, ts: str) -> str:
 def main():
     log.info(f"Scanning path for Markdown files: {root}")
 
+    count_updated = 0
+
     for path in root.rglob("*"):
         if not path.is_file() or path.suffix.lower() not in {".md", ".markdown"}:
             continue
@@ -173,6 +175,11 @@ def main():
         if updated != original:
             log.info(f"Updating lastmod value for file: {path}")
             path.write_text(updated, encoding="utf-8")
+
+            count_updated += 1
+
+    if count_updated == 0:
+        log.info("No files were updated")
 
 
 if __name__ == "__main__":
