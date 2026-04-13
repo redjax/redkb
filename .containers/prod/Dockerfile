@@ -8,6 +8,8 @@ COPY archetypes/ archetypes/
 COPY content/ content/
 # COPY layouts/ layouts/
 COPY static/ static/
+COPY data/ data/
+COPY i18n/ i18n/
 COPY hugo.yml go.mod go.sum .hugo_build.lock ./
 
 ARG HUGO_BASEURL=http://localhost/
