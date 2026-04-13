@@ -7,7 +7,7 @@ keywords: []
 tags:
   - python
   - nox
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 Adding a logger to your `noxfile.py` is very helpful when debugging, and also to see what's going on in a pipeline (for example).

@@ -7,7 +7,7 @@ tags:
   - snippets
   - bash
   - scripts
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 Re-usable Bash scripts. Copy/paste the contents of a script below into a `.sh` file and run `chmod +x <name-of-file>.sh` to make it executable.

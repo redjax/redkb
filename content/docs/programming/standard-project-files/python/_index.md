@@ -7,7 +7,7 @@ keywords: []
 tags:
   - python
   - reference
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 Copy/paste-able code, or snippets for files like `pyproject.toml` and `noxfile.py`

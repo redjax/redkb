@@ -8,7 +8,7 @@ tags:
   - python
   - sqlite
   - database
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 Python provides native support for SQLite database operations using the stdlib [`sqlite3` module](https://docs.python.org/3/library/sqlite3.html).

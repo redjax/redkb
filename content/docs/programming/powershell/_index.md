@@ -7,7 +7,7 @@ keywords: []
 tags:
   - windows
   - powershell
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 - Read about enhancing your Powershell sessions with a [profile](/docs/programming/powershell/profiles/).

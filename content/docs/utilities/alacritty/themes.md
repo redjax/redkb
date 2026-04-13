@@ -7,7 +7,7 @@ keywords: []
 tags:
   - util
   - alacritty
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 You can customize the appearance/theme of Alacritty by cloning the [alacrity-theme Github repository](https://github.com/alacritty/alacritty-theme).

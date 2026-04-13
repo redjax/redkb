@@ -7,7 +7,7 @@ keywords: []
 tags:
   - util
   - restic
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 `restic` can be used as a CLI utility that you run manually when you want to create backups, but you can also script its usage, making it great for scheduled backups. The documentation in this section is not complete, but the Restic docs have [an entry for scripting `restic`](https://restic.readthedocs.io/en/latest/075_scripting.html) that is worth reading.

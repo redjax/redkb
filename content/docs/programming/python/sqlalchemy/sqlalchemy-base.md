@@ -8,7 +8,7 @@ tags:
   - python
   - sqlalchemy
   - database
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 The SQLAlchemy [`DeclarativeBase`](https://docs.sqlalchemy.org/en/20/orm/declarative_styles.html) class is the "base" class all of your SQLalchemy table model classes should inherit from. When describing a new entity, you intialize the class like:

@@ -9,7 +9,7 @@ tags:
   - alembic
   - database
   - reference
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 After initializing alembic (i.e. `alembic init alembic`), a file `alembic/env.py` will be created. This file can be edited to include your project's models and SQLAlchemy `Base`.

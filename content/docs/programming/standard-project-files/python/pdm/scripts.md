@@ -10,7 +10,7 @@ tags:
   - pdm
   - reference
   - scripts
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 In your `pyproject.toml` file, add a section `[tool.pdm.scripts]`, then copy/paste whichever scripts you want to add to your project.

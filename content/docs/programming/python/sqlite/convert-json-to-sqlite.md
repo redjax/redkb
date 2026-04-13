@@ -8,7 +8,7 @@ tags:
   - python
   - sqlite
   - database
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 The following scripts can be used to convert arbitrary JSON data to tables in a SQLite database. Both scripts also provide a CLI, run them with `--help` to see usage. Both scripts perform the following actions:

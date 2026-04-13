@@ -6,7 +6,7 @@ weight: 5
 keywords: []
 tags:
   - python
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 The Python [`logging`](https://docs.python.org/3/library/logging.html) module is a powerful, highly configurable logger for applications. The downside to `logging` is that it can be a little difficult to wrap your head around at first, and there are [many, many, *many* ways to configure it](https://docs.python.org/3/library/logging.config.html).

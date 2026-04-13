@@ -7,7 +7,7 @@ keywords: []
 tags:
   - pre-commit
   - reference
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 Some [`pre-commit`](https://pre-commit.com/) hooks I use frequently.

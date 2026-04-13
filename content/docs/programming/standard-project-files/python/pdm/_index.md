@@ -9,7 +9,7 @@ tags:
   - package-manager
   - pdm
   - reference
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 [`pdm`](https://pdm-project.org/) is a fantastic tool for managing environments, dependencies, builds, and package publishing. PDM is similar in functionality to [`poetry`](https://python-poetry.org), which I have also used and liked. My main reasons for preferring `pdm` over `poetry` are:

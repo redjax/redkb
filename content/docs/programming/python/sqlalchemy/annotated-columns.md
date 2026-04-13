@@ -8,7 +8,7 @@ tags:
   - python
   - sqlalchemy
   - database
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 - 📄 [SQLAlchemy docs: Mapping whole column declarations to Python types](https://docs.sqlalchemy.org/en/20/orm/declarative_tables.md#mapping-whole-column-declarations-to-python-types)

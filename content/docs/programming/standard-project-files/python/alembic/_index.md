@@ -9,7 +9,7 @@ tags:
   - alembic
   - database
   - reference
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 - Install `alembic` with `pip install alembic` (or some equivalent package install command)

@@ -7,7 +7,7 @@ keywords: []
 tags:
   - windows
   - powershell
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 > A module is a self-contained reusable unit that can contain cmdlets, providers, functions, variables, and other types of resources that can be imported as a single unit.

@@ -6,7 +6,7 @@ weight: 1
 keywords: []
 tags:
   - docker
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 A `Dockerfile` is how you define your Docker container. You can write a `Dockerfile` that builds an application (Python, Node, .NET, etc) in the container's environment, where you can provide build arguments & environment variables, and run the resulting program within the container. This eliminates the need to install & maintain build & runtime tools on your host.

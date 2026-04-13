@@ -8,7 +8,7 @@ tags:
   - snippets
   - bash
   - scripts
-lastmod: "2026-04-13T04:26:49Z"
+lastmod: "2026-04-13T04:44:39Z"
 ---
 
 To parse CLI args (i.e. `-p/--path /some/path` or `-n/--name myname`), you can write a `while` loop that iterates over your args. You use `$#` to get the number of CLI args, and if there are any, a `case` statement to do things with the inputs.
