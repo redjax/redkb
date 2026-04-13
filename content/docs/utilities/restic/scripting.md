@@ -1,7 +1,7 @@
 ---
 title: "Scripts & schedules"
 date: 2025-09-01T00:00:00-00:00
-draft: true
+draft: false
 weight: 60
 keywords: []
 tags:
