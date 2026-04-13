@@ -8,12 +8,12 @@ from pathlib import Path
 import subprocess
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 ## Path to content root
 root: Path = Path(sys.argv[1] if len(sys.argv) > 1 else "content")
 
-## Fallback date keys if lastModified frontmatter is missing
+## Fallback date keys if lastmod frontmatter is missing
 DATE_KEYS = ("lastmod", "date", "publishDate")
 
 
@@ -31,9 +31,25 @@ def git_last_commit_iso(path: Path) -> str | None:
     return ts or None
 
 
+def format_utc(dt: datetime) -> str:
+    """Convert a datetime to UTC timezone."""
+    return (
+        dt.astimezone(timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
+
+
 def parse_iso(ts: str) -> datetime | None:
     try:
-        return datetime.fromisoformat(ts.replace("Z", "+00:00"))
+        dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+
+        return dt.astimezone(timezone.utc)
+
     except ValueError:
         return None
 
@@ -123,7 +139,7 @@ def update_front_matter(text: str, ts: str) -> str:
     if existing_dt is not None and new_dt <= existing_dt:
         return text
 
-    fm = set_fm_value(fm, "lastmod", ts)
+    fm = set_fm_value(fm, "lastmod", format_utc(new_dt))
 
     return "---\n" + fm.strip() + "\n---\n" + body
 
