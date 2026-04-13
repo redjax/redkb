@@ -8,8 +8,13 @@ from pathlib import Path
 import subprocess
 import re
 import sys
+from datetime import datetime
 
+## Path to content root
 root: Path = Path(sys.argv[1] if len(sys.argv) > 1 else "content")
+
+## Fallback date keys if lastModified frontmatter is missing
+DATE_KEYS = ("lastmod", "date", "publishDate")
 
 
 def git_last_commit_iso(path: Path) -> str | None:
@@ -26,31 +31,106 @@ def git_last_commit_iso(path: Path) -> str | None:
     return ts or None
 
 
-def update_front_matter(text: str, ts: str) -> str:
-    """Update Hugo page frontmatter."""
+def parse_iso(ts: str) -> datetime | None:
+    try:
+        return datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def get_front_matter(text: str) -> tuple[str, str, str]:
+    """Find Hugo frontmatter in file.
+
+    Description:
+        Each Hugo file has 'frontmatter' defined at the top, like:
+
+        ```markdown
+        ---
+        title: "Page Title"
+        draft: true
+        weight: 0
+        ---
+        ```
+
+        This function detects the start and end `---`.
+    """
     if not text.startswith("---\n"):
-        return text
+        return None, None, None
 
     end = text.find("\n---\n", 4)
 
     if end == -1:
-        return text
+        return None, None, None
 
     fm = text[4:end]
     body = text[end + 5 :]
 
-    if re.search(r"(?m)^lastmod\s*:", fm):
-        fm = re.sub(r"(?m)^lastmod\s*:\s*.*$", f'lastmod: "{ts}"', fm)
+    return fm, body, text[: end + 5]
 
-    else:
-        fm = fm.rstrip() + f'\nlastmod: "{ts}"'
+
+def get_fm_value(fm: str, key: str) -> str | None:
+    """Find a specific value in frontmatter string."""
+    m = re.search(rf"(?m)^{re.escape(key)}\s*:\s*([\"']?)(.+?)\1\s*$", fm)
+
+    return m.group(2).strip() if m else None
+
+
+def set_fm_value(fm: str, key: str, value: str) -> str:
+    """Set value of a specific value in frontmatter string."""
+    if re.search(rf"(?m)^{re.escape(key)}\s*:", fm):
+        return re.sub(rf"(?m)^{re.escape(key)}\s*:\s*.*$", f'{key}: "{value}"', fm)
+
+    return fm.rstrip() + f'\n{key}: "{value}"'
+
+
+def current_page_time(fm: str) -> datetime | None:
+    """Find a date key to use as a reference when determining if a file has changed."""
+
+    ## Iterate over possible keys to find one that exists in frontmatter
+    for key in DATE_KEYS:
+        v = get_fm_value(fm, key)
+
+        if v:
+            dt = parse_iso(v)
+
+            ## Return datetime from frontmatter
+            if dt:
+                return dt
+
+    return None
+
+
+def update_front_matter(text: str, ts: str) -> str:
+    """Set/update lastModified frontmatter value for all content files.
+
+    Description:
+        Finds a date string in the file's frontmatter, checks git history to see
+        if that file has changed, and bump the lastModified date in the frontmatter
+        to match git history.
+    """
+    fm, body, _ = get_front_matter(text)
+
+    if fm is None:
+        return text
+
+    new_dt = parse_iso(ts)
+
+    if new_dt is None:
+        return text
+
+    existing_dt = current_page_time(fm)
+
+    if existing_dt is not None and new_dt <= existing_dt:
+        return text
+
+    fm = set_fm_value(fm, "lastmod", ts)
 
     return "---\n" + fm.strip() + "\n---\n" + body
 
 
 def main():
     for path in root.rglob("*"):
-        if path.suffix.lower() not in {".md", ".markdown"} or not path.is_file():
+        if not path.is_file() or path.suffix.lower() not in {".md", ".markdown"}:
             continue
 
         ts = git_last_commit_iso(path)
