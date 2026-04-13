@@ -6,7 +6,7 @@ title: redkb
 #  Note: This does not work with Docker unless you copy the whole
 #  .git dir into the container. Instead, use a script or manually
 #  set/update the `lastmod` frontmatter value in each file.
-enableGitInfo: false
+enableGitInfo: true
 
 outputs:
   page: [html, markdown]
