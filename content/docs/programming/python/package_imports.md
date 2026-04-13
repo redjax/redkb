@@ -6,7 +6,6 @@ weight: 3
 keywords: []
 tags:
   - python
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 When developing Python packages/modules, you will often want to break your functions into multiple scripts and sub-modules. You will use the `__init__.py` files throughout the package to import functionality from the `.py` script files you write.

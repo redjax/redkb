@@ -1,6 +1,8 @@
 FROM hugomods/hugo:exts AS builder
 WORKDIR /src
 
+RUN apk add --no-cache git
+
 COPY archetypes/ archetypes/
 COPY content/ content/
 COPY static/ static/
@@ -10,11 +12,14 @@ COPY hugo.yml go.mod go.sum .hugo_build.lock ./
 
 ARG HUGO_BASEURL=http://localhost/
 
-RUN hugo \
-  --minify \
-  --gc \
-  --baseURL="${HUGO_BASEURL}" \
-  --destination /output/public
+RUN --mount=type=bind,source=.,target=/workdir,readonly \
+  cp -a /workdir/.git /src/.git && \
+  hugo \
+    --minify \
+    --gc \
+    --enableGitInfo \
+    --baseURL="${HUGO_BASEURL}" \
+    --destination /output/public
 
 FROM caddy:alpine
 

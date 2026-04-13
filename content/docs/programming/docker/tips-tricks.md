@@ -6,7 +6,6 @@ weight: 4
 keywords: []
 tags:
   - docker
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 This page has tips & tricks for things I've run into with Docker.

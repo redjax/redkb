@@ -7,7 +7,6 @@ keywords: []
 tags:
   - docker
   - docker-compose
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 [Docker Compose](https://docs.docker.com/compose/) is a container orchestrator for Docker. A container can be built & executed individually, but an orchestrator can handle all of the build & deployment implementation details for the container. It can handle the container's networking, volume mounts (where data is stored), building the container, running it, environment variables for the container, links to other containers, and more.

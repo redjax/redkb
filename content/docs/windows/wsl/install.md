@@ -7,7 +7,6 @@ keywords: []
 tags:
   - windows
   - wsl
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 - [📚 Microsoft Docs: Install WSL](https://learn.microsoft.com/en-us/windows/wsl/install)

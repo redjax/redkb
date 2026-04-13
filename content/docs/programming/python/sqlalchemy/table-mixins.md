@@ -8,7 +8,6 @@ tags:
   - python
   - sqlalchemy
   - database
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 SQLAlchemy supports "mixins," which are partial classes that define functionality when multi-inheritance is used to declare a table class. An example is the `TablenameMixin` class, which automatically creates a table name based on the class's name (i.e. a class named `UserComment` would be named `usercomments`).

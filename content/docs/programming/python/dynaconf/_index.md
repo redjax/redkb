@@ -7,7 +7,6 @@ keywords: []
 tags:
   - python
   - dynaconf
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 [Dynaconf](https://www.dynaconf.com) is a tool for managing app configurations. The tool is inspired by the [12-factor application guide](https://12factor.net/config), and is focused on enabling separation of your app's configuration from the business logic.

@@ -7,7 +7,6 @@ keywords: []
 tags:
   - snippets
   - reference
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 Code snippets with little-to-no explanation.

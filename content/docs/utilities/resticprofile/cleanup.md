@@ -8,7 +8,6 @@ tags:
   - util
   - restic
   - resticprofile
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 When using `resticprofile` for backups, regular cleanup of old snapshots and repository pruning is essential to keep the backup repository manageable and avoid running out of storage.

@@ -8,7 +8,6 @@ tags:
   - util
   - logrotate
   - linux
-lastmod: "2026-04-13T04:15:27Z"
 ---
 
 [Logrotate](https://wiki.archlinux.org/title/Logrotate) is a Linux utility for rotating logs by reading policies defined in `/etc/logrotate.d/`. You can read more about setting up logrotate in [this RedHat blog entry](https://www.redhat.com/en/blog/setting-logrotate).
