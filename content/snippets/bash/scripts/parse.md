@@ -1,7 +1,7 @@
 ---
 title: Parse args
 date: 2025-09-02T00:00:00-00:00
-draft: true
+draft: false
 weight: 0
 keywords: []
 tags:
