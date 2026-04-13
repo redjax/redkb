@@ -6,6 +6,13 @@ toc: false
 weight: 0
 ---
 
+> [!NOTE] Migrating to Hugo
+> I am currently refactoring the documentation, moving from an [MkDocs site](https://github.com/mkdocs/mkdocs) to a [Hugo site](https://gohugo.io) with the [Hextra theme](https://github.com/imfing/hextra). The original documentation site is [archived in a branch in the Github repo](https://github.com/redjax/redkb/tree/archive/2026-04-09).
+>
+> I have finished migrating most of the pages as of April 12th 2026, but I've set all pages to "draft" mode while I finish converting them to Hugo syntax. I am also pruning some pages that I either never started or don't maintain in any way.
+>
+> I will remove this message once the migration is complete.
+
 Documentation from my notes on a range of computing topics. Check the [tags section](/tags) to quickly find articles on a specific topic. You can also view documentation pages in chronological order by visiting [the archives](/archives). See a term you don't recognize? Check the [site glossary](/glossary).
 
 > [!WARNING]
