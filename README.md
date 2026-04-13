@@ -1,13 +1,16 @@
 # RedKB - My Personal Knowledgebase
 
-> [!INFO]
-> Refactor in progress.
->
-> This repository was originally built with MkDocs and Material for MkDocs. Material is [abandoning MkDocs](https://github.com/squidfunk/mkdocs-material/issues/8523) in favor of their own site generator, so I want to migrate to something less opinionated.
->
-> While this message is in place, this branch is not ready to be merge.
+A collection of my notes and code snippets, presented in technical documentation form.
 
-## Creating a new page
+## Migrating to Hugo
+
+This repository was originally built with MkDocs and Material for MkDocs. Material is [abandoning MkDocs](https://github.com/squidfunk/mkdocs-material/issues/8523) in favor of their own site generator, so I want to migrate to something less opinionated.
+
+I put all pages in "draft mode," and published them as I finished refactoring them for Hugo. I did not migrate all pages, there were a number of placeholder pages I never got around to writing, and did not see the point in migrating them to Hugo.
+
+## Developing
+
+### Creating a new page
 
 ```shell
 hugo new content path/to/content/index.md
