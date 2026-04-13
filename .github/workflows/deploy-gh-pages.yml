@@ -2,10 +2,15 @@
 name: Deploy Hugo site to Github Pages
 
 on:
-  # pull_request:
-  #   branches: ["main"]
-  # paths:
-  #   - 'content/**/*.md'
+  pull_request:
+    branches: [main]
+    paths:
+      - archetypes/**
+      - content/**
+      - data/**
+      - i18n/**
+      - static/**
+      - hugo.yml
 
   workflow_dispatch:
 
