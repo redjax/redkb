@@ -9,6 +9,9 @@ import subprocess
 import re
 import sys
 from datetime import datetime, timezone
+import logging
+
+log = logging.getLogger(__name__)
 
 ## Path to content root
 root: Path = Path(sys.argv[1] if len(sys.argv) > 1 else "content")
@@ -145,11 +148,14 @@ def update_front_matter(text: str, ts: str) -> str:
 
 
 def main():
+    log.info(f"Scanning path for Markdown files: {root}")
+
     for path in root.rglob("*"):
         if not path.is_file() or path.suffix.lower() not in {".md", ".markdown"}:
             continue
 
         ts = git_last_commit_iso(path)
+        log.debug(f"{path} timestamp: {ts}")
 
         if not ts:
             continue
@@ -158,8 +164,15 @@ def main():
         updated = update_front_matter(original, ts)
 
         if updated != original:
+            log.info(f"Updating lastmod value for file: {path}")
             path.write_text(updated, encoding="utf-8")
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        level="INFO",
+        format="%(asctime)s [%(levelname)s] :: %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+
     main()
