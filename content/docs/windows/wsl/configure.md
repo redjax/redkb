@@ -7,6 +7,7 @@ keywords: []
 tags:
   - windows
   - wsl
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 WSL configuration is done in 1 of 2 places:

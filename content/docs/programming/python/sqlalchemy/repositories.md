@@ -8,6 +8,7 @@ tags:
   - python
   - sqlalchemy
   - database
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 A database repository standardizes operations for a given entity. The repository is a class that contains methods like `.add()`, `.remove()`, `.get(id: int)`, etc. Each repository is meant to control a single SQLAlchemy table class (a model class that inherits from SQLAlchemy's `Base` object).

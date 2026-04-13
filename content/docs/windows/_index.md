@@ -5,6 +5,7 @@ draft: false
 weight: 20
 keywords: []
 tags: []
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 Notes/guides for Windows troubleshooting, administration, and development.

@@ -7,6 +7,7 @@ keywords: []
 tags:
   - windows
   - wsl
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 Windows Subsystem for Linux (WSL) is a utility for running Linux under Windows. It's an impressive project that works very well, allowing you to have a nearly fully-featured Bash prompt (including systemd, if enabled) on a Windows machine.

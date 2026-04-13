@@ -7,6 +7,7 @@ keywords: []
 tags:
   - docs
   - readthedocs
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 Set up auto-builds of documentation sites and publish to [`readthedocs`](https://readthedocs.org/).

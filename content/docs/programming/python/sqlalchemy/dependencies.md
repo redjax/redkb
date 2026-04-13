@@ -8,6 +8,7 @@ tags:
   - python
   - sqlalchemy
   - database
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 Dependencies for your database code. These can be context manager classes/functions, initialized objects, and other things to assist you interacting with the database.

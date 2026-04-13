@@ -4,6 +4,7 @@ summary: Linux notes & snippets
 draft: false
 date: 2024-02-14T00:00:00-00:00
 weight: 10
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 Check out the [Bash snippets page](/snippets/bash) for small bits of Bash to help you write scripts & use the shell.

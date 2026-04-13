@@ -4,6 +4,7 @@ draft: false
 date: 2024-02-02T00:00:00-00:00
 toc: false
 weight: 0
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 > [!NOTE] Migrating to Hugo

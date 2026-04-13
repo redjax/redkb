@@ -7,6 +7,7 @@ keywords: []
 tags:
   - util
   - ansible
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 Inventories instruct Ansible on how to interact with your infrastructure, describing things like the path to a Python interpreter on the remote host, the SSH user Ansible should connect as and which SSH key to use, variables for your playbooks and roles, as well as custom/arbitrary variable declaration for things like software versions (if a play/role installs a specific version of a piece of software), secrets/tokens, & more.

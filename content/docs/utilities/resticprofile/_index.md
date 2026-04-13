@@ -9,6 +9,7 @@ tags:
   - restic
   - resticprofile
   - backup
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 [`resticprofile`](https://github.com/creativeprojects/resticprofile) is a wrapper for `restic` that manages your backups as "profiles". You can split your backups into separate YAML files, or use the standard `~/profiles.yaml` to store all of your profiles.

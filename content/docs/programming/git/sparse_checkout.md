@@ -7,6 +7,7 @@ keywords: []
 tags:
   - source-control
   - git
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 When working with large repositories, it can be difficult to or destructive to work on multiple branches. As you checkout code to modify things in one part of the repository, you can/will affect other areas of the repository.

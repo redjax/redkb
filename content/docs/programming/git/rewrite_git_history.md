@@ -7,6 +7,7 @@ keywords: []
 tags:
   - source-control
   - git
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 If you have multiple `git` profiles, you will eventually mistakenly push a commit from the wrong author. For example, if you have a work and personal git account, and you write a quick patch for a personal project and commit the code from your work account (you shouldn't be using your personal account on a work device!), your "collaborators" on Github will show your work account.

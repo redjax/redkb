@@ -8,6 +8,7 @@ tags:
   - util
   - vscode
   - ide
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 I've compiled some lists of VSCode extensions I use frequently or think are worth recommending. You can copy/paste one of the lists below into a file, i.e. `vscode-extensions.list`, then install the list using [one of the vscode extension import commands](/docs/utilities/vscode/import-export-extensions#import-vscode-extensions).

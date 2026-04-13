@@ -6,6 +6,7 @@ weight: 10
 keywords: []
 tags:
   - python
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 The [`rich`](https://github.com/Textualize/rich) package helps make console/terminal output look nicer. It has colorization, animations, and more.

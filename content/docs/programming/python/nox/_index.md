@@ -7,6 +7,7 @@ keywords: []
 tags:
   - python
   - nox
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 [`nox`](https://nox.thea.codes/en/stable/) is a very useful utility for running tasks in a project. By creating a `noxfile.py` and adding `nox` sessions to it, you can automate tasks like building the project, exporting `requirements.txt`, and linting code (and more).

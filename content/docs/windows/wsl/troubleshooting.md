@@ -7,6 +7,7 @@ keywords: []
 tags:
   - windows
   - wsl
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 When I run into issues with WSL and solve them, I add the problem & solution to this page. Notes may be sparse, I normally only care about what I need to copy/paste to get things up and running.

@@ -8,6 +8,7 @@ tags:
   - util
   - alacritty
   - linux
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 ## alacritty.toml config file

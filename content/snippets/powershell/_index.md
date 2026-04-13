@@ -8,6 +8,7 @@ tags:
   - snippets
   - powershell
   - reference
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 Code snippets & example script parts for Powershell.

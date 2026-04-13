@@ -6,6 +6,7 @@ weight: 30
 tags:
     - linux
     - bash
+lastmod: "2026-04-13T04:15:27Z"
 ---
 
 ## Bash Cheat Sheet
