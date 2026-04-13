@@ -3,7 +3,7 @@
   email {$CADDY_EMAIL}
 }
 
-{$CADDY_SITE_ADDRESS} {
+{$CADDY_SITE_ADDRESS:-http://localhost:80} {
   root * /usr/share/caddy
   file_server
   encode gzip
