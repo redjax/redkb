@@ -6,7 +6,7 @@ weight: 30
 keywords: []
 tags:
   - util
-lastmod: "2026-04-13T04:15:27Z"
+lastmod: "2026-04-13T04:26:49Z"
 ---
 
 Documentation for software utilities, like terminal emulators ([Alacritty](/docs/utilities/alacritty/)), Bash utilities ([`rsync`](/docs/utilities/rsync/), [`ssh`](/docs/utilities/ssh/), etc), and more.

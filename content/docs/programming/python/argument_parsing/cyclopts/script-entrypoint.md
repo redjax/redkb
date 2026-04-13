@@ -6,7 +6,7 @@ weight: 10
 keywords: []
 tags:
   - python
-lastmod: "2026-04-13T04:15:27Z"
+lastmod: "2026-04-13T04:26:49Z"
 ---
 
 It is possible to call your `cyclopts` app from other Python scripts. This can be useful for calling a specific set of arguments in a repeatable way. As an example, we'll create a Python script that prompts a user for their name, then calls the `say_hello()` command of the `cyclopts` app we built above.

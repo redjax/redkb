@@ -8,7 +8,7 @@ tags:
   - util
   - restic
   - resticprofile
-lastmod: "2026-04-13T04:15:27Z"
+lastmod: "2026-04-13T04:26:49Z"
 ---
 
 [pCloud](https://pcloud.com) remote for `resticprofile` via [`rclone`](https://rclone.org/).

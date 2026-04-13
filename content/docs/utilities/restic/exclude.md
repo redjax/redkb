@@ -7,7 +7,7 @@ keywords: []
 tags:
   - util
   - restic
-lastmod: "2026-04-13T04:15:27Z"
+lastmod: "2026-04-13T04:26:49Z"
 ---
 
 *[Restic docs: Excluding files](https://restic.readthedocs.io/en/latest/040_backup.html#excluding-files)*

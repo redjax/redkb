@@ -7,7 +7,7 @@ keywords: []
 tags:
   - windows
   - wsl
-lastmod: "2026-04-13T04:15:27Z"
+lastmod: "2026-04-13T04:26:49Z"
 ---
 
 WSL distributions can be backed up and restored using the `--export` and `--import` flags. This is useful for moving WSL distributions to new machines, creating backups before making modifications, and for restoring from "base" images.

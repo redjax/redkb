@@ -8,7 +8,7 @@ tags:
   - util
   - ansible
   - ssh
-lastmod: "2026-04-13T04:15:27Z"
+lastmod: "2026-04-13T04:26:49Z"
 ---
 
 Ansible uses SSH to connect to remote machines and run tasks. It is advisable to create an SSH key just for executing Ansible playbooks, and an Ansible service account on the remote, i.e. `ansible_svc`. This user account is not meant to be logged into on the remote, but can be granted permissions so Ansible can run and do things like install software, update packages, etc.

@@ -8,7 +8,7 @@ tags:
   - util
   - vscode
   - ide
-lastmod: "2026-04-13T04:15:27Z"
+lastmod: "2026-04-13T04:26:49Z"
 ---
 
 This section has tips, example configurations, guides, & more related to VS Code.

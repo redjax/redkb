@@ -9,7 +9,7 @@ tags:
   - testing
   - pytest
   - reference
-lastmod: "2026-04-13T04:15:27Z"
+lastmod: "2026-04-13T04:26:49Z"
 ---
 
 Some templates/example of `pytest` [`fixtures`](https://docs.pytest.org/en/stable/how-to/fixtures.html)

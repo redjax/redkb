@@ -7,7 +7,7 @@ keywords: []
 tags:
   - snippets
   - reference
-lastmod: "2026-04-13T04:15:27Z"
+lastmod: "2026-04-13T04:26:49Z"
 ---
 
 Some of the scripts on this page are full scripts to accomplish a task, others are snippets you can copy/paste into scripts you're building.
