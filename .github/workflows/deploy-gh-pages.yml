@@ -34,6 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HUGO_VERSION: 0.160.0
+      DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -58,14 +59,27 @@ jobs:
 
       - name: Build with Hugo
         env:
-          ## For maximum backward compatibility with Hugo modules
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
         run: |
+          if [[ -n "$DOMAIN_NAME" ]]; then
+            BASE_URL="https://${DOMAIN_NAME}/"
+          else
+            BASE_URL="${{ steps.pages.outputs.base_url }}/"
+          fi
+
+          echo "Using baseURL: $BASE_URL"
+
           hugo \
             --gc --minify \
             --enableGitInfo \
-            --baseURL "${{ steps.pages.outputs.base_url }}/"
+            --baseURL "$BASE_URL"
+
+      - name: Create CNAME file
+        if: env.DOMAIN_NAME != ''
+        run: |
+          echo "$DOMAIN_NAME" > ./public/CNAME
+          cat ./public/CNAME
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
