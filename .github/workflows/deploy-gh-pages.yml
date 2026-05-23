@@ -98,7 +98,7 @@ jobs:
           path: ./public
 
   deploy:
-    if: github.event_name == 'push' || inputs.deploy == true
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && inputs.deploy == true)
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
