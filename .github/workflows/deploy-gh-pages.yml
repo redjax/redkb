@@ -92,7 +92,7 @@ jobs:
           cat ./public/CNAME
 
       - name: Upload artifact
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || inputs.deploy == true
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
