@@ -1,5 +1,4 @@
----
-name: Deploy Hugo site to Github Pages
+name: Hugo CI and Deploy
 
 on:
   pull_request:
@@ -11,7 +10,15 @@ on:
       - i18n/**
       - static/**
       - hugo.yml
-
+  push:
+    branches: [main]
+    paths:
+      - archetypes/**
+      - content/**
+      - data/**
+      - i18n/**
+      - static/**
+      - hugo.yml
   workflow_dispatch:
 
 permissions:
@@ -19,10 +26,8 @@ permissions:
   pages: write
   id-token: write
 
-## Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-#  However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
 defaults:
@@ -39,7 +44,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          ## fetch all history for .GitInfo and .Lastmod
           fetch-depth: 0
           submodules: recursive
 
@@ -82,11 +86,13 @@ jobs:
           cat ./public/CNAME
 
       - name: Upload artifact
+        if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
 
   deploy:
+    if: github.event_name == 'push'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
