@@ -1,10 +1,13 @@
 ---
 title: "Setup"
-date: 2026-04-10T20:17:31-04:00
-draft: true
+date: 2026-05-23T14:30:00-04:00
+draft: false
 weight: 10
 keywords: []
-tags: []
+tags:
+  - backup
+  - restic
+  - resticprofile
 ---
 
 > [!INFO]
