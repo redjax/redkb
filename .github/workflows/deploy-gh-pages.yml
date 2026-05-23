@@ -1,5 +1,4 @@
----
-name: Deploy Hugo site to Github Pages
+name: Hugo CI and Deploy
 
 on:
   pull_request:
@@ -11,18 +10,30 @@ on:
       - i18n/**
       - static/**
       - hugo.yml
-
+  push:
+    branches: [main]
+    paths:
+      - archetypes/**
+      - content/**
+      - data/**
+      - i18n/**
+      - static/**
+      - hugo.yml
   workflow_dispatch:
+    inputs:
+      deploy:
+        description: Force deploy to Github Pages.
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-## Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-#  However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
 defaults:
@@ -34,11 +45,11 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HUGO_VERSION: 0.160.0
+      DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          ## fetch all history for .GitInfo and .Lastmod
           fetch-depth: 0
           submodules: recursive
 
@@ -58,21 +69,36 @@ jobs:
 
       - name: Build with Hugo
         env:
-          ## For maximum backward compatibility with Hugo modules
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
         run: |
+          if [[ -n "$DOMAIN_NAME" ]]; then
+            BASE_URL="https://${DOMAIN_NAME}/"
+          else
+            BASE_URL="${{ steps.pages.outputs.base_url }}/"
+          fi
+
+          echo "Using baseURL: $BASE_URL"
+
           hugo \
             --gc --minify \
             --enableGitInfo \
-            --baseURL "${{ steps.pages.outputs.base_url }}/"
+            --baseURL "$BASE_URL"
+
+      - name: Create CNAME file
+        if: env.DOMAIN_NAME != ''
+        run: |
+          echo "$DOMAIN_NAME" > ./public/CNAME
+          cat ./public/CNAME
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        if: github.event_name == 'push' || inputs.deploy == true
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./public
 
   deploy:
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && inputs.deploy == true)
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
