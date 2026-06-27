@@ -16,6 +16,8 @@ You can create a logrotate policy for pretty much any file you output logs to, b
 
 Logrotate policies should be defined in files in the `/etc/logrotate.d/` directory.
 
+See the [cheatsheet page](cheatsheet.md) for a [`logrotate` commands cheatsheet](cheatsheet.md#logrotate-cheatsheet) and [example `logrotate` policy files](cheatsheet.md#example-policy-files).
+
 > [!TIP]
 > When creating a logrotate policy file, choose a name that describes the log file it applies to,
 > and create the file at the root of `/etc/logrotate.d/`, don't use subdirectories. There are ways
