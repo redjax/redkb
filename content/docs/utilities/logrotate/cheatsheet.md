@@ -1,7 +1,7 @@
 ---
 title: "Cheatsheet"
 date: 2026-06-27T00:56:48-04:00
-draft: true
+draft: false
 weight: 10
 toc: true
 keywords: []
