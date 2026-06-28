@@ -66,7 +66,9 @@ sudo nmcli connection modify "Wired connection 1" \
 Optional IPv6 equivalent:
 
 ```shell
-sudo nmcli connection modify "Wired connection 1" \  ipv6.dns "fd00::1" \  ipv6.ignore-auto-dns yes
+sudo nmcli connection modify "Wired connection 1" \
+  ipv6.dns "fd00::1" \
+  ipv6.ignore-auto-dns yes
 ```
 
 Restart the connection:
@@ -115,7 +117,8 @@ resolvectl dns
 And test resolution directly through the system resolver:
 
 ```shell
-resolvectl query example.comdig example.com
+resolvectl query example.com
+dig example.com
 ```
 
 > [!NOTE] `dig`
@@ -133,19 +136,14 @@ If DNS resolution does not behave as expected, try the steps below to isolate th
 - Check which DNS servers are actually active:
 
 ```shell
-resolvectl statusresolvectl dns
+resolvectl status
+resolvectl dns
 ```
 
 - Check whether multiple interfaces are providing DNS:
 
 ```shell
 nmcli device show | grep DNS
-```
-
-- Monitor live DNS selection:
-
-```shell
-resolvectl monitor
 ```
 
 - Flush caches after changes:
