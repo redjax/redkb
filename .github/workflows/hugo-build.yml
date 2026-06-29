@@ -1,0 +1,89 @@
+---
+###################################################
+# Build the Hugo site when any Hugo files change. #
+###################################################
+
+name: Hugo build
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish-on-build:
+        description: "If true, trigger publish workflow after a successful build."
+        required: false
+        type: boolean
+        default: false
+
+      publish-target:
+        description: "Where to publish the site if publish-on-build is true."
+        required: false
+        type: choice
+        options:
+          - branch
+          - github-pages
+          - cloudflare-pages
+        default: branch
+
+      cloudflare-pages-project:
+        description: "Cloudflare Pages project name."
+        required: false
+        type: string
+        default: ""
+
+      cloudflare-pages-branch:
+        description: "Cloudflare branch name."
+        required: false
+        type: string
+        default: ""
+
+      cloudflare-pages-directory:
+        description: "Directory to deploy to Cloudflare Pages."
+        required: false
+        type: string
+        default: "public"
+
+  push:
+    branches:
+      - main
+    paths:
+      - "archetypes/**"
+      - "content/**"
+      - "data/**"
+      - "i18n/**"
+      - "static/**"
+      - "hugo.yml"
+      - ".github/workflows/test-hugo-build.yml"
+
+jobs:
+  build-hugo-root:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout test repo
+        uses: actions/checkout@v7
+
+      - name: Build Hugo site using template Action
+        uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.2
+        with:
+          source-dir: "."
+          public-dir: "public"
+          check-changed: "false"
+          use-cache: "true"
+          environment: "production"
+          build-flags: "--gc --minify --enableGitInfo"
+          publish-artifact: "true"
+          artifact-name: "hugo-site"
+          artifact-if-no-files-found: "error"
+          artifact-retention-days: "7"
+
+      - name: Trigger publish workflow
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-on-build == true }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run test-hugo-publish.yml \
+            --ref "${{ github.ref_name }}" \
+            -f target='${{ inputs.publish-target }}' \
+            -f run-id='${{ github.run_id }}' \
+            -f cloudflare-pages-project='${{ inputs.cloudflare-pages-project }}' \
+            -f cloudflare-pages-branch='${{ inputs.cloudflare-pages-branch }}' \
+            -f cloudflare-pages-directory='${{ inputs.cloudflare-pages-directory }}'
