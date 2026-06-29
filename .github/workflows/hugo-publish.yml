@@ -97,7 +97,7 @@ jobs:
 
   publish:
     needs: resolve-run
-    uses: redjax/pipelinetemplates/.github/workflows/hugo-publish.yml@gh/hugo-build/v0.0.1
+    uses: redjax/pipelinetemplates/.github/workflows/hugo-publish.yml@gh/hugo-build/v0.0.2
     with:
       target: ${{ inputs.target }}
       run-id: ${{ needs.resolve-run.outputs.run-id }}
