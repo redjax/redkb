@@ -23,6 +23,74 @@ tags:
 | `sudo logrotate -f /etc/logrotate.d/config-filename` | Force only 1 policy                                  |
 | `sudo systemctl status logrotate.timer`              | Check if `logrotate` is running on a timer           |
 
+## Policy Options Cheatsheet
+
+You can configure new `logrotate` policies by creating a file in `/etc/logrotate.d` as root. Each policy begins with the path to the log file, and has a set of policies in `{braces}`. These options control the actions `logrotate` takes when it runs its schedule.
+
+Some commonly used options:
+
+| Directive          | Example                       | Description                                                                               |
+| ------------------ | ----------------------------- | ----------------------------------------------------------------------------------------- |
+| `daily`            | `daily`                       | Rotate logs every day.                                                                    |
+| `weekly`           | `weekly`                      | Rotate logs every week.                                                                   |
+| `monthly`          | `monthly`                     | Rotate logs every month.                                                                  |
+| `yearly`           | `yearly`                      | Rotate logs every year.                                                                   |
+| `hourly`           | `hourly`                      | Rotate every hour (if logrotate runs hourly).                                             |
+| `minutes N`        | `minutes 30`                  | Rotate every 30 minutes (supported in newer versions).                                    |
+| `size`             | `size 10M`                    | Rotate when the log reaches 10 MB. Supports `k`, `M`, and `G` (e.g. `500k`, `10M`, `2G`). |
+| `minsize`          | `minsize 5M`                  | Rotate on the scheduled interval only if the log is at least 5 MB.                        |
+| `maxsize`          | `maxsize 100M`                | Rotate immediately if the log exceeds 100 MB, regardless of schedule.                     |
+| `rotate`           | `rotate 7`                    | Keep the last 7 rotated logs.                                                             |
+| `maxage`           | `maxage 30`                   | Delete rotated logs older than 30 days.                                                   |
+| `minage`           | `minage 7`                    | Do not rotate logs newer than 7 days.                                                     |
+| `compress`         | `compress`                    | Compress rotated logs (gzip by default).                                                  |
+| `nocompress`       | `nocompress`                  | Disable compression.                                                                      |
+| `compresscmd`      | `compresscmd /usr/bin/xz`     | Use a different compression program.                                                      |
+| `uncompresscmd`    | `uncompresscmd /usr/bin/unxz` | Program used to decompress logs.                                                          |
+| `compressext`      | `compressext .xz`             | Extension for compressed logs.                                                            |
+| `compressoptions`  | `compressoptions -9`          | Pass options to the compression program.                                                  |
+| `delaycompress`    | `delaycompress`               | Compress starting with the second rotation.                                               |
+| `copy`             | `copy`                        | Copy the log without modifying the original.                                              |
+| `copytruncate`     | `copytruncate`                | Copy the log, then truncate the original in place.                                        |
+| `renamecopy`       | `renamecopy`                  | Rename, copy back, and remove the renamed file after rotation.                            |
+| `nocopytruncate`   | `nocopytruncate`              | Disable copy-and-truncate behavior.                                                       |
+| `create`           | `create 0644 alice alice`     | Create a new log file with the specified permissions and owner.                           |
+| `nocreate`         | `nocreate`                    | Do not create a new log after rotation.                                                   |
+| `olddir`           | `olddir /var/log/archive`     | Store rotated logs in another directory.                                                  |
+| `noolddir`         | `noolddir`                    | Keep rotated logs beside the original log.                                                |
+| `missingok`        | `missingok`                   | Ignore missing log files.                                                                 |
+| `nomissingok`      | `nomissingok`                 | Treat a missing log as an error.                                                          |
+| `notifempty`       | `notifempty`                  | Do not rotate empty log files.                                                            |
+| `ifempty`          | `ifempty`                     | Rotate logs even if they are empty.                                                       |
+| `dateext`          | `dateext`                     | Use date-based filenames (e.g. `app.log-20260627`).                                       |
+| `nodateext`        | `nodateext`                   | Use numeric suffixes (`.1`, `.2`, etc.).                                                  |
+| `dateformat`       | `dateformat -%Y%m%d`          | Customize the date suffix format.                                                         |
+| `dateyesterday`    | `dateyesterday`               | Use yesterday's date in rotated filenames.                                                |
+| `datehourago`      | `datehourago`                 | Use the previous hour in date-based filenames.                                            |
+| `extension`        | `extension .log`              | Preserve the `.log` extension when rotating.                                              |
+| `addextension`     | `addextension .bak`           | Append an extra extension to rotated logs.                                                |
+| `start`            | `start 5`                     | Start numbering rotated logs at `.5`.                                                     |
+| `mail`             | `mail admin@example.com`      | Email rotated logs.                                                                       |
+| `nomail`           | `nomail`                      | Disable emailing logs.                                                                    |
+| `mailfirst`        | `mailfirst`                   | Mail the newly rotated log.                                                               |
+| `maillast`         | `maillast`                    | Mail the oldest log before it is deleted.                                                 |
+| `sharedscripts`    | `sharedscripts`               | Run `prerotate`/`postrotate` only once for all logs in the block.                         |
+| `nosharedscripts`  | `nosharedscripts`             | Run scripts once per log file.                                                            |
+| `prerotate`        | `prerotate ... endscript`     | Run commands before rotation.                                                             |
+| `firstaction`      | `firstaction ... endscript`   | Run commands once before any logs are rotated.                                            |
+| `postrotate`       | `postrotate ... endscript`    | Run commands after rotation (e.g. reload a service).                                      |
+| `lastaction`       | `lastaction ... endscript`    | Run commands once after all rotations complete.                                           |
+| `preremove`        | `preremove ... endscript`     | Run commands before deleting an old log.                                                  |
+| `su`               | `su alice alice`              | Rotate logs as the specified user and group.                                              |
+| `tabooext`         | `tabooext + .rpmnew .bak`     | Ignore files with these extensions.                                                       |
+| `taboopat`         | `taboopat + *.disabled`       | Ignore files matching these patterns.                                                     |
+| `include`          | `include /etc/logrotate.d`    | Include additional configuration files.                                                   |
+| `ignoreduplicates` | `ignoreduplicates`            | Ignore duplicate log file definitions.                                                    |
+| `shred`            | `shred`                       | Securely overwrite logs before deletion.                                                  |
+| `shredcycles`      | `shredcycles 3`               | Overwrite logs three times before deleting them.                                          |
+| `allowhardlink`    | `allowhardlink`               | Allow rotation of logs with multiple hard links.                                          |
+| `noallowhardlink`  | `noallowhardlink`             | Refuse to rotate logs with multiple hard links.                                           |
+
 ## Example policy files
 
 ### General purpose config
