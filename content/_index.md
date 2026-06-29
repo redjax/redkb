@@ -6,19 +6,12 @@ toc: false
 weight: 0
 ---
 
-> [!NOTE] Migrating to Hugo
-> I am currently refactoring the documentation, moving from an [MkDocs site](https://github.com/mkdocs/mkdocs) to a [Hugo site](https://gohugo.io) with the [Hextra theme](https://github.com/imfing/hextra). The original documentation site is [archived in a branch in the Github repo](https://github.com/redjax/redkb/tree/archive/2026-04-09).
->
-> I have finished migrating most of the pages as of April 12th 2026, but I've set all pages to "draft" mode while I finish converting them to Hugo syntax. I am also pruning some pages that I either never started or don't maintain in any way.
->
-> I will remove this message once the migration is complete.
-
 Documentation from my notes on a range of computing topics. Check the [tags section](/tags) to quickly find articles on a specific topic. You can also view documentation pages in chronological order by visiting [the archives](/archives). See a term you don't recognize? Check the [site glossary](/glossary).
 
-> [!WARNING]
+> [!WARNING] DISCLAIMER
 > I make no guarantees regarding total accuracy, relevant/updated information, or topic depth for any of the content on this site. My goal is to keep reference notes for myself in a place accessible over the Internet in an easily-editable format (i.e. the [Github repository](https://github.com/redjax/redkb)).
 >
-> I aim to be accurate, and notes I reference frequently will be updated more often. Each article on this site has a published and last modified timestamp at the bottom of the page, which you should take note of when referencing content on this site.
+> I aim to be accurate, and notes I reference frequently will be updated more often. Each article on this site has a published and last modified timestamp at the bottom of the page, which you should take note of when referencing content.
 
 ## About
 
