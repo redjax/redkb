@@ -74,51 +74,71 @@ permissions:
 
 jobs:
   resolve-run:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     outputs:
       run-id: ${{ steps.pick.outputs.run-id }}
+      target: ${{ steps.pick.outputs.target }}
+      branch-name: ${{ steps.pick.outputs.branch-name }}
+      commit-message: ${{ steps.pick.outputs.commit-message }}
+      cloudflare-pages-project: ${{ steps.pick.outputs.cloudflare-pages-project }}
+      cloudflare-pages-branch: ${{ steps.pick.outputs.cloudflare-pages-branch }}
+      cloudflare-pages-directory: ${{ steps.pick.outputs.cloudflare-pages-directory }}
+      dry-run: ${{ steps.pick.outputs.dry-run }}
     steps:
-      - name: Pick build run id
+      - name: Pick publish inputs
         id: pick
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RUN_ID: ${{ inputs.run-id }}
           REPO: ${{ github.repository }}
         run: |
           set -Eeuo pipefail
 
-          if [ -n "$RUN_ID" ]; then
-            echo "run-id=$RUN_ID" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
           if [ "${{ github.event_name }}" = "workflow_run" ]; then
             echo "run-id=${{ github.event.workflow_run.id }}" >> "$GITHUB_OUTPUT"
+            echo "target=github-pages" >> "$GITHUB_OUTPUT"
+            echo "branch-name=gh-pages" >> "$GITHUB_OUTPUT"
+            echo "commit-message=Deploy Hugo site from automatic build" >> "$GITHUB_OUTPUT"
+            echo "cloudflare-pages-project=pipelinetemplatest-test-hugo" >> "$GITHUB_OUTPUT"
+            echo "cloudflare-pages-branch=main" >> "$GITHUB_OUTPUT"
+            echo "cloudflare-pages-directory=public" >> "$GITHUB_OUTPUT"
+            echo "dry-run=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          latest_run_id="$(gh api "repos/${REPO}/actions/workflows/hugo-build.yml/runs?status=success&per_page=1" --jq '.workflow_runs[0].id')"
-
-          if [ -z "$latest_run_id" ] || [ "$latest_run_id" = "null" ]; then
-            echo "No successful Hugo build run found."
-            exit 1
+          run_id="${{ inputs.run-id }}"
+          if [ -z "$run_id" ]; then
+            latest_run_id="$(gh api "repos/${REPO}/actions/workflows/hugo-build.yml/runs?status=success&per_page=1" --jq '.workflow_runs[0].id')"
+            if [ -z "$latest_run_id" ] || [ "$latest_run_id" = "null" ]; then
+              echo "No successful Hugo build run found."
+              exit 1
+            fi
+            run_id="$latest_run_id"
           fi
 
-          echo "run-id=$latest_run_id" >> "$GITHUB_OUTPUT"
+          echo "run-id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "target=${{ inputs.target }}" >> "$GITHUB_OUTPUT"
+          echo "branch-name=${{ inputs.branch-name }}" >> "$GITHUB_OUTPUT"
+          echo "commit-message=${{ inputs.commit-message }}" >> "$GITHUB_OUTPUT"
+          echo "cloudflare-pages-project=${{ inputs.cloudflare-pages-project }}" >> "$GITHUB_OUTPUT"
+          echo "cloudflare-pages-branch=${{ inputs.cloudflare-pages-branch }}" >> "$GITHUB_OUTPUT"
+          echo "cloudflare-pages-directory=${{ inputs.cloudflare-pages-directory }}" >> "$GITHUB_OUTPUT"
+          echo "dry-run=${{ inputs.dry-run }}" >> "$GITHUB_OUTPUT"
 
   publish:
     needs: resolve-run
+    if: needs.resolve-run.result == 'success'
     uses: redjax/pipelinetemplates/.github/workflows/hugo-publish.yml@gh/hugo-build/v0.0.2
     with:
-      target: ${{ inputs.target }}
+      target: ${{ needs.resolve-run.outputs.target }}
       run-id: ${{ needs.resolve-run.outputs.run-id }}
       artifact-name: hugo-site
-      branch-name: ${{ inputs.branch-name }}
-      commit-message: ${{ inputs.commit-message }}
-      cloudflare-pages-project: ${{ inputs.cloudflare-pages-project }}
-      cloudflare-pages-branch: ${{ inputs.cloudflare-pages-branch }}
-      cloudflare-pages-directory: ${{ inputs.cloudflare-pages-directory }}
-      dry-run: ${{ inputs.dry-run }}
+      branch-name: ${{ needs.resolve-run.outputs.branch-name }}
+      commit-message: ${{ needs.resolve-run.outputs.commit-message }}
+      cloudflare-pages-project: ${{ needs.resolve-run.outputs.cloudflare-pages-project }}
+      cloudflare-pages-branch: ${{ needs.resolve-run.outputs.cloudflare-pages-branch }}
+      cloudflare-pages-directory: ${{ needs.resolve-run.outputs.cloudflare-pages-directory }}
+      dry-run: ${{ needs.resolve-run.outputs.dry-run == 'true' }}
     secrets:
       cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
