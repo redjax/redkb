@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Build Hugo site using template Action
-        uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.1
+        uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.2
         with:
           source-dir: "."
           public-dir: "public"
