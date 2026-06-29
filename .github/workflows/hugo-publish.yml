@@ -1,0 +1,113 @@
+---
+#######################################################################
+# Publish the Hugo site when files change and a new version is built. #
+#######################################################################
+
+name: Hugo publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Publish target: branch, github-pages, or cloudflare-pages."
+        required: true
+        type: choice
+        options:
+          - branch
+          - github-pages
+          - cloudflare-pages
+        default: branch
+
+      run-id:
+        description: "Build workflow run ID to publish from. Leave blank to use the most recent successful build."
+        required: false
+        type: string
+        default: ""
+
+      branch-name:
+        description: "Target branch for branch deploys."
+        required: false
+        type: string
+        default: "gh-pages"
+
+      commit-message:
+        description: "Commit message for branch deploys."
+        required: false
+        type: string
+        default: "Deploy Hugo site from test repo"
+
+      cloudflare-pages-project:
+        description: "Cloudflare Pages project name."
+        required: false
+        type: string
+        default: "pipelinetemplatest-test-hugo"
+
+      cloudflare-pages-branch:
+        description: "Cloudflare branch name."
+        required: false
+        type: string
+        default: "main"
+
+      cloudflare-pages-directory:
+        description: "Directory to deploy to Cloudflare Pages."
+        required: false
+        type: string
+        default: "public"
+
+      dry-run:
+        description: "Do a dry run without publishing."
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  actions: read
+
+jobs:
+  resolve-run:
+    runs-on: ubuntu-latest
+    outputs:
+      run-id: ${{ steps.pick.outputs.run-id }}
+    steps:
+      - name: Pick build run id
+        id: pick
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_ID: ${{ inputs.run-id }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -Eeuo pipefail
+
+          if [ -n "$RUN_ID" ]; then
+            echo "run-id=$RUN_ID" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          latest_run_id="$(gh api "repos/${REPO}/actions/workflows/hugo-build.yml/runs?status=success&per_page=1" --jq '.workflow_runs[0].id')"
+
+          if [ -z "$latest_run_id" ] || [ "$latest_run_id" = "null" ]; then
+            echo "No successful test-hugo-build run found."
+            exit 1
+          fi
+
+          echo "run-id=$latest_run_id" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: resolve-run
+    uses: redjax/pipelinetemplates/.github/workflows/hugo-publish.yml@gh/hugo-build/v0.0.2
+    with:
+      target: ${{ inputs.target }}
+      run-id: ${{ needs.resolve-run.outputs.run-id }}
+      artifact-name: hugo-site
+      branch-name: ${{ inputs.branch-name }}
+      commit-message: ${{ inputs.commit-message }}
+      cloudflare-pages-project: ${{ inputs.cloudflare-pages-project }}
+      cloudflare-pages-branch: ${{ inputs.cloudflare-pages-branch }}
+      cloudflare-pages-directory: ${{ inputs.cloudflare-pages-directory }}
+      dry-run: ${{ inputs.dry-run }}
+    secrets:
+      cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
