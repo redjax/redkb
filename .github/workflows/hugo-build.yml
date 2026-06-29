@@ -80,7 +80,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh workflow run test-hugo-publish.yml \
+          gh workflow run hugo-publish.yml \
             --ref "${{ github.ref_name }}" \
             -f target='${{ inputs.publish-target }}' \
             -f run-id='${{ github.run_id }}' \
