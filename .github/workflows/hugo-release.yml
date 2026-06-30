@@ -1,0 +1,72 @@
+---
+name: Hugo release
+
+on:
+  push:
+    tags:
+      - "hugo/v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release (e.g. hugo/v1.2.3)"
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Decide tag
+        id: pick
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.tag }}" ]; then
+            tag="${{ inputs.tag }}"
+          else
+            tag="${GITHUB_REF_NAME}"
+          fi
+
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Find latest build artifact for tag
+        id: run
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ steps.pick.outputs.tag }}
+        run: |
+          set -Eeuo pipefail
+
+          run_id="$(gh api "repos/${REPO}/actions/workflows/hugo-build.yml/runs?status=success&per_page=20" --jq '.workflow_runs[] | select(.head_branch == env.TAG) | .id' | head -n 1)"
+
+          if [ -z "$run_id" ]; then
+            echo "No successful build run found for tag $TAG"
+            exit 1
+          fi
+
+          echo "run-id=$run_id" >> "$GITHUB_OUTPUT"
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: hugo-site
+          run-id: ${{ steps.run.outputs.run-id }}
+          github-token: ${{ github.token }}
+          path: ./_published
+
+      - name: Create release and upload asset
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.pick.outputs.tag }}
+          name: ${{ steps.pick.outputs.tag }}
+          files: ./_published/**
+          draft: false
+          prerelease: false
