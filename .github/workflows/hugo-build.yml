@@ -32,6 +32,12 @@ on:
         type: boolean
         default: false
 
+      trigger-release:
+        description: "Trigger the separate release workflow after build."
+        required: false
+        type: boolean
+        default: false
+
       cloudflare-pages-project:
         description: "Cloudflare Pages project name."
         required: false
@@ -171,3 +177,24 @@ jobs:
     secrets:
       cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  trigger-release:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.trigger-release == true }}
+    needs: build-hugo-root
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch release workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -Eeuo pipefail
+          gh workflow run hugo-release.yml \
+            --ref "${{ github.ref_name }}" \
+            -f tag='${{ inputs.release-tag }}' \
+            -f publish-branch='${{ inputs.publish-branch }}' \
+            -f publish-github-pages='${{ inputs.publish-github-pages }}' \
+            -f publish-cloudflare-pages='${{ inputs.publish-cloudflare-pages }}' \
+            -f publish-github-release='${{ inputs.publish-github-release }}' \
+            -f cloudflare-pages-project='${{ inputs.cloudflare-pages-project }}' \
+            -f cloudflare-pages-branch='${{ inputs.cloudflare-pages-branch }}' \
+            -f cloudflare-pages-directory='${{ inputs.cloudflare-pages-directory }}'
