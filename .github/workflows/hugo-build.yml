@@ -154,7 +154,7 @@ jobs:
       fail-fast: false
       matrix:
         target: ${{ fromJSON(needs.build-hugo-root.outputs.targets) }}
-    uses: redjax/pipelinetemplates/.github/workflows/hugo-publish.yml@gh/hugo-publish/v0.0.3
+    uses: redjax/pipelinetemplates/.github/workflows/hugo-publish.yml@gh/hugo-build/v0.0.3
     with:
       target: ${{ matrix.target }}
       run-id: ${{ needs.build-hugo-root.outputs.run-id }}
