@@ -66,6 +66,7 @@ jobs:
       tag: ${{ steps.pick.outputs.tag }}
       release-version: ${{ steps.pick.outputs.release-version }}
       release-tag: ${{ steps.pick.outputs.release-tag }}
+      release-name: ${{ steps.pick.outputs.release-name }}
       run-id: ${{ steps.run.outputs.run-id }}
       targets: ${{ steps.targets.outputs.targets }}
     steps:
@@ -77,17 +78,22 @@ jobs:
 
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.tag }}" ]; then
             raw_tag="${{ inputs.tag }}"
+            version="${raw_tag#hugo/}"
+            version="${version#v}"
+            short_sha="${GITHUB_SHA::7}"
+            echo "tag=${raw_tag}" >> "$GITHUB_OUTPUT"
+            echo "release-version=${version}" >> "$GITHUB_OUTPUT"
+            echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
+            echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
           else
             raw_tag="${GITHUB_REF_NAME}"
+            version="${raw_tag#hugo/}"
+            version="${version#v}"
+            echo "tag=${raw_tag}" >> "$GITHUB_OUTPUT"
+            echo "release-version=${version}" >> "$GITHUB_OUTPUT"
+            echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
+            echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
           fi
-
-          version="${raw_tag#hugo/}"
-          release_tag="site-${version}"
-          release_name="site-${version}"
-
-          echo "tag=${raw_tag}" >> "$GITHUB_OUTPUT"
-          echo "release-version=${version#v}" >> "$GITHUB_OUTPUT"
-          echo "release-tag=${release_tag}" >> "$GITHUB_OUTPUT"
 
       - name: Find latest build artifact
         id: run
@@ -137,7 +143,7 @@ jobs:
       cloudflare-pages-project: ${{ inputs.cloudflare-pages-project }}
       cloudflare-pages-branch: ${{ inputs.cloudflare-pages-branch }}
       cloudflare-pages-directory: ${{ inputs.cloudflare-pages-directory }}
-      release-name: site-${{ needs.resolve.outputs.release-version }}
+      release-name: ${{ needs.resolve.outputs.release-name }}
       release-version: ${{ needs.resolve.outputs.release-version }}
       release-tag: ${{ needs.resolve.outputs.release-tag }}
       dry-run: false

@@ -92,6 +92,9 @@ jobs:
     outputs:
       run-id: ${{ github.run_id }}
       targets: ${{ steps.targets.outputs.targets }}
+      release-version: ${{ steps.release.outputs.release-version }}
+      release-tag: ${{ steps.release.outputs.release-tag }}
+      release-name: ${{ steps.release.outputs.release-name }}
     steps:
       - uses: actions/checkout@v7
 
@@ -109,6 +112,26 @@ jobs:
           artifact-if-no-files-found: "error"
           artifact-retention-days: "7"
 
+      - name: Resolve release metadata
+        id: release
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            short_sha="${GITHUB_SHA::7}"
+            echo "release-version=${short_sha}" >> "$GITHUB_OUTPUT"
+            echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
+            echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
+          else
+            ref="${GITHUB_REF_NAME}"
+            version="${ref#hugo/}"
+            version="${version#v}"
+            echo "release-version=${version}" >> "$GITHUB_OUTPUT"
+            echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
+            echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Compute selected publish targets
         id: targets
         shell: bash
@@ -119,7 +142,6 @@ jobs:
           DO_GH_RELEASE: ${{ inputs.publish-github-release }}
         run: |
           set -Eeuo pipefail
-
           targets=()
           [[ "${DO_BRANCH}" == "true" ]] && targets+=("branch")
           [[ "${DO_GH_PAGES}" == "true" ]] && targets+=("github-pages")
@@ -144,9 +166,9 @@ jobs:
       cloudflare-pages-project: ${{ inputs.cloudflare-pages-project }}
       cloudflare-pages-branch: ${{ inputs.cloudflare-pages-branch }}
       cloudflare-pages-directory: ${{ inputs.cloudflare-pages-directory }}
-      release-name: ${{ inputs.release-name }}
-      release-version: ${{ inputs.release-version }}
-      release-tag: ${{ inputs.release-tag }}
+      release-name: ${{ needs.build-hugo-root.outputs.release-name }}
+      release-version: ${{ needs.build-hugo-root.outputs.release-version }}
+      release-tag: ${{ needs.build-hugo-root.outputs.release-tag }}
       dry-run: false
     secrets:
       cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
