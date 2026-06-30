@@ -3,26 +3,28 @@
 # Build the Hugo site when any Hugo files change. #
 ###################################################
 
-name: Hugo build
+name: Hugo build and publish
 
 on:
   workflow_dispatch:
     inputs:
-      publish-on-build:
-        description: "If true, trigger publish workflow after a successful build."
+      publish-branch:
+        description: "Publish to branch after build."
+        required: false
+        type: boolean
+        default: true
+
+      publish-github-pages:
+        description: "Publish to GitHub Pages after build."
         required: false
         type: boolean
         default: false
 
-      publish-target:
-        description: "Where to publish the site if publish-on-build is true."
+      publish-cloudflare-pages:
+        description: "Publish to Cloudflare Pages after build."
         required: false
-        type: choice
-        options:
-          - branch
-          - github-pages
-          - cloudflare-pages
-        default: branch
+        type: boolean
+        default: false
 
       cloudflare-pages-project:
         description: "Cloudflare Pages project name."
@@ -58,15 +60,22 @@ on:
       - "go.sum"
       - ".github/workflows/hugo-build.yml"
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   build-hugo-root:
     runs-on: ubuntu-latest
+    outputs:
+      run-id: ${{ github.run_id }}
+      targets: ${{ steps.targets.outputs.targets }}
     steps:
       - name: Checkout test repo
         uses: actions/checkout@v7
 
       - name: Build Hugo site using template Action
-        uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.2
+        uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.3
         with:
           source-dir: "."
           public-dir: "public"
@@ -79,15 +88,54 @@ jobs:
           artifact-if-no-files-found: "error"
           artifact-retention-days: "7"
 
-      - name: Trigger publish workflow
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-on-build == true }}
+      - name: Compute selected publish targets
+        id: targets
+        shell: bash
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DO_BRANCH: ${{ inputs.publish-branch }}
+          DO_GH_PAGES: ${{ inputs.publish-github-pages }}
+          DO_CF_PAGES: ${{ inputs.publish-cloudflare-pages }}
         run: |
-          gh workflow run hugo-publish.yml \
-            --ref "${{ github.ref_name }}" \
-            -f target='${{ inputs.publish-target }}' \
-            -f run-id='${{ github.run_id }}' \
-            -f cloudflare-pages-project='${{ inputs.cloudflare-pages-project }}' \
-            -f cloudflare-pages-branch='${{ inputs.cloudflare-pages-branch }}' \
-            -f cloudflare-pages-directory='${{ inputs.cloudflare-pages-directory }}'
+          set -Eeuo pipefail
+
+          targets=()
+
+          if [[ "${DO_BRANCH}" == "true" ]]; then
+            targets+=("branch")
+          fi
+
+          if [[ "${DO_GH_PAGES}" == "true" ]]; then
+            targets+=("github-pages")
+          fi
+
+          if [[ "${DO_CF_PAGES}" == "true" ]]; then
+            targets+=("cloudflare-pages")
+          fi
+
+          if (( ${#targets[@]} == 0 )); then
+            targets+=("branch")
+          fi
+
+          targets_json="$(printf '%s\n' "${targets[@]}" | jq -R . | jq -s -c .)"
+          echo "targets=${targets_json}" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: build-hugo-root
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.build-hugo-root.outputs.targets) }}
+    uses: redjax/pipelinetemplates/.github/workflows/hugo-publish.yml@gh/hugo-publish/v0.0.3
+    with:
+      target: ${{ matrix.target }}
+      run-id: ${{ needs.build-hugo-root.outputs.run-id }}
+      artifact-name: hugo-site
+      branch-name: gh-pages
+      commit-message: "Deploy Hugo site"
+      cloudflare-pages-project: ${{ inputs.cloudflare-pages-project }}
+      cloudflare-pages-branch: ${{ inputs.cloudflare-pages-branch }}
+      cloudflare-pages-directory: ${{ inputs.cloudflare-pages-directory }}
+      dry-run: false
+    secrets:
+      cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
