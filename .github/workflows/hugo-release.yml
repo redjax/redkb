@@ -1,5 +1,5 @@
 ---
-name: Hugo release
+name: Hugo release and distribute
 
 on:
   push:
@@ -7,19 +7,68 @@ on:
       - "hugo/v*"
   workflow_dispatch:
     inputs:
+      publish-branch:
+        description: "Publish to branch."
+        required: false
+        type: boolean
+        default: false
+
+      publish-github-pages:
+        description: "Publish to GitHub Pages."
+        required: false
+        type: boolean
+        default: false
+
+      publish-cloudflare-pages:
+        description: "Publish to Cloudflare Pages."
+        required: false
+        type: boolean
+        default: false
+
+      publish-github-release:
+        description: "Create GitHub release."
+        required: false
+        type: boolean
+        default: true
+
       tag:
         description: "Tag to release (e.g. hugo/v1.2.3)"
         required: false
         type: string
         default: ""
 
+      cloudflare-pages-project:
+        description: "Cloudflare Pages project name."
+        required: false
+        type: string
+        default: ""
+
+      cloudflare-pages-branch:
+        description: "Cloudflare branch name."
+        required: false
+        type: string
+        default: "main"
+
+      cloudflare-pages-directory:
+        description: "Directory to deploy to Cloudflare Pages."
+        required: false
+        type: string
+        default: "public"
+
 permissions:
   contents: write
   actions: read
 
 jobs:
-  release:
+  resolve:
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.pick.outputs.tag }}
+      release-version: ${{ steps.pick.outputs.release-version }}
+      release-tag: ${{ steps.pick.outputs.release-tag }}
+      release-name: ${{ steps.pick.outputs.release-name }}
+      run-id: ${{ steps.run.outputs.run-id }}
+      targets: ${{ steps.targets.outputs.targets }}
     steps:
       - name: Decide tag
         id: pick
@@ -28,45 +77,76 @@ jobs:
           set -Eeuo pipefail
 
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.tag }}" ]; then
-            tag="${{ inputs.tag }}"
+            raw_tag="${{ inputs.tag }}"
+            version="${raw_tag#hugo/}"
+            version="${version#v}"
+            short_sha="${GITHUB_SHA::7}"
+            echo "tag=${raw_tag}" >> "$GITHUB_OUTPUT"
+            echo "release-version=${version}" >> "$GITHUB_OUTPUT"
+            echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
+            echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
           else
-            tag="${GITHUB_REF_NAME}"
+            raw_tag="${GITHUB_REF_NAME}"
+            version="${raw_tag#hugo/}"
+            version="${version#v}"
+            echo "tag=${raw_tag}" >> "$GITHUB_OUTPUT"
+            echo "release-version=${version}" >> "$GITHUB_OUTPUT"
+            echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
+            echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
           fi
 
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
-
-      - name: Find latest build artifact for tag
+      - name: Find latest build artifact
         id: run
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
-          TAG: ${{ steps.pick.outputs.tag }}
         run: |
           set -Eeuo pipefail
 
-          run_id="$(gh api "repos/${REPO}/actions/workflows/hugo-build.yml/runs?status=success&per_page=20" --jq '.workflow_runs[] | select(.head_branch == env.TAG) | .id' | head -n 1)"
-
-          if [ -z "$run_id" ]; then
-            echo "No successful build run found for tag $TAG"
-            exit 1
-          fi
-
+          run_id="$(gh api "repos/${REPO}/actions/workflows/hugo-build.yml/runs?status=success&per_page=20" --jq '.workflow_runs[0].id')"
+          [[ -n "$run_id" ]] || { echo "No successful build run found."; exit 1; }
           echo "run-id=$run_id" >> "$GITHUB_OUTPUT"
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v8
-        with:
-          name: hugo-site
-          run-id: ${{ steps.run.outputs.run-id }}
-          github-token: ${{ github.token }}
-          path: ./_published
+      - name: Compute selected release targets
+        id: targets
+        shell: bash
+        env:
+          DO_BRANCH: ${{ inputs.publish-branch }}
+          DO_GH_PAGES: ${{ inputs.publish-github-pages }}
+          DO_CF_PAGES: ${{ inputs.publish-cloudflare-pages }}
+          DO_GH_RELEASE: ${{ inputs.publish-github-release }}
+        run: |
+          set -Eeuo pipefail
 
-      - name: Create release and upload asset
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: ${{ steps.pick.outputs.tag }}
-          name: ${{ steps.pick.outputs.tag }}
-          files: ./_published/**
-          draft: false
-          prerelease: false
+          targets=()
+          [[ "${DO_BRANCH}" == "true" ]] && targets+=("branch")
+          [[ "${DO_GH_PAGES}" == "true" ]] && targets+=("github-pages")
+          [[ "${DO_CF_PAGES}" == "true" ]] && targets+=("cloudflare-pages")
+          [[ "${DO_GH_RELEASE}" == "true" ]] && targets+=("github-release")
+          (( ${#targets[@]} )) || targets+=("github-release")
+          printf 'targets=%s\n' "$(printf '%s\n' "${targets[@]}" | jq -R . | jq -s -c .)" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: resolve
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.resolve.outputs.targets) }}
+    uses: redjax/pipelinetemplates/.github/workflows/hugo-publish.yml@gh/hugo-build/v0.0.3
+    with:
+      target: ${{ matrix.target }}
+      run-id: ${{ needs.resolve.outputs.run-id }}
+      artifact-name: hugo-site
+      branch-name: gh-pages
+      commit-message: "Deploy Hugo site"
+      cloudflare-pages-project: ${{ inputs.cloudflare-pages-project }}
+      cloudflare-pages-branch: ${{ inputs.cloudflare-pages-branch }}
+      cloudflare-pages-directory: ${{ inputs.cloudflare-pages-directory }}
+      release-name: ${{ needs.resolve.outputs.release-name }}
+      release-version: ${{ needs.resolve.outputs.release-version }}
+      release-tag: ${{ needs.resolve.outputs.release-tag }}
+      dry-run: false
+    secrets:
+      cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

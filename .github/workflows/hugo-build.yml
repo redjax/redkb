@@ -1,28 +1,32 @@
 ---
-###################################################
-# Build the Hugo site when any Hugo files change. #
-###################################################
-
-name: Hugo build
+name: Hugo build and publish
 
 on:
   workflow_dispatch:
     inputs:
-      publish-on-build:
-        description: "If true, trigger publish workflow after a successful build."
+      publish-branch:
+        description: "Publish to branch after build."
+        required: false
+        type: boolean
+        default: true
+
+      publish-github-pages:
+        description: "Publish to GitHub Pages after build."
         required: false
         type: boolean
         default: false
 
-      publish-target:
-        description: "Where to publish the site if publish-on-build is true."
+      publish-cloudflare-pages:
+        description: "Publish to Cloudflare Pages after build."
         required: false
-        type: choice
-        options:
-          - branch
-          - github-pages
-          - cloudflare-pages
-        default: branch
+        type: boolean
+        default: false
+
+      publish-github-release:
+        description: "Publish to GitHub release after build."
+        required: false
+        type: boolean
+        default: false
 
       cloudflare-pages-project:
         description: "Cloudflare Pages project name."
@@ -42,6 +46,24 @@ on:
         type: string
         default: "public"
 
+      release-name:
+        description: "GitHub release name."
+        required: false
+        type: string
+        default: ""
+
+      release-version:
+        description: "Version string used to build a release tag and archive names."
+        required: false
+        type: string
+        default: ""
+
+      release-tag:
+        description: "Explicit Git tag to use for the GitHub release."
+        required: false
+        type: string
+        default: ""
+
   push:
     branches:
       - main
@@ -58,15 +80,26 @@ on:
       - "go.sum"
       - ".github/workflows/hugo-build.yml"
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  actions: read
+
 jobs:
   build-hugo-root:
     runs-on: ubuntu-latest
+    outputs:
+      run-id: ${{ github.run_id }}
+      targets: ${{ steps.targets.outputs.targets }}
+      release-version: ${{ steps.release.outputs.release-version }}
+      release-tag: ${{ steps.release.outputs.release-tag }}
+      release-name: ${{ steps.release.outputs.release-name }}
     steps:
-      - name: Checkout test repo
-        uses: actions/checkout@v7
+      - uses: actions/checkout@v7
 
       - name: Build Hugo site using template Action
-        uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.2
+        uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.3
         with:
           source-dir: "."
           public-dir: "public"
@@ -79,15 +112,64 @@ jobs:
           artifact-if-no-files-found: "error"
           artifact-retention-days: "7"
 
-      - name: Trigger publish workflow
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-on-build == true }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Resolve release metadata
+        id: release
+        shell: bash
         run: |
-          gh workflow run hugo-publish.yml \
-            --ref "${{ github.ref_name }}" \
-            -f target='${{ inputs.publish-target }}' \
-            -f run-id='${{ github.run_id }}' \
-            -f cloudflare-pages-project='${{ inputs.cloudflare-pages-project }}' \
-            -f cloudflare-pages-branch='${{ inputs.cloudflare-pages-branch }}' \
-            -f cloudflare-pages-directory='${{ inputs.cloudflare-pages-directory }}'
+          set -Eeuo pipefail
+
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            short_sha="${GITHUB_SHA::7}"
+            echo "release-version=${short_sha}" >> "$GITHUB_OUTPUT"
+            echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
+            echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
+          else
+            ref="${GITHUB_REF_NAME}"
+            version="${ref#hugo/}"
+            version="${version#v}"
+            echo "release-version=${version}" >> "$GITHUB_OUTPUT"
+            echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
+            echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Compute selected publish targets
+        id: targets
+        shell: bash
+        env:
+          DO_BRANCH: ${{ inputs.publish-branch }}
+          DO_GH_PAGES: ${{ inputs.publish-github-pages }}
+          DO_CF_PAGES: ${{ inputs.publish-cloudflare-pages }}
+          DO_GH_RELEASE: ${{ inputs.publish-github-release }}
+        run: |
+          set -Eeuo pipefail
+          targets=()
+          [[ "${DO_BRANCH}" == "true" ]] && targets+=("branch")
+          [[ "${DO_GH_PAGES}" == "true" ]] && targets+=("github-pages")
+          [[ "${DO_CF_PAGES}" == "true" ]] && targets+=("cloudflare-pages")
+          [[ "${DO_GH_RELEASE}" == "true" ]] && targets+=("github-release")
+          (( ${#targets[@]} )) || targets+=("branch")
+          printf 'targets=%s\n' "$(printf '%s\n' "${targets[@]}" | jq -R . | jq -s -c .)" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: build-hugo-root
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.build-hugo-root.outputs.targets) }}
+    uses: redjax/pipelinetemplates/.github/workflows/hugo-publish.yml@gh/hugo-build/v0.0.3
+    with:
+      target: ${{ matrix.target }}
+      run-id: ${{ needs.build-hugo-root.outputs.run-id }}
+      artifact-name: hugo-site
+      branch-name: gh-pages
+      commit-message: "Deploy Hugo site"
+      cloudflare-pages-project: ${{ inputs.cloudflare-pages-project }}
+      cloudflare-pages-branch: ${{ inputs.cloudflare-pages-branch }}
+      cloudflare-pages-directory: ${{ inputs.cloudflare-pages-directory }}
+      release-name: ${{ needs.build-hugo-root.outputs.release-name }}
+      release-version: ${{ needs.build-hugo-root.outputs.release-version }}
+      release-tag: ${{ needs.build-hugo-root.outputs.release-tag }}
+      dry-run: false
+    secrets:
+      cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
