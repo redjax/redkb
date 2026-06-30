@@ -1,8 +1,4 @@
 ---
-###################################################
-# Build the Hugo site when any Hugo files change. #
-###################################################
-
 name: Hugo build and publish
 
 on:
@@ -57,13 +53,13 @@ on:
         default: ""
 
       release-version:
-        description: "Optional version string used to build a tag and archive names."
+        description: "Version string used to build a release tag and archive names."
         required: false
         type: string
         default: ""
 
       release-tag:
-        description: "Optional explicit Git tag to use for the GitHub release."
+        description: "Explicit Git tag to use for the GitHub release."
         required: false
         type: string
         default: ""
@@ -97,8 +93,7 @@ jobs:
       run-id: ${{ github.run_id }}
       targets: ${{ steps.targets.outputs.targets }}
     steps:
-      - name: Checkout test repo
-        uses: actions/checkout@v7
+      - uses: actions/checkout@v7
 
       - name: Build Hugo site using template Action
         uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.3
@@ -126,29 +121,12 @@ jobs:
           set -Eeuo pipefail
 
           targets=()
-
-          if [[ "${DO_BRANCH}" == "true" ]]; then
-            targets+=("branch")
-          fi
-
-          if [[ "${DO_GH_PAGES}" == "true" ]]; then
-            targets+=("github-pages")
-          fi
-
-          if [[ "${DO_CF_PAGES}" == "true" ]]; then
-            targets+=("cloudflare-pages")
-          fi
-
-          if [[ "${DO_GH_RELEASE}" == "true" ]]; then
-            targets+=("github-release")
-          fi
-
-          if (( ${#targets[@]} == 0 )); then
-            targets+=("branch")
-          fi
-
-          targets_json="$(printf '%s\n' "${targets[@]}" | jq -R . | jq -s -c .)"
-          echo "targets=${targets_json}" >> "$GITHUB_OUTPUT"
+          [[ "${DO_BRANCH}" == "true" ]] && targets+=("branch")
+          [[ "${DO_GH_PAGES}" == "true" ]] && targets+=("github-pages")
+          [[ "${DO_CF_PAGES}" == "true" ]] && targets+=("cloudflare-pages")
+          [[ "${DO_GH_RELEASE}" == "true" ]] && targets+=("github-release")
+          (( ${#targets[@]} )) || targets+=("branch")
+          printf 'targets=%s\n' "$(printf '%s\n' "${targets[@]}" | jq -R . | jq -s -c .)" >> "$GITHUB_OUTPUT"
 
   publish:
     needs: build-hugo-root

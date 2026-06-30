@@ -64,6 +64,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.pick.outputs.tag }}
+      release-version: ${{ steps.pick.outputs.release-version }}
+      release-tag: ${{ steps.pick.outputs.release-tag }}
       run-id: ${{ steps.run.outputs.run-id }}
       targets: ${{ steps.targets.outputs.targets }}
     steps:
@@ -74,12 +76,18 @@ jobs:
           set -Eeuo pipefail
 
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.tag }}" ]; then
-            tag="${{ inputs.tag }}"
+            raw_tag="${{ inputs.tag }}"
           else
-            tag="${GITHUB_REF_NAME}"
+            raw_tag="${GITHUB_REF_NAME}"
           fi
 
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          version="${raw_tag#hugo/}"
+          release_tag="site-${version}"
+          release_name="site-${version}"
+
+          echo "tag=${raw_tag}" >> "$GITHUB_OUTPUT"
+          echo "release-version=${version#v}" >> "$GITHUB_OUTPUT"
+          echo "release-tag=${release_tag}" >> "$GITHUB_OUTPUT"
 
       - name: Find latest build artifact
         id: run
@@ -91,12 +99,7 @@ jobs:
           set -Eeuo pipefail
 
           run_id="$(gh api "repos/${REPO}/actions/workflows/hugo-build.yml/runs?status=success&per_page=20" --jq '.workflow_runs[0].id')"
-
-          if [ -z "$run_id" ]; then
-            echo "No successful build run found."
-            exit 1
-          fi
-
+          [[ -n "$run_id" ]] || { echo "No successful build run found."; exit 1; }
           echo "run-id=$run_id" >> "$GITHUB_OUTPUT"
 
       - name: Compute selected release targets
@@ -111,29 +114,12 @@ jobs:
           set -Eeuo pipefail
 
           targets=()
-
-          if [[ "${DO_BRANCH}" == "true" ]]; then
-            targets+=("branch")
-          fi
-
-          if [[ "${DO_GH_PAGES}" == "true" ]]; then
-            targets+=("github-pages")
-          fi
-
-          if [[ "${DO_CF_PAGES}" == "true" ]]; then
-            targets+=("cloudflare-pages")
-          fi
-
-          if [[ "${DO_GH_RELEASE}" == "true" ]]; then
-            targets+=("github-release")
-          fi
-
-          if (( ${#targets[@]} == 0 )); then
-            targets+=("github-release")
-          fi
-
-          targets_json="$(printf '%s\n' "${targets[@]}" | jq -R . | jq -s -c .)"
-          echo "targets=${targets_json}" >> "$GITHUB_OUTPUT"
+          [[ "${DO_BRANCH}" == "true" ]] && targets+=("branch")
+          [[ "${DO_GH_PAGES}" == "true" ]] && targets+=("github-pages")
+          [[ "${DO_CF_PAGES}" == "true" ]] && targets+=("cloudflare-pages")
+          [[ "${DO_GH_RELEASE}" == "true" ]] && targets+=("github-release")
+          (( ${#targets[@]} )) || targets+=("github-release")
+          printf 'targets=%s\n' "$(printf '%s\n' "${targets[@]}" | jq -R . | jq -s -c .)" >> "$GITHUB_OUTPUT"
 
   publish:
     needs: resolve
@@ -151,9 +137,9 @@ jobs:
       cloudflare-pages-project: ${{ inputs.cloudflare-pages-project }}
       cloudflare-pages-branch: ${{ inputs.cloudflare-pages-branch }}
       cloudflare-pages-directory: ${{ inputs.cloudflare-pages-directory }}
-      release-name: ${{ needs.resolve.outputs.tag }}
-      release-version: ""
-      release-tag: ${{ needs.resolve.outputs.tag }}
+      release-name: site-${{ needs.resolve.outputs.release-version }}
+      release-version: ${{ needs.resolve.outputs.release-version }}
+      release-tag: ${{ needs.resolve.outputs.release-tag }}
       dry-run: false
     secrets:
       cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
