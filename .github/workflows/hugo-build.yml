@@ -45,6 +45,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - "hugo/v*"
     paths:
       - "archetypes/**"
       - "content/**"
@@ -52,7 +54,9 @@ on:
       - "i18n/**"
       - "static/**"
       - "hugo.yml"
-      - ".github/workflows/test-hugo-build.yml"
+      - "go.mod"
+      - "go.sum"
+      - ".github/workflows/hugo-build.yml"
 
 jobs:
   build-hugo-root:
