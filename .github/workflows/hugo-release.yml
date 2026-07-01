@@ -4,26 +4,29 @@ name: Hugo release
 on:
   workflow_call:
     inputs:
-      run-id:
-        required: true
+      release-source:
+        required: false
         type: string
-      release-name:
-        required: true
-        type: string
-      release-tag:
-        required: true
-        type: string
+        default: "tag"
+
       release-version:
         required: true
         type: string
-      artifact-name:
+
+      release-name:
         required: true
         type: string
-      should-deploy-pages:
+
+      release-tag:
+        required: true
+        type: string
+
+      should-release:
         required: false
         type: boolean
-        default: false
-      should-release:
+        default: true
+
+      should-deploy-pages:
         required: false
         type: boolean
         default: true
@@ -35,58 +38,80 @@ permissions:
   actions: read
 
 jobs:
-  gate:
+  build:
     runs-on: ubuntu-latest
     outputs:
-      should-release: ${{ inputs.should-release }}
-      should-deploy-pages: ${{ inputs.should-deploy-pages }}
+      artifact-name: ${{ steps.meta.outputs.artifact-name }}
     steps:
-      - run: echo "gate"
+      - uses: actions/checkout@v7
+
+      - name: Build Hugo site
+        uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.3
+        with:
+          source-dir: "."
+          public-dir: "public"
+          check-changed: "false"
+          use-cache: "true"
+          environment: "production"
+          build-flags: "--gc --minify --enableGitInfo"
+          publish-artifact: "true"
+          artifact-name: "hugo-site"
+          artifact-if-no-files-found: "error"
+          artifact-retention-days: "7"
+
+      - name: Resolve artifact metadata
+        id: meta
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          echo "artifact-name=hugo-site" >> "$GITHUB_OUTPUT"
 
   release:
-    needs: gate
-    if: ${{ needs.gate.outputs.should-release == 'true' }}
+    needs: build
+    if: ${{ inputs.should-release }}
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v8
         with:
-          run-id: ${{ inputs.run-id }}
-          name: ${{ inputs.artifact-name }}
+          name: ${{ needs.build.outputs.artifact-name }}
           path: public
 
-      - name: Pack artifact
+      - name: Package site
         shell: bash
         run: |
           set -Eeuo pipefail
-          tar -czf "${{ inputs.release-name }}.tar.gz" -C public .
+          mkdir -p ./_release
+          tar -C public -czf ./_release/${{ inputs.release-name }}.tar.gz .
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ inputs.release-tag }}
           name: ${{ inputs.release-name }}
-          files: |
-            ${{ inputs.release-name }}.tar.gz
+          files: ./_release/${{ inputs.release-name }}.tar.gz
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
 
   deploy-pages:
-    needs: gate
-    if: ${{ needs.gate.outputs.should-deploy-pages == 'true' }}
+    needs: build
+    if: ${{ inputs.should-deploy-pages }}
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v8
         with:
-          run-id: ${{ inputs.run-id }}
-          name: ${{ inputs.artifact-name }}
+          name: ${{ needs.build.outputs.artifact-name }}
           path: public
 
-      - name: Upload Pages artifact
+      - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
           path: public
 
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v5
