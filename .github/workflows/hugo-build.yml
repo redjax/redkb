@@ -101,6 +101,7 @@ jobs:
             echo "should-release=${{ inputs.create-release }}" >> "$GITHUB_OUTPUT"
             echo "should-deploy-pages=${{ inputs.deploy-pages }}" >> "$GITHUB_OUTPUT"
           else
+
             ref="${GITHUB_REF_NAME}"
 
             version="${ref#hugo/}"
@@ -112,3 +113,17 @@ jobs:
             echo "should-release=true" >> "$GITHUB_OUTPUT"
             echo "should-deploy-pages=true" >> "$GITHUB_OUTPUT"
           fi
+
+  release:
+    needs: build
+    if: ${{ needs.build.outputs.should-release == 'true' }}
+    uses: ./.github/workflows/hugo-release.yml
+    with:
+      run-id: ${{ needs.build.outputs.run-id }}
+      release-name: ${{ needs.build.outputs.release-name }}
+      release-tag: ${{ needs.build.outputs.release-tag }}
+      release-version: ${{ needs.build.outputs.release-version }}
+      artifact-name: hugo-site
+      should-release: ${{ needs.build.outputs.should-release == 'true' }}
+      should-deploy-pages: ${{ needs.build.outputs.should-deploy-pages == 'true' }}
+    secrets: inherit

@@ -45,7 +45,7 @@ jobs:
 
   release:
     needs: gate
-    if: ${{ needs.gate.outputs.should-release == 'true' }}
+    if: ${{ needs.gate.outputs.should-release == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact
@@ -55,7 +55,10 @@ jobs:
           name: ${{ inputs.artifact-name }}
 
       - name: Pack artifact
-        run: tar -czf "${{ inputs.release-name }}.tar.gz" -C public .
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tar -czf "${{ inputs.release-name }}.tar.gz" -C public .
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
@@ -64,10 +67,12 @@ jobs:
           name: ${{ inputs.release-name }}
           files: |
             ${{ inputs.release-name }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-pages:
-    needs: [gate, release]
-    if: ${{ needs.gate.outputs.should-deploy-pages == 'true' }}
+    needs: gate
+    if: ${{ needs.gate.outputs.should-deploy-pages == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact
