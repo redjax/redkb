@@ -78,11 +78,12 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
+          echo "artifact-name=hugo-site" >> "$GITHUB_OUTPUT"
 
           if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
             if [[ "${{ inputs.release-source }}" == "manual" ]]; then
               short_sha="${GITHUB_SHA::7}"
-              
+
               echo "release-version=${short_sha}" >> "$GITHUB_OUTPUT"
               echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
               echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
@@ -117,13 +118,18 @@ jobs:
   release:
     needs: build
     if: ${{ needs.build.outputs.should-release == 'true' }}
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+      actions: read
     uses: ./.github/workflows/hugo-release.yml
     with:
       run-id: ${{ needs.build.outputs.run-id }}
       release-name: ${{ needs.build.outputs.release-name }}
       release-tag: ${{ needs.build.outputs.release-tag }}
       release-version: ${{ needs.build.outputs.release-version }}
-      artifact-name: hugo-site
+      artifact-name: ${{ needs.build.outputs.artifact-name }}
       should-release: ${{ needs.build.outputs.should-release == 'true' }}
       should-deploy-pages: ${{ needs.build.outputs.should-deploy-pages == 'true' }}
     secrets: inherit
