@@ -1,7 +1,7 @@
 ---
 title: "Setup"
 date: 2026-05-05T01:26:48-04:00
-draft: true
+draft: false
 weight: 10
 toc: true
 keywords: []
