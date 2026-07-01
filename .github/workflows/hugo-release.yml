@@ -2,6 +2,12 @@
 name: Hugo release
 
 on:
+  workflow_run:
+    workflows:
+      - Hugo build
+    types:
+      - completed
+
   workflow_call:
     inputs:
       run-id:
@@ -19,14 +25,14 @@ on:
       artifact-name:
         required: true
         type: string
-      deploy-pages:
+      should-deploy-pages:
         required: false
         type: boolean
         default: true
-      dry-run:
+      should-release:
         required: false
         type: boolean
-        default: false
+        default: true
 
 permissions:
   contents: write
@@ -36,9 +42,8 @@ permissions:
 
 jobs:
   release:
+    if: inputs.should-release == true
     runs-on: ubuntu-latest
-    outputs:
-      release-url: ${{ steps.ghrelease.outputs.url }}
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v8
@@ -53,7 +58,6 @@ jobs:
           tar -czf "${{ inputs.release-name }}.tar.gz" -C public .
 
       - name: Create GitHub Release
-        id: ghrelease
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ inputs.release-tag }}
@@ -65,7 +69,7 @@ jobs:
 
   deploy-pages:
     needs: release
-    if: inputs.deploy-pages == true
+    if: inputs.should-deploy-pages == true
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact

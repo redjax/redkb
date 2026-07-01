@@ -10,6 +10,12 @@ on:
         type: boolean
         default: false
 
+      deploy-pages:
+        description: "Deploy GitHub Pages after release."
+        required: false
+        type: boolean
+        default: true
+
       release-source:
         description: "manual or tag"
         required: false
@@ -46,6 +52,8 @@ jobs:
       release-name: ${{ steps.meta.outputs.release-name }}
       release-tag: ${{ steps.meta.outputs.release-tag }}
       release-version: ${{ steps.meta.outputs.release-version }}
+      should-release: ${{ steps.meta.outputs.should-release }}
+      should-deploy-pages: ${{ steps.meta.outputs.should-deploy-pages }}
       artifact-name: ${{ steps.meta.outputs.artifact-name }}
     steps:
       - uses: actions/checkout@v7
@@ -73,7 +81,7 @@ jobs:
           if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
             if [[ "${{ inputs.release-source }}" == "manual" ]]; then
               short_sha="${GITHUB_SHA::7}"
-
+              
               echo "release-version=${short_sha}" >> "$GITHUB_OUTPUT"
               echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
               echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
@@ -88,6 +96,9 @@ jobs:
               echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
               echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
             fi
+
+            echo "should-release=${{ inputs.create-release }}" >> "$GITHUB_OUTPUT"
+            echo "should-deploy-pages=${{ inputs.deploy-pages }}" >> "$GITHUB_OUTPUT"
           else
             ref="${GITHUB_REF_NAME}"
 
@@ -97,18 +108,12 @@ jobs:
             echo "release-version=${version}" >> "$GITHUB_OUTPUT"
             echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
             echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
+            echo "should-release=true" >> "$GITHUB_OUTPUT"
+            echo "should-deploy-pages=true" >> "$GITHUB_OUTPUT"
           fi
 
-  publish-release:
-    needs: build
-    if: github.event_name == 'workflow_dispatch' && inputs.create-release == true || github.event_name != 'workflow_dispatch'
-    uses: ./.github/workflows/hugo-release.yml
-    with:
-      run-id: ${{ github.run_id }}
-      release-name: ${{ needs.build.outputs.release-name }}
-      release-tag: ${{ needs.build.outputs.release-tag }}
-      release-version: ${{ needs.build.outputs.release-version }}
-      artifact-name: hugo-site
-      deploy-pages: true
-      dry-run: false
-    secrets: inherit
+      - name: Upload build manifest
+        run: |
+          printf '%s\n' "${{ steps.meta.outputs.release-name }}" > release-name.txt
+          printf '%s\n' "${{ steps.meta.outputs.release-tag }}" > release-tag.txt
+          printf '%s\n' "${{ steps.meta.outputs.release-version }}" > release-version.txt
