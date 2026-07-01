@@ -2,6 +2,15 @@
 name: Hugo tag release
 
 on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+    paths:
+      - ".version"
+      - ".bumpversion.toml"
+
   workflow_dispatch:
     inputs:
       version:
@@ -16,9 +25,10 @@ permissions:
 
 jobs:
   tag:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v8
         with:
           fetch-depth: 0
 
@@ -33,7 +43,7 @@ jobs:
         run: |
           set -Eeuo pipefail
 
-          if [ -n "${{ inputs.version }}" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.version }}" ]; then
             version="${{ inputs.version }}"
           else
             version="$(tr -d '[:space:]' < .version)"
@@ -67,4 +77,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh workflow run "Hugo build" --ref "${{ github.ref_name }}" -f release-source=tag
+          gh workflow run "Hugo build" --ref main -f release-source=tag
