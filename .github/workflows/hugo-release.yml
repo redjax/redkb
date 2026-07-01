@@ -1,152 +1,92 @@
 ---
-name: Hugo release and distribute
+name: Hugo release
 
 on:
-  push:
-    tags:
-      - "hugo/v*"
-  workflow_dispatch:
+  workflow_call:
     inputs:
-      publish-branch:
-        description: "Publish to branch."
+      run-id:
+        required: true
+        type: string
+      release-name:
+        required: true
+        type: string
+      release-tag:
+        required: true
+        type: string
+      release-version:
+        required: true
+        type: string
+      artifact-name:
+        required: true
+        type: string
+      should-deploy-pages:
         required: false
         type: boolean
         default: false
-
-      publish-github-pages:
-        description: "Publish to GitHub Pages."
-        required: false
-        type: boolean
-        default: false
-
-      publish-cloudflare-pages:
-        description: "Publish to Cloudflare Pages."
-        required: false
-        type: boolean
-        default: false
-
-      publish-github-release:
-        description: "Create GitHub release."
+      should-release:
         required: false
         type: boolean
         default: true
 
-      tag:
-        description: "Tag to release (e.g. hugo/v1.2.3)"
-        required: false
-        type: string
-        default: ""
-
-      cloudflare-pages-project:
-        description: "Cloudflare Pages project name."
-        required: false
-        type: string
-        default: ""
-
-      cloudflare-pages-branch:
-        description: "Cloudflare branch name."
-        required: false
-        type: string
-        default: "main"
-
-      cloudflare-pages-directory:
-        description: "Directory to deploy to Cloudflare Pages."
-        required: false
-        type: string
-        default: "public"
-
 permissions:
   contents: write
+  pages: write
+  id-token: write
   actions: read
 
 jobs:
-  resolve:
+  gate:
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ steps.pick.outputs.tag }}
-      release-version: ${{ steps.pick.outputs.release-version }}
-      release-tag: ${{ steps.pick.outputs.release-tag }}
-      release-name: ${{ steps.pick.outputs.release-name }}
-      run-id: ${{ steps.run.outputs.run-id }}
-      targets: ${{ steps.targets.outputs.targets }}
+      should-release: ${{ inputs.should-release }}
+      should-deploy-pages: ${{ inputs.should-deploy-pages }}
     steps:
-      - name: Decide tag
-        id: pick
+      - run: echo "gate"
+
+  release:
+    needs: gate
+    if: ${{ needs.gate.outputs.should-release == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          run-id: ${{ inputs.run-id }}
+          name: ${{ inputs.artifact-name }}
+          path: public
+
+      - name: Pack artifact
         shell: bash
         run: |
           set -Eeuo pipefail
+          tar -czf "${{ inputs.release-name }}.tar.gz" -C public .
 
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.tag }}" ]; then
-            raw_tag="${{ inputs.tag }}"
-            version="${raw_tag#hugo/}"
-            version="${version#v}"
-            short_sha="${GITHUB_SHA::7}"
-            echo "tag=${raw_tag}" >> "$GITHUB_OUTPUT"
-            echo "release-version=${version}" >> "$GITHUB_OUTPUT"
-            echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
-            echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
-          else
-            raw_tag="${GITHUB_REF_NAME}"
-            version="${raw_tag#hugo/}"
-            version="${version#v}"
-            echo "tag=${raw_tag}" >> "$GITHUB_OUTPUT"
-            echo "release-version=${version}" >> "$GITHUB_OUTPUT"
-            echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
-            echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Find latest build artifact
-        id: run
-        shell: bash
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ inputs.release-tag }}
+          name: ${{ inputs.release-name }}
+          files: |
+            ${{ inputs.release-name }}.tar.gz
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-        run: |
-          set -Eeuo pipefail
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          run_id="$(gh api "repos/${REPO}/actions/workflows/hugo-build.yml/runs?status=success&per_page=20" --jq '.workflow_runs[0].id')"
-          [[ -n "$run_id" ]] || { echo "No successful build run found."; exit 1; }
-          echo "run-id=$run_id" >> "$GITHUB_OUTPUT"
+  deploy-pages:
+    needs: gate
+    if: ${{ needs.gate.outputs.should-deploy-pages == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          run-id: ${{ inputs.run-id }}
+          name: ${{ inputs.artifact-name }}
+          path: public
 
-      - name: Compute selected release targets
-        id: targets
-        shell: bash
-        env:
-          DO_BRANCH: ${{ inputs.publish-branch }}
-          DO_GH_PAGES: ${{ inputs.publish-github-pages }}
-          DO_CF_PAGES: ${{ inputs.publish-cloudflare-pages }}
-          DO_GH_RELEASE: ${{ inputs.publish-github-release }}
-        run: |
-          set -Eeuo pipefail
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: public
 
-          targets=()
-          [[ "${DO_BRANCH}" == "true" ]] && targets+=("branch")
-          [[ "${DO_GH_PAGES}" == "true" ]] && targets+=("github-pages")
-          [[ "${DO_CF_PAGES}" == "true" ]] && targets+=("cloudflare-pages")
-          [[ "${DO_GH_RELEASE}" == "true" ]] && targets+=("github-release")
-          (( ${#targets[@]} )) || targets+=("github-release")
-          printf 'targets=%s\n' "$(printf '%s\n' "${targets[@]}" | jq -R . | jq -s -c .)" >> "$GITHUB_OUTPUT"
-
-  publish:
-    needs: resolve
-    strategy:
-      fail-fast: false
-      matrix:
-        target: ${{ fromJSON(needs.resolve.outputs.targets) }}
-    uses: redjax/pipelinetemplates/.github/workflows/hugo-publish.yml@gh/hugo-build/v0.0.3
-    with:
-      target: ${{ matrix.target }}
-      run-id: ${{ needs.resolve.outputs.run-id }}
-      artifact-name: hugo-site
-      branch-name: gh-pages
-      commit-message: "Deploy Hugo site"
-      cloudflare-pages-project: ${{ inputs.cloudflare-pages-project }}
-      cloudflare-pages-branch: ${{ inputs.cloudflare-pages-branch }}
-      cloudflare-pages-directory: ${{ inputs.cloudflare-pages-directory }}
-      release-name: ${{ needs.resolve.outputs.release-name }}
-      release-version: ${{ needs.resolve.outputs.release-version }}
-      release-tag: ${{ needs.resolve.outputs.release-tag }}
-      dry-run: false
-    secrets:
-      cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v5
