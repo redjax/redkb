@@ -7,9 +7,9 @@ The repository uses a [workflow defined in my PipelineTemplates repository](http
 - [Overview](#overview)
 - [Diagrams](#diagrams)
   - [General pipeline flow](#general-pipeline-flow)
-  - [Manual Trigger](#manual-trigger)
-  - [Merge to main Trigger](#merge-to-main-trigger)
-  - [Publish Only](#publish-only)
+  - [Hugo site file change path](#hugo-site-file-change-path)
+  - [Manual build path](#manual-build-path)
+  - [Publish only path](#publish-only-path)
 
 ## Overview
 
@@ -49,14 +49,43 @@ flowchart LR
   D --> F[GitHub Pages]
 ```
 
-### Manual Trigger
+### Hugo site file change path
+
+Runs on any change to a Hugo site file, i.e.:
+
+- `archetypes/**`
+- `content/**`
+- `data/**`
+- `i18n/**`
+- `static/**`
+- `hugo.yml`
+- `go.mod`
+- `go.sum`
+
+```mermaid
+flowchart TD
+  A[Hugo files change] --> B[version-bump workflow runs]
+  B --> C[Bump .version]
+  C --> D[Open or update bump PR]
+  D --> E[Auto-merge PR to main]
+  E --> F[tag workflow runs]
+  F --> G[Create tag site-vX.Y.Z]
+  G --> H[Dispatch build workflow explicitly]
+  H --> I[Build site]
+  I --> J[Release workflow]
+  J --> K[Download build artifact by run ID]
+  K --> L[Create GitHub Release]
+  L --> M[Deploy GitHub Pages if enabled]
+```
+
+### Manual build path
 
 ```mermaid
 flowchart TD
   A[Manual trigger: Hugo build] --> B[Build site]
   B --> C{Create release?}
   C -- No --> D[Stop]
-  C -- Yes --> E[Name release site-<commit-hash>]
+  C -- Yes --> E[Name release site-&ltcommit-hash&gt]
   E --> F{Deploy Pages?}
   F -- No --> G[Stop]
   F -- Yes --> H[Release workflow]
@@ -65,24 +94,7 @@ flowchart TD
   J --> K[Deploy GitHub Pages]
 ```
 
-### Merge to main Trigger
-
-```mermaid
-flowchart TD
-  A[Change on main] --> B[Version bump PR created]
-  B --> C[Auto-merge PR]
-  C --> D[Tag workflow runs]
-  D --> E[Create tag site-vX.Y.Z]
-  E --> F[Build workflow runs]
-  F --> G[Build site]
-  G --> H[Name release site-vX.Y.Z]
-  H --> I[Release workflow]
-  I --> J[Download build artifact by run ID]
-  J --> K[Create GitHub Release]
-  K --> L[Deploy GitHub Pages]
-```
-
-### Publish Only
+### Publish only path
 
 ```mermaid
 flowchart TD

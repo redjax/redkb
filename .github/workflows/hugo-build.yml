@@ -25,10 +25,6 @@ on:
           - manual
           - tag
 
-  push:
-    tags:
-      - "site-v*"
-
 permissions:
   contents: read
   actions: write
@@ -71,13 +67,11 @@ jobs:
           if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
             if [[ "${{ inputs.release-source }}" == "manual" ]]; then
               short_sha="${GITHUB_SHA::7}"
-
               echo "release-version=${short_sha}" >> "$GITHUB_OUTPUT"
               echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
               echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
             else
               version="$(tr -d '[:space:]' < .version)"
-
               echo "release-version=${version}" >> "$GITHUB_OUTPUT"
               echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
               echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
@@ -87,7 +81,6 @@ jobs:
             echo "should-deploy-pages=${{ inputs.deploy-pages }}" >> "$GITHUB_OUTPUT"
           else
             version="$(tr -d '[:space:]' < .version)"
-
             echo "release-version=${version}" >> "$GITHUB_OUTPUT"
             echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
             echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"

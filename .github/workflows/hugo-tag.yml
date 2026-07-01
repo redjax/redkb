@@ -19,6 +19,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   tag:
@@ -52,15 +53,25 @@ jobs:
           echo "tag=site-v$version" >> "$GITHUB_OUTPUT"
 
       - name: Create tag
+        id: createtag
         shell: bash
         run: |
           set -Eeuo pipefail
           tag="${{ steps.v.outputs.tag }}"
 
           if git rev-parse "$tag" >/dev/null 2>&1; then
+            echo "created=false" >> "$GITHUB_OUTPUT"
             echo "[INFO] Tag exists: $tag"
             exit 0
           fi
 
           git tag -a "$tag" -m "$tag"
           git push origin "$tag"
+          echo "created=true" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger build workflow
+        if: steps.createtag.outputs.created == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run "Hugo build" --ref "${{ github.ref_name }}" -f release-source=tag
