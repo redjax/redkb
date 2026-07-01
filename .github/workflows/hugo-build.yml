@@ -50,14 +50,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      release-name: ${{ steps.meta.outputs.release-name }}
-      release-tag: ${{ steps.meta.outputs.release-tag }}
-      release-version: ${{ steps.meta.outputs.release-version }}
-      should-release: ${{ steps.meta.outputs.should-release }}
-      should-deploy-pages: ${{ steps.meta.outputs.should-deploy-pages }}
-      artifact-name: ${{ steps.meta.outputs.artifact-name }}
-      run-id: ${{ github.run_id }}
     steps:
       - uses: actions/checkout@v7
 
@@ -74,71 +66,3 @@ jobs:
           artifact-name: "hugo-site"
           artifact-if-no-files-found: "error"
           artifact-retention-days: "7"
-
-      - name: Resolve release metadata
-        id: meta
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          echo "artifact-name=hugo-site" >> "$GITHUB_OUTPUT"
-
-          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
-            source="${{ inputs.release-source }}"
-            version="${{ inputs.release-version }}"
-            name="${{ inputs.release-name }}"
-            tag="${{ inputs.release-tag }}"
-
-            if [[ "${source}" == "manual" ]]; then
-              if [[ -z "${version}" ]]; then
-                version="${GITHUB_SHA::7}"
-              fi
-              if [[ -z "${name}" ]]; then
-                name="site-${version}"
-              fi
-              if [[ -z "${tag}" ]]; then
-                tag="site-${version}"
-              fi
-            else
-              if [[ -z "${version}" ]]; then
-                version="$(tr -d '[:space:]' < .version)"
-              fi
-              if [[ -z "${name}" ]]; then
-                name="site-v${version}"
-              fi
-              if [[ -z "${tag}" ]]; then
-                tag="site-v${version}"
-              fi
-            fi
-
-            echo "release-version=${version}" >> "$GITHUB_OUTPUT"
-            echo "release-tag=${tag}" >> "$GITHUB_OUTPUT"
-            echo "release-name=${name}" >> "$GITHUB_OUTPUT"
-            echo "should-release=${{ inputs.create-release }}" >> "$GITHUB_OUTPUT"
-            echo "should-deploy-pages=${{ inputs.deploy-pages }}" >> "$GITHUB_OUTPUT"
-          else
-            version="$(tr -d '[:space:]' < .version)"
-            echo "release-version=${version}" >> "$GITHUB_OUTPUT"
-            echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
-            echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
-            echo "should-release=true" >> "$GITHUB_OUTPUT"
-            echo "should-deploy-pages=true" >> "$GITHUB_OUTPUT"
-          fi
-
-  release:
-    needs: build
-    if: ${{ needs.build.outputs.should-release == 'true' }}
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
-      actions: read
-    uses: ./.github/workflows/hugo-release.yml
-    with:
-      run-id: ${{ needs.build.outputs.run-id }}
-      release-name: ${{ needs.build.outputs.release-name }}
-      release-tag: ${{ needs.build.outputs.release-tag }}
-      release-version: ${{ needs.build.outputs.release-version }}
-      artifact-name: ${{ needs.build.outputs.artifact-name }}
-      should-release: ${{ needs.build.outputs.should-release == 'true' }}
-      should-deploy-pages: ${{ needs.build.outputs.should-deploy-pages == 'true' }}
-    secrets: inherit

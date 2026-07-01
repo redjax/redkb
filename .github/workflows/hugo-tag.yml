@@ -28,10 +28,10 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:
-      release-tag: ${{ steps.v.outputs.tag }}
-      release-name: ${{ steps.v.outputs.name }}
-      release-version: ${{ steps.v.outputs.version }}
-      release-source: ${{ steps.v.outputs.release-source }}
+      release-tag: ${{ steps.meta.outputs.release-tag }}
+      release-name: ${{ steps.meta.outputs.release-name }}
+      release-version: ${{ steps.meta.outputs.release-version }}
+      release-source: ${{ steps.meta.outputs.release-source }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -43,48 +43,44 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Determine version
-        id: v
+        id: meta
         shell: bash
         run: |
           set -Eeuo pipefail
 
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.version }}" ]; then
-            version="${{ inputs.version }}"
-            release_source="manual"
-          else
-            version="$(tr -d '[:space:]' < .version)"
-            release_source="tag"
-          fi
-
-          version="${version#v}"
-          version="${version#hugo/}"
-
-          if [ "${release_source}" = "manual" ]; then
-            if [ -n "${{ inputs.version }}" ]; then
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            if [[ -n "${{ inputs.version }}" ]]; then
+              version="${{ inputs.version }}"
+              version="${version#v}"
+              version="${version#hugo/}"
               tag="site-v${version}"
               name="site-v${version}"
             else
-              short_sha="${GITHUB_SHA::7}"
-              tag="site-${short_sha}"
-              name="site-${short_sha}"
-              version="${short_sha}"
+              version="${GITHUB_SHA::7}"
+              tag="site-${version}"
+              name="site-${version}"
             fi
+            source="manual"
           else
+            version="$(tr -d '[:space:]' < .version)"
+            version="${version#v}"
+            version="${version#hugo/}"
             tag="site-v${version}"
             name="site-v${version}"
+            source="tag"
           fi
 
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
-          echo "name=${name}" >> "$GITHUB_OUTPUT"
-          echo "release-source=${release_source}" >> "$GITHUB_OUTPUT"
+          echo "release-version=${version}" >> "$GITHUB_OUTPUT"
+          echo "release-tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "release-name=${name}" >> "$GITHUB_OUTPUT"
+          echo "release-source=${source}" >> "$GITHUB_OUTPUT"
 
       - name: Create tag
         id: createtag
         shell: bash
         run: |
           set -Eeuo pipefail
-          tag="${{ steps.v.outputs.tag }}"
+          tag="${{ steps.meta.outputs.release-tag }}"
 
           if git rev-parse "$tag" >/dev/null 2>&1; then
             echo "created=false" >> "$GITHUB_OUTPUT"
@@ -96,13 +92,15 @@ jobs:
           git push origin "$tag"
           echo "created=true" >> "$GITHUB_OUTPUT"
 
-      - name: Trigger build workflow
-        if: steps.createtag.outputs.created == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh workflow run "Hugo build" --ref main \
-            -f release-source=${{ steps.v.outputs.release-source }} \
-            -f release-version=${{ steps.v.outputs.version }} \
-            -f release-name=${{ steps.v.outputs.name }} \
-            -f release-tag=${{ steps.v.outputs.tag }}
+  publish:
+    needs: tag
+    if: needs.tag.outputs.release-tag != ''
+    uses: ./.github/workflows/hugo-release.yml
+    with:
+      release-source: ${{ needs.tag.outputs.release-source }}
+      release-version: ${{ needs.tag.outputs.release-version }}
+      release-name: ${{ needs.tag.outputs.release-name }}
+      release-tag: ${{ needs.tag.outputs.release-tag }}
+      should-release: true
+      should-deploy-pages: true
+    secrets: inherit
