@@ -28,16 +28,6 @@ on:
   push:
     tags:
       - "site-v*"
-    paths:
-      - "archetypes/**"
-      - "content/**"
-      - "data/**"
-      - "i18n/**"
-      - "static/**"
-      - "hugo.yml"
-      - "go.mod"
-      - "go.sum"
-      - ".github/workflows/hugo-build.yml"
 
 permissions:
   contents: read
