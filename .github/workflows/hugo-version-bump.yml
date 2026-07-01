@@ -26,6 +26,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   bump:
@@ -76,3 +77,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --merge --auto
+
+      - name: Trigger tag workflow
+        if: steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run "Hugo tag release" --ref main
