@@ -22,6 +22,8 @@ on:
 permissions:
   contents: write
   actions: write
+  pages: write
+  id-token: write
 
 jobs:
   tag:
