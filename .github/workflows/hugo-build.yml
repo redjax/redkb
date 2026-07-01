@@ -41,7 +41,7 @@ jobs:
       artifact-name: ${{ steps.meta.outputs.artifact-name }}
       run-id: ${{ github.run_id }}
     steps:
-      - uses: actions/checkout@v8
+      - uses: actions/checkout@v7
 
       - name: Build Hugo site
         uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.3
