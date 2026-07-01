@@ -8,6 +8,7 @@ on:
     paths:
       - ".version"
       - ".bumpversion.toml"
+
   workflow_dispatch:
     inputs:
       version:
@@ -45,7 +46,7 @@ jobs:
           fi
 
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "tag=hugo/v$version" >> "$GITHUB_OUTPUT"
+          echo "tag=site-hugo/v$version" >> "$GITHUB_OUTPUT"
 
       - name: Create tag
         shell: bash
