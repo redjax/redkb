@@ -1,0 +1,92 @@
+---
+name: Hugo release
+
+on:
+  workflow_call:
+    inputs:
+      run-id:
+        required: true
+        type: string
+      release-name:
+        required: true
+        type: string
+      release-tag:
+        required: true
+        type: string
+      release-version:
+        required: true
+        type: string
+      artifact-name:
+        required: true
+        type: string
+      should-deploy-pages:
+        required: false
+        type: boolean
+        default: false
+      should-release:
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  actions: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      should-release: ${{ inputs.should-release }}
+      should-deploy-pages: ${{ inputs.should-deploy-pages }}
+    steps:
+      - run: echo "gate"
+
+  release:
+    needs: gate
+    if: ${{ needs.gate.outputs.should-release == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          run-id: ${{ inputs.run-id }}
+          name: ${{ inputs.artifact-name }}
+          path: public
+
+      - name: Pack artifact
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tar -czf "${{ inputs.release-name }}.tar.gz" -C public .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ inputs.release-tag }}
+          name: ${{ inputs.release-name }}
+          files: |
+            ${{ inputs.release-name }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-pages:
+    needs: gate
+    if: ${{ needs.gate.outputs.should-deploy-pages == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          run-id: ${{ inputs.run-id }}
+          name: ${{ inputs.artifact-name }}
+          path: public
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v5
