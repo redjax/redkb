@@ -83,13 +83,16 @@ jobs:
           set -Eeuo pipefail
           mkdir -p ./_release
           tar -C public -czf ./_release/${{ inputs.release-name }}.tar.gz .
+          (cd public && zip -r ../_release/${{ inputs.release-name }}.zip .)
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ inputs.release-tag }}
           name: ${{ inputs.release-name }}
-          files: ./_release/${{ inputs.release-name }}.tar.gz
+          files: |
+            ./_release/${{ inputs.release-name }}.tar.gz
+            ./_release/${{ inputs.release-name }}.zip
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
