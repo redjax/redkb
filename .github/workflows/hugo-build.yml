@@ -25,6 +25,24 @@ on:
           - manual
           - tag
 
+      release-version:
+        description: "Release version or short SHA."
+        required: false
+        type: string
+        default: ""
+
+      release-name:
+        description: "Release name."
+        required: false
+        type: string
+        default: ""
+
+      release-tag:
+        description: "Release tag."
+        required: false
+        type: string
+        default: ""
+
 permissions:
   contents: read
   actions: write
@@ -65,18 +83,36 @@ jobs:
           echo "artifact-name=hugo-site" >> "$GITHUB_OUTPUT"
 
           if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
-            if [[ "${{ inputs.release-source }}" == "manual" ]]; then
-              short_sha="${GITHUB_SHA::7}"
-              echo "release-version=${short_sha}" >> "$GITHUB_OUTPUT"
-              echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
-              echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
+            source="${{ inputs.release-source }}"
+            version="${{ inputs.release-version }}"
+            name="${{ inputs.release-name }}"
+            tag="${{ inputs.release-tag }}"
+
+            if [[ "${source}" == "manual" ]]; then
+              if [[ -z "${version}" ]]; then
+                version="${GITHUB_SHA::7}"
+              fi
+              if [[ -z "${name}" ]]; then
+                name="site-${version}"
+              fi
+              if [[ -z "${tag}" ]]; then
+                tag="site-${version}"
+              fi
             else
-              version="$(tr -d '[:space:]' < .version)"
-              echo "release-version=${version}" >> "$GITHUB_OUTPUT"
-              echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
-              echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
+              if [[ -z "${version}" ]]; then
+                version="$(tr -d '[:space:]' < .version)"
+              fi
+              if [[ -z "${name}" ]]; then
+                name="site-v${version}"
+              fi
+              if [[ -z "${tag}" ]]; then
+                tag="site-v${version}"
+              fi
             fi
 
+            echo "release-version=${version}" >> "$GITHUB_OUTPUT"
+            echo "release-tag=${tag}" >> "$GITHUB_OUTPUT"
+            echo "release-name=${name}" >> "$GITHUB_OUTPUT"
             echo "should-release=${{ inputs.create-release }}" >> "$GITHUB_OUTPUT"
             echo "should-deploy-pages=${{ inputs.deploy-pages }}" >> "$GITHUB_OUTPUT"
           else

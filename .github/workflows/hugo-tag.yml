@@ -27,6 +27,11 @@ jobs:
   tag:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    outputs:
+      release-tag: ${{ steps.v.outputs.tag }}
+      release-name: ${{ steps.v.outputs.name }}
+      release-version: ${{ steps.v.outputs.version }}
+      release-source: ${{ steps.v.outputs.release-source }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -45,15 +50,34 @@ jobs:
 
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.version }}" ]; then
             version="${{ inputs.version }}"
+            release_source="manual"
           else
             version="$(tr -d '[:space:]' < .version)"
+            release_source="tag"
           fi
 
           version="${version#v}"
           version="${version#hugo/}"
 
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "tag=site-v$version" >> "$GITHUB_OUTPUT"
+          if [ "${release_source}" = "manual" ]; then
+            if [ -n "${{ inputs.version }}" ]; then
+              tag="site-v${version}"
+              name="site-v${version}"
+            else
+              short_sha="${GITHUB_SHA::7}"
+              tag="site-${short_sha}"
+              name="site-${short_sha}"
+              version="${short_sha}"
+            fi
+          else
+            tag="site-v${version}"
+            name="site-v${version}"
+          fi
+
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "name=${name}" >> "$GITHUB_OUTPUT"
+          echo "release-source=${release_source}" >> "$GITHUB_OUTPUT"
 
       - name: Create tag
         id: createtag
@@ -77,4 +101,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh workflow run "Hugo build" --ref main -f release-source=tag
+          gh workflow run "Hugo build" --ref main \
+            -f release-source=${{ steps.v.outputs.release-source }} \
+            -f release-version=${{ steps.v.outputs.version }} \
+            -f release-name=${{ steps.v.outputs.name }} \
+            -f release-tag=${{ steps.v.outputs.tag }}
