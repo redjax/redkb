@@ -8,13 +8,13 @@ on:
         description: "Create a GitHub release after build."
         required: false
         type: boolean
-        default: false
+        default: true
 
       deploy-pages:
         description: "Deploy GitHub Pages after release."
         required: false
         type: boolean
-        default: true
+        default: false
 
       release-source:
         description: "manual or tag"
@@ -81,7 +81,7 @@ jobs:
           if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
             if [[ "${{ inputs.release-source }}" == "manual" ]]; then
               short_sha="${GITHUB_SHA::7}"
-              
+
               echo "release-version=${short_sha}" >> "$GITHUB_OUTPUT"
               echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
               echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
