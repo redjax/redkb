@@ -53,6 +53,7 @@ jobs:
         with:
           run-id: ${{ inputs.run-id }}
           name: ${{ inputs.artifact-name }}
+          path: public
 
       - name: Pack artifact
         shell: bash
@@ -80,6 +81,7 @@ jobs:
         with:
           run-id: ${{ inputs.run-id }}
           name: ${{ inputs.artifact-name }}
+          path: public
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
