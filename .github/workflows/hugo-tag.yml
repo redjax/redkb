@@ -8,10 +8,11 @@ on:
     paths:
       - ".version"
       - ".bumpversion.toml"
+
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to tag (for manual escape hatch, e.g. 1.2.3)"
+        description: "Version to tag (example: 1.2.3)"
         required: false
         type: string
         default: ""
@@ -44,8 +45,11 @@ jobs:
             version="$(tr -d '[:space:]' < .version)"
           fi
 
+          version="${version#v}"
+          version="${version#hugo/}"
+
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "tag=hugo/v$version" >> "$GITHUB_OUTPUT"
+          echo "tag=site-v$version" >> "$GITHUB_OUTPUT"
 
       - name: Create tag
         shell: bash
