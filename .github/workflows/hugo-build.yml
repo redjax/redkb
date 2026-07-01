@@ -1,50 +1,35 @@
 ---
-###################################################
-# Build the Hugo site when any Hugo files change. #
-###################################################
-
 name: Hugo build
 
 on:
   workflow_dispatch:
     inputs:
-      publish-on-build:
-        description: "If true, trigger publish workflow after a successful build."
+      create-release:
+        description: "Create a GitHub release after build."
+        required: false
+        type: boolean
+        default: true
+
+      deploy-pages:
+        description: "Deploy GitHub Pages after release."
         required: false
         type: boolean
         default: false
 
-      publish-target:
-        description: "Where to publish the site if publish-on-build is true."
+      release-source:
+        description: "manual or tag"
         required: false
         type: choice
+        default: manual
         options:
-          - branch
-          - github-pages
-          - cloudflare-pages
-        default: branch
-
-      cloudflare-pages-project:
-        description: "Cloudflare Pages project name."
-        required: false
-        type: string
-        default: ""
-
-      cloudflare-pages-branch:
-        description: "Cloudflare branch name."
-        required: false
-        type: string
-        default: ""
-
-      cloudflare-pages-directory:
-        description: "Directory to deploy to Cloudflare Pages."
-        required: false
-        type: string
-        default: "public"
+          - manual
+          - tag
 
   push:
     branches:
       - main
+    tags:
+      - "hugo/v*"
     paths:
       - "archetypes/**"
       - "content/**"
@@ -52,17 +37,30 @@ on:
       - "i18n/**"
       - "static/**"
       - "hugo.yml"
-      - ".github/workflows/test-hugo-build.yml"
+      - "go.mod"
+      - "go.sum"
+      - ".github/workflows/hugo-build.yml"
+
+permissions:
+  contents: read
+  actions: write
 
 jobs:
-  build-hugo-root:
+  build:
     runs-on: ubuntu-latest
+    outputs:
+      release-name: ${{ steps.meta.outputs.release-name }}
+      release-tag: ${{ steps.meta.outputs.release-tag }}
+      release-version: ${{ steps.meta.outputs.release-version }}
+      should-release: ${{ steps.meta.outputs.should-release }}
+      should-deploy-pages: ${{ steps.meta.outputs.should-deploy-pages }}
+      artifact-name: ${{ steps.meta.outputs.artifact-name }}
+      run-id: ${{ github.run_id }}
     steps:
-      - name: Checkout test repo
-        uses: actions/checkout@v7
+      - uses: actions/checkout@v7
 
-      - name: Build Hugo site using template Action
-        uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.2
+      - name: Build Hugo site
+        uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.3
         with:
           source-dir: "."
           public-dir: "public"
@@ -75,15 +73,63 @@ jobs:
           artifact-if-no-files-found: "error"
           artifact-retention-days: "7"
 
-      - name: Trigger publish workflow
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-on-build == true }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Resolve release metadata
+        id: meta
+        shell: bash
         run: |
-          gh workflow run hugo-publish.yml \
-            --ref "${{ github.ref_name }}" \
-            -f target='${{ inputs.publish-target }}' \
-            -f run-id='${{ github.run_id }}' \
-            -f cloudflare-pages-project='${{ inputs.cloudflare-pages-project }}' \
-            -f cloudflare-pages-branch='${{ inputs.cloudflare-pages-branch }}' \
-            -f cloudflare-pages-directory='${{ inputs.cloudflare-pages-directory }}'
+          set -Eeuo pipefail
+          echo "artifact-name=hugo-site" >> "$GITHUB_OUTPUT"
+
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            if [[ "${{ inputs.release-source }}" == "manual" ]]; then
+              short_sha="${GITHUB_SHA::7}"
+
+              echo "release-version=${short_sha}" >> "$GITHUB_OUTPUT"
+              echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
+              echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
+            else
+
+              ref="${GITHUB_REF_NAME}"
+
+              version="${ref#hugo/}"
+              version="${version#v}"
+
+              echo "release-version=${version}" >> "$GITHUB_OUTPUT"
+              echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
+              echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
+            fi
+
+            echo "should-release=${{ inputs.create-release }}" >> "$GITHUB_OUTPUT"
+            echo "should-deploy-pages=${{ inputs.deploy-pages }}" >> "$GITHUB_OUTPUT"
+          else
+
+            ref="${GITHUB_REF_NAME}"
+
+            version="${ref#hugo/}"
+            version="${version#v}"
+
+            echo "release-version=${version}" >> "$GITHUB_OUTPUT"
+            echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
+            echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
+            echo "should-release=true" >> "$GITHUB_OUTPUT"
+            echo "should-deploy-pages=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  release:
+    needs: build
+    if: ${{ needs.build.outputs.should-release == 'true' }}
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+      actions: read
+    uses: ./.github/workflows/hugo-release.yml
+    with:
+      run-id: ${{ needs.build.outputs.run-id }}
+      release-name: ${{ needs.build.outputs.release-name }}
+      release-tag: ${{ needs.build.outputs.release-tag }}
+      release-version: ${{ needs.build.outputs.release-version }}
+      artifact-name: ${{ needs.build.outputs.artifact-name }}
+      should-release: ${{ needs.build.outputs.should-release == 'true' }}
+      should-deploy-pages: ${{ needs.build.outputs.should-deploy-pages == 'true' }}
+    secrets: inherit

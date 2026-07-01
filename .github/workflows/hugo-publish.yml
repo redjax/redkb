@@ -15,18 +15,19 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: "Publish target: branch, github-pages, or cloudflare-pages."
+        description: "Publish target: branch, github-pages, cloudflare-pages, or github-release."
         required: true
         type: choice
         options:
           - branch
           - github-pages
           - cloudflare-pages
+          - github-release
         default: branch
 
       run-id:
-        description: "Build workflow run ID to publish from. Leave blank to use the most recent successful build."
-        required: false
+        description: "Build workflow run ID to publish from."
+        required: true
         type: string
         default: ""
 
@@ -60,6 +61,24 @@ on:
         type: string
         default: "public"
 
+      release-name:
+        description: "GitHub release name."
+        required: false
+        type: string
+        default: ""
+
+      release-version:
+        description: "Version string used to build a release tag and archive names."
+        required: false
+        type: string
+        default: ""
+
+      release-tag:
+        description: "Explicit Git tag to use for the GitHub release."
+        required: false
+        type: string
+        default: ""
+
       dry-run:
         description: "Do a dry run without publishing."
         required: false
@@ -74,7 +93,7 @@ permissions:
 
 jobs:
   resolve-run:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     outputs:
       run-id: ${{ steps.pick.outputs.run-id }}
@@ -84,6 +103,9 @@ jobs:
       cloudflare-pages-project: ${{ steps.pick.outputs.cloudflare-pages-project }}
       cloudflare-pages-branch: ${{ steps.pick.outputs.cloudflare-pages-branch }}
       cloudflare-pages-directory: ${{ steps.pick.outputs.cloudflare-pages-directory }}
+      release-name: ${{ steps.pick.outputs.release-name }}
+      release-version: ${{ steps.pick.outputs.release-version }}
+      release-tag: ${{ steps.pick.outputs.release-tag }}
       dry-run: ${{ steps.pick.outputs.dry-run }}
     steps:
       - name: Pick publish inputs
@@ -102,33 +124,29 @@ jobs:
             echo "cloudflare-pages-project=pipelinetemplatest-test-hugo" >> "$GITHUB_OUTPUT"
             echo "cloudflare-pages-branch=main" >> "$GITHUB_OUTPUT"
             echo "cloudflare-pages-directory=public" >> "$GITHUB_OUTPUT"
+            echo "release-name=" >> "$GITHUB_OUTPUT"
+            echo "release-version=" >> "$GITHUB_OUTPUT"
+            echo "release-tag=" >> "$GITHUB_OUTPUT"
             echo "dry-run=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          run_id="${{ inputs.run-id }}"
-          if [ -z "$run_id" ]; then
-            latest_run_id="$(gh api "repos/${REPO}/actions/workflows/hugo-build.yml/runs?status=success&per_page=1" --jq '.workflow_runs[0].id')"
-            if [ -z "$latest_run_id" ] || [ "$latest_run_id" = "null" ]; then
-              echo "No successful Hugo build run found."
-              exit 1
-            fi
-            run_id="$latest_run_id"
-          fi
-
-          echo "run-id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "run-id=${{ inputs.run-id }}" >> "$GITHUB_OUTPUT"
           echo "target=${{ inputs.target }}" >> "$GITHUB_OUTPUT"
           echo "branch-name=${{ inputs.branch-name }}" >> "$GITHUB_OUTPUT"
           echo "commit-message=${{ inputs.commit-message }}" >> "$GITHUB_OUTPUT"
           echo "cloudflare-pages-project=${{ inputs.cloudflare-pages-project }}" >> "$GITHUB_OUTPUT"
           echo "cloudflare-pages-branch=${{ inputs.cloudflare-pages-branch }}" >> "$GITHUB_OUTPUT"
           echo "cloudflare-pages-directory=${{ inputs.cloudflare-pages-directory }}" >> "$GITHUB_OUTPUT"
+          echo "release-name=${{ inputs.release-name }}" >> "$GITHUB_OUTPUT"
+          echo "release-version=${{ inputs.release-version }}" >> "$GITHUB_OUTPUT"
+          echo "release-tag=${{ inputs.release-tag }}" >> "$GITHUB_OUTPUT"
           echo "dry-run=${{ inputs.dry-run }}" >> "$GITHUB_OUTPUT"
 
   publish:
     needs: resolve-run
-    if: needs.resolve-run.result == 'success'
-    uses: redjax/pipelinetemplates/.github/workflows/hugo-publish.yml@gh/hugo-build/v0.0.2
+    if: ${{ needs.resolve-run.result == 'success' }}
+    uses: redjax/pipelinetemplates/.github/workflows/hugo-publish.yml@gh/hugo-build/v0.0.3
     with:
       target: ${{ needs.resolve-run.outputs.target }}
       run-id: ${{ needs.resolve-run.outputs.run-id }}
@@ -138,6 +156,9 @@ jobs:
       cloudflare-pages-project: ${{ needs.resolve-run.outputs.cloudflare-pages-project }}
       cloudflare-pages-branch: ${{ needs.resolve-run.outputs.cloudflare-pages-branch }}
       cloudflare-pages-directory: ${{ needs.resolve-run.outputs.cloudflare-pages-directory }}
+      release-name: ${{ needs.resolve-run.outputs.release-name }}
+      release-version: ${{ needs.resolve-run.outputs.release-version }}
+      release-tag: ${{ needs.resolve-run.outputs.release-tag }}
       dry-run: ${{ needs.resolve-run.outputs.dry-run == 'true' }}
     secrets:
       cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
