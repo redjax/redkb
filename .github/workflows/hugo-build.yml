@@ -26,10 +26,8 @@ on:
           - tag
 
   push:
-    branches:
-      - main
     tags:
-      - "hugo/v*"
+      - "site-v*"
     paths:
       - "archetypes/**"
       - "content/**"
@@ -88,11 +86,7 @@ jobs:
               echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
               echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
             else
-
-              ref="${GITHUB_REF_NAME}"
-
-              version="${ref#hugo/}"
-              version="${version#v}"
+              version="$(tr -d '[:space:]' < .version)"
 
               echo "release-version=${version}" >> "$GITHUB_OUTPUT"
               echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
@@ -102,11 +96,7 @@ jobs:
             echo "should-release=${{ inputs.create-release }}" >> "$GITHUB_OUTPUT"
             echo "should-deploy-pages=${{ inputs.deploy-pages }}" >> "$GITHUB_OUTPUT"
           else
-
-            ref="${GITHUB_REF_NAME}"
-
-            version="${ref#hugo/}"
-            version="${version#v}"
+            version="$(tr -d '[:space:]' < .version)"
 
             echo "release-version=${version}" >> "$GITHUB_OUTPUT"
             echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
