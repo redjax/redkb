@@ -55,6 +55,7 @@ jobs:
       should-release: ${{ steps.meta.outputs.should-release }}
       should-deploy-pages: ${{ steps.meta.outputs.should-deploy-pages }}
       artifact-name: ${{ steps.meta.outputs.artifact-name }}
+      run-id: ${{ github.run_id }}
     steps:
       - uses: actions/checkout@v7
 
@@ -81,7 +82,7 @@ jobs:
           if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
             if [[ "${{ inputs.release-source }}" == "manual" ]]; then
               short_sha="${GITHUB_SHA::7}"
-
+              
               echo "release-version=${short_sha}" >> "$GITHUB_OUTPUT"
               echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
               echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
@@ -111,9 +112,3 @@ jobs:
             echo "should-release=true" >> "$GITHUB_OUTPUT"
             echo "should-deploy-pages=true" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Upload build manifest
-        run: |
-          printf '%s\n' "${{ steps.meta.outputs.release-name }}" > release-name.txt
-          printf '%s\n' "${{ steps.meta.outputs.release-tag }}" > release-tag.txt
-          printf '%s\n' "${{ steps.meta.outputs.release-version }}" > release-version.txt

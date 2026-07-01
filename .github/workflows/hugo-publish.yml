@@ -26,8 +26,8 @@ on:
         default: branch
 
       run-id:
-        description: "Build workflow run ID to publish from. Leave blank to use the most recent successful build."
-        required: false
+        description: "Build workflow run ID to publish from."
+        required: true
         type: string
         default: ""
 
@@ -93,7 +93,7 @@ permissions:
 
 jobs:
   resolve-run:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     outputs:
       run-id: ${{ steps.pick.outputs.run-id }}
@@ -131,17 +131,7 @@ jobs:
             exit 0
           fi
 
-          run_id="${{ inputs.run-id }}"
-          if [ -z "$run_id" ]; then
-            latest_run_id="$(gh api "repos/${REPO}/actions/workflows/hugo-build.yml/runs?status=success&per_page=1" --jq '.workflow_runs[0].id')"
-            if [ -z "$latest_run_id" ] || [ "$latest_run_id" = "null" ]; then
-              echo "No successful Hugo build run found."
-              exit 1
-            fi
-            run_id="$latest_run_id"
-          fi
-
-          echo "run-id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "run-id=${{ inputs.run-id }}" >> "$GITHUB_OUTPUT"
           echo "target=${{ inputs.target }}" >> "$GITHUB_OUTPUT"
           echo "branch-name=${{ inputs.branch-name }}" >> "$GITHUB_OUTPUT"
           echo "commit-message=${{ inputs.commit-message }}" >> "$GITHUB_OUTPUT"
@@ -155,7 +145,7 @@ jobs:
 
   publish:
     needs: resolve-run
-    if: needs.resolve-run.result == 'success'
+    if: ${{ needs.resolve-run.result == 'success' }}
     uses: redjax/pipelinetemplates/.github/workflows/hugo-publish.yml@gh/hugo-build/v0.0.3
     with:
       target: ${{ needs.resolve-run.outputs.target }}

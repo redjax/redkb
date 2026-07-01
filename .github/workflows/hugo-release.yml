@@ -2,12 +2,6 @@
 name: Hugo release
 
 on:
-  workflow_run:
-    workflows:
-      - Hugo build
-    types:
-      - completed
-
   workflow_call:
     inputs:
       run-id:
@@ -28,7 +22,7 @@ on:
       should-deploy-pages:
         required: false
         type: boolean
-        default: true
+        default: false
       should-release:
         required: false
         type: boolean
@@ -42,7 +36,7 @@ permissions:
 
 jobs:
   release:
-    if: inputs.should-release == true
+    if: ${{ inputs.should-release == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact
@@ -69,7 +63,7 @@ jobs:
 
   deploy-pages:
     needs: release
-    if: inputs.should-deploy-pages == true
+    if: ${{ inputs.should-deploy-pages == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact
