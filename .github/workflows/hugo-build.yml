@@ -46,6 +46,15 @@ on:
         type: string
         default: "public"
 
+      release-source:
+        description: "manual or tag"
+        required: false
+        type: choice
+        default: manual
+        options:
+          - manual
+          - tag
+
       release-name:
         description: "GitHub release name."
         required: false
@@ -119,14 +128,29 @@ jobs:
           set -Eeuo pipefail
 
           if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
-            short_sha="${GITHUB_SHA::7}"
-            echo "release-version=${short_sha}" >> "$GITHUB_OUTPUT"
-            echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
-            echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
+            if [[ "${{ inputs.release-source }}" == "manual" ]]; then
+              short_sha="${GITHUB_SHA::7}"
+
+              echo "release-version=${short_sha}" >> "$GITHUB_OUTPUT"
+              echo "release-tag=site-${short_sha}" >> "$GITHUB_OUTPUT"
+              echo "release-name=site-${short_sha}" >> "$GITHUB_OUTPUT"
+            else
+
+              ref="${GITHUB_REF_NAME}"
+
+              version="${ref#hugo/}"
+              version="${version#v}"
+
+              echo "release-version=${version}" >> "$GITHUB_OUTPUT"
+              echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
+              echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
+            fi
           else
             ref="${GITHUB_REF_NAME}"
+
             version="${ref#hugo/}"
             version="${version#v}"
+
             echo "release-version=${version}" >> "$GITHUB_OUTPUT"
             echo "release-tag=site-v${version}" >> "$GITHUB_OUTPUT"
             echo "release-name=site-v${version}" >> "$GITHUB_OUTPUT"
