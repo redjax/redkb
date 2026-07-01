@@ -1,7 +1,7 @@
 ---
-title: "Iptables"
+title: "IPTables"
 date: 2026-05-05T01:38:13-04:00
-draft: true
+draft: false
 weight: 20
 toc: true
 keywords: []

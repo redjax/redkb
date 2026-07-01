@@ -1,7 +1,7 @@
 ---
 title: "Wireguard"
 date: 2026-05-05T00:21:36-04:00
-draft: true
+draft: false
 weight: 10
 toc: true
 keywords: []

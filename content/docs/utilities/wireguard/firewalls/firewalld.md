@@ -1,7 +1,7 @@
 ---
 title: "Firewalld"
 date: 2026-05-05T01:38:13-04:00
-draft: true
+draft: false
 weight: 30
 toc: true
 keywords: []
