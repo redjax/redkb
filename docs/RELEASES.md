@@ -72,7 +72,7 @@ flowchart TD
   A[Change on main] --> B[Version bump PR created]
   B --> C[Auto-merge PR]
   C --> D[Tag workflow runs]
-  D --> E[Create tag hugo/vX.Y.Z]
+  D --> E[Create tag site-vX.Y.Z]
   E --> F[Build workflow runs]
   F --> G[Build site]
   G --> H[Name release site-vX.Y.Z]
