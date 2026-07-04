@@ -2,3 +2,5 @@
 hugo = "0.160.0"
 hugo-extended = "0.160.0"
 direnv = "latest"
+
+gh = "latest"
