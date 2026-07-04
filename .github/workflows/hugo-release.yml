@@ -12,15 +12,6 @@ on:
 
   workflow_dispatch:
     inputs:
-      release-source:
-        description: "manual or tag"
-        required: false
-        type: choice
-        default: manual
-        options:
-          - manual
-          - tag
-
       deploy-pages:
         description: "Deploy GitHub Pages after release."
         required: false
