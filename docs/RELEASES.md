@@ -93,7 +93,7 @@ flowchart TD
   C --> D[Use site-&ltcommit-hash&gt naming]
   D --> E[Build site]
   E --> F[Download build artifact]
-  F --> G[Create Git tag site-commit-hash]
+  F --> G[Create Git tag site-&ltcommit-hash&gt]
   F --> H[Create GitHub Release]
   H --> I{Deploy Pages?}
   I -- No --> J[Stop]
