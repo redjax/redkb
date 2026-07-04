@@ -90,7 +90,7 @@ flowchart TD
 flowchart TD
   A[Manual workflow_dispatch on hugo-release.yml] --> B[Skip version bump]
   B --> C[Resolve release metadata]
-  C --> D[Use site-commit-hash naming]
+  C --> D[Use site-&ltcommit-hash&gt naming]
   D --> E[Build site]
   E --> F[Download build artifact]
   F --> G[Create Git tag site-commit-hash]
