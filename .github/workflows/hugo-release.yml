@@ -2,34 +2,47 @@
 name: Hugo release
 
 on:
-  workflow_call:
+  push:
+    branches:
+      - main
+    paths:
+      - ".version"
+      - ".bumpversion.toml"
+
+  workflow_dispatch:
     inputs:
       release-source:
+        description: "manual or tag"
         required: false
-        type: string
-        default: "tag"
+        type: choice
+        default: manual
+        options:
+          - manual
+          - tag
+
+      deploy-pages:
+        description: "Deploy GitHub Pages after release."
+        required: false
+        type: boolean
+        default: false
 
       release-version:
-        required: true
+        description: "Release version or short SHA."
+        required: false
         type: string
+        default: ""
 
       release-name:
-        required: true
+        description: "Release name."
+        required: false
         type: string
+        default: ""
 
       release-tag:
-        required: true
+        description: "Release tag."
+        required: false
         type: string
-
-      should-release:
-        required: false
-        type: boolean
-        default: true
-
-      should-deploy-pages:
-        required: false
-        type: boolean
-        default: true
+        default: ""
 
 permissions:
   contents: write
@@ -37,84 +50,74 @@ permissions:
   id-token: write
   actions: read
 
+concurrency:
+  group: hugo-release
+  cancel-in-progress: false
+
 jobs:
-  build:
+  meta:
     runs-on: ubuntu-latest
     outputs:
-      artifact-name: ${{ steps.meta.outputs.artifact-name }}
+      release-version: ${{ steps.out.outputs.release-version }}
+      release-name: ${{ steps.out.outputs.release-name }}
+      release-tag: ${{ steps.out.outputs.release-tag }}
+      deploy-pages: ${{ steps.out.outputs.deploy-pages }}
     steps:
       - uses: actions/checkout@v7
-
-      - name: Build Hugo site
-        uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.3
         with:
-          source-dir: "."
-          public-dir: "public"
-          check-changed: "false"
-          use-cache: "true"
-          environment: "production"
-          build-flags: "--gc --minify --enableGitInfo"
-          publish-artifact: "true"
-          artifact-name: "hugo-site"
-          artifact-if-no-files-found: "error"
-          artifact-retention-days: "7"
+          fetch-depth: 0
 
-      - name: Resolve artifact metadata
-        id: meta
+      - name: Resolve release metadata
+        id: out
         shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_VERSION: ${{ inputs.release-version }}
+          INPUT_NAME: ${{ inputs.release-name }}
+          INPUT_TAG: ${{ inputs.release-tag }}
+          INPUT_DEPLOY: ${{ inputs.deploy-pages }}
         run: |
           set -Eeuo pipefail
-          echo "artifact-name=hugo-site" >> "$GITHUB_OUTPUT"
+
+          if [[ "${EVENT_NAME}" == "workflow_dispatch" ]]; then
+            if [[ -n "${INPUT_VERSION}" ]]; then
+              version="${INPUT_VERSION#v}"
+            else
+              version="${GITHUB_SHA::7}"
+            fi
+
+            tag="${INPUT_TAG:-site-${version}}"
+            name="${INPUT_NAME:-site-${version}}"
+            deploy="${INPUT_DEPLOY:-false}"
+          else
+            version="$(tr -d '[:space:]' < .version)"
+            version="${version#v}"
+            tag="site-v${version}"
+            name="site-v${version}"
+            deploy="true"
+          fi
+
+          echo "release-version=${version}" >> "$GITHUB_OUTPUT"
+          echo "release-tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "release-name=${name}" >> "$GITHUB_OUTPUT"
+          echo "deploy-pages=${deploy}" >> "$GITHUB_OUTPUT"
 
   release:
-    needs: build
-    if: ${{ inputs.should-release }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v8
-        with:
-          name: ${{ needs.build.outputs.artifact-name }}
-          path: public
-
-      - name: Package site
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          mkdir -p ./_release
-          tar -C public -czf ./_release/${{ inputs.release-name }}.tar.gz .
-          (cd public && zip -r ../_release/${{ inputs.release-name }}.zip .)
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: ${{ inputs.release-tag }}
-          name: ${{ inputs.release-name }}
-          files: |
-            ./_release/${{ inputs.release-name }}.tar.gz
-            ./_release/${{ inputs.release-name }}.zip
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+    needs: meta
+    uses: ./.github/workflows/hugo-publish.yml
+    with:
+      target: github-release
+      artifact-name: hugo-site
+      release-version: ${{ needs.meta.outputs.release-version }}
+      release-name: ${{ needs.meta.outputs.release-name }}
+      release-tag: ${{ needs.meta.outputs.release-tag }}
+    secrets: inherit
 
   deploy-pages:
-    needs: build
-    if: ${{ inputs.should-deploy-pages }}
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v8
-        with:
-          name: ${{ needs.build.outputs.artifact-name }}
-          path: public
-
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: public
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+    needs: [meta, release]
+    if: ${{ needs.meta.outputs.deploy-pages == 'true' }}
+    uses: ./.github/workflows/hugo-publish.yml
+    with:
+      target: github-pages
+      artifact-name: hugo-site
+    secrets: inherit

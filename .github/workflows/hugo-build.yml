@@ -3,45 +3,6 @@ name: Hugo build
 
 on:
   workflow_dispatch:
-    inputs:
-      create-release:
-        description: "Create a GitHub release after build."
-        required: false
-        type: boolean
-        default: true
-
-      deploy-pages:
-        description: "Deploy GitHub Pages after release."
-        required: false
-        type: boolean
-        default: false
-
-      release-source:
-        description: "manual or tag"
-        required: false
-        type: choice
-        default: manual
-        options:
-          - manual
-          - tag
-
-      release-version:
-        description: "Release version or short SHA."
-        required: false
-        type: string
-        default: ""
-
-      release-name:
-        description: "Release name."
-        required: false
-        type: string
-        default: ""
-
-      release-tag:
-        description: "Release tag."
-        required: false
-        type: string
-        default: ""
 
 permissions:
   contents: read

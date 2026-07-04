@@ -9,51 +9,15 @@ on:
   workflow_call:
     inputs:
       target:
-        description: "Publish target: branch, github-pages, cloudflare-pages, or github-release."
+        description: "Publish target: github-pages or github-release."
         required: true
         type: string
-
-      run-id:
-        description: "Build workflow run ID to download the artifact from."
-        required: false
-        type: string
-        default: ""
 
       artifact-name:
         description: "Name of the build artifact to download."
         required: false
         type: string
         default: "hugo-site"
-
-      branch-name:
-        description: "Target branch for branch deploys."
-        required: false
-        type: string
-        default: "gh-pages"
-
-      commit-message:
-        description: "Commit message for branch deploys."
-        required: false
-        type: string
-        default: "Deploy Hugo site"
-
-      cloudflare-pages-project:
-        description: "Cloudflare Pages project name."
-        required: false
-        type: string
-        default: ""
-
-      cloudflare-pages-branch:
-        description: "Branch name reported to Cloudflare Pages."
-        required: false
-        type: string
-        default: "main"
-
-      cloudflare-pages-directory:
-        description: "Directory to deploy to Cloudflare Pages."
-        required: false
-        type: string
-        default: "public"
 
       release-name:
         description: "GitHub release name."
@@ -73,71 +37,127 @@ on:
         type: string
         default: ""
 
-      dry-run:
-        description: "If true, do not push/deploy."
-        required: false
-        type: boolean
-        default: false
-
-    secrets:
-      cloudflare-api-token:
-        required: false
-
-      cloudflare-account-id:
-        required: false
-
 permissions:
   contents: write
   pages: write
   id-token: write
+  actions: read
 
 jobs:
-  branch:
-    if: ${{ inputs.target == 'branch' }}
+  build:
+    if: ${{ inputs.target == 'github-release' || inputs.target == 'github-pages' }}
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+      name: ${{ steps.meta.outputs.name }}
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v7
-        with:
-          persist-credentials: true
+      - uses: actions/checkout@v7
 
+      - name: Build Hugo site
+        uses: redjax/pipelinetemplates/.github/actions/hugo-build@gh/hugo-build/v0.0.3
+        with:
+          source-dir: "."
+          public-dir: "public"
+          check-changed: "false"
+          use-cache: "true"
+          environment: "production"
+          build-flags: "--gc --minify --enableGitInfo"
+          publish-artifact: "true"
+          artifact-name: ${{ inputs.artifact-name }}
+          artifact-if-no-files-found: "error"
+          artifact-retention-days: "7"
+
+      - name: Resolve metadata
+        id: meta
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ inputs.release-version }}
+          RELEASE_NAME: ${{ inputs.release-name }}
+          RELEASE_TAG: ${{ inputs.release-tag }}
+        run: |
+          set -Eeuo pipefail
+          if [[ -n "${RELEASE_TAG}" ]]; then
+            tag="${RELEASE_TAG}"
+          elif [[ -n "${RELEASE_VERSION}" ]]; then
+            tag="site-v${RELEASE_VERSION}"
+          else
+            tag="site"
+          fi
+
+          if [[ -n "${RELEASE_NAME}" ]]; then
+            name="${RELEASE_NAME}"
+          elif [[ -n "${RELEASE_VERSION}" ]]; then
+            name="site-v${RELEASE_VERSION}"
+          else
+            name="site"
+          fi
+
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "name=${name}" >> "$GITHUB_OUTPUT"
+
+  github-release:
+    needs: build
+    if: ${{ inputs.target == 'github-release' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
       - name: Download build artifact
         uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.artifact-name }}
-          run-id: ${{ inputs.run-id }}
-          github-token: ${{ github.token }}
           path: ./_published
 
-      - name: Publish to branch
-        shell: bash
-        working-directory: ./_published
+      - name: Check release exists
+        id: relcheck
         env:
-          BRANCH_NAME: ${{ inputs.branch-name }}
-          COMMIT_MESSAGE: ${{ inputs.commit-message }}
-          DRY_RUN: ${{ inputs.dry-run }}
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.build.outputs.tag }}
+        shell: bash
         run: |
           set -Eeuo pipefail
-          if [[ "${DRY_RUN}" == "true" ]]; then
-            echo "[INFO] Dry run enabled; skipping branch publish."
-            exit 0
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
-          git init
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
-          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git fetch origin "${BRANCH_NAME}" || true
-          git checkout -B "${BRANCH_NAME}"
-          git add .
-          if git diff --cached --quiet; then
-            echo "[INFO] No changes to publish."
-            exit 0
-          fi
-          git commit -m "${COMMIT_MESSAGE}"
-          git push origin "${BRANCH_NAME}" --force
+
+      - name: Create tag
+        if: ${{ steps.relcheck.outputs.exists != 'true' }}
+        shell: bash
+        env:
+          TAG: ${{ needs.build.outputs.tag }}
+        run: |
+          set -Eeuo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "${TAG}" -m "${TAG}"
+          git push origin "${TAG}"
+
+      - name: Package site
+        shell: bash
+        env:
+          NAME: ${{ needs.build.outputs.name }}
+        run: |
+          set -Eeuo pipefail
+          mkdir -p ./_release
+          tar -C ./_published -czf "./_release/${NAME}.tar.gz" .
+          (cd ./_published && zip -r "../_release/${NAME}.zip" .)
+
+      - name: Create GitHub Release
+        if: ${{ steps.relcheck.outputs.exists != 'true' }}
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ needs.build.outputs.tag }}
+          name: ${{ needs.build.outputs.name }}
+          files: |
+            ./_release/${{ needs.build.outputs.name }}.tar.gz
+            ./_release/${{ needs.build.outputs.name }}.zip
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
   github-pages:
+    needs: build
     if: ${{ inputs.target == 'github-pages' }}
     runs-on: ubuntu-latest
     environment:
@@ -148,8 +168,6 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.artifact-name }}
-          run-id: ${{ inputs.run-id }}
-          github-token: ${{ github.token }}
           path: ./_published
 
       - name: Configure Pages
@@ -164,122 +182,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
-
-  cloudflare-pages:
-    if: ${{ inputs.target == 'cloudflare-pages' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cloudflare Pages dry-run notice
-        if: ${{ inputs.dry-run }}
-        run: echo "[DRY RUN] Would run Cloudflare Pages deploy jobs."
-
-      - name: Download build artifact
-        if: ${{ !inputs.dry-run }}
-        uses: actions/download-artifact@v8
-        with:
-          name: ${{ inputs.artifact-name }}
-          run-id: ${{ inputs.run-id }}
-          github-token: ${{ github.token }}
-          path: ./_published
-
-      - name: Setup Node
-        if: ${{ !inputs.dry-run }}
-        uses: actions/setup-node@v6
-        with:
-          node-version: "24"
-
-      - name: Install Wrangler
-        if: ${{ !inputs.dry-run }}
-        shell: bash
-        run: npm install --save-dev wrangler@latest
-
-      - name: Ensure Cloudflare Pages project exists
-        if: ${{ !inputs.dry-run }}
-        shell: bash
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.cloudflare-api-token }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.cloudflare-account-id }}
-          CF_PAGES_PROJECT: ${{ inputs.cloudflare-pages-project }}
-          CF_PAGES_BRANCH: ${{ inputs.cloudflare-pages-branch }}
-        run: |
-          set -Eeuo pipefail
-          : "${CLOUDFLARE_API_TOKEN:?missing CLOUDFLARE_API_TOKEN}"
-          : "${CLOUDFLARE_ACCOUNT_ID:?missing CLOUDFLARE_ACCOUNT_ID}"
-          : "${CF_PAGES_PROJECT:?missing CF_PAGES_PROJECT}"
-          npx wrangler pages project create "${CF_PAGES_PROJECT}" --production-branch "${CF_PAGES_BRANCH}" || true
-
-      - name: Deploy to Cloudflare Pages
-        if: ${{ !inputs.dry-run }}
-        shell: bash
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.cloudflare-api-token }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.cloudflare-account-id }}
-          CF_PAGES_PROJECT: ${{ inputs.cloudflare-pages-project }}
-          CF_PAGES_BRANCH: ${{ inputs.cloudflare-pages-branch }}
-        run: |
-          set -Eeuo pipefail
-          : "${CLOUDFLARE_API_TOKEN:?missing CLOUDFLARE_API_TOKEN}"
-          : "${CLOUDFLARE_ACCOUNT_ID:?missing CLOUDFLARE_ACCOUNT_ID}"
-          : "${CF_PAGES_PROJECT:?missing CF_PAGES_PROJECT}"
-          npx wrangler pages deploy "./_published" \
-            --project-name "${CF_PAGES_PROJECT}" \
-            --branch "${CF_PAGES_BRANCH}"
-
-  github-release:
-    if: ${{ inputs.target == 'github-release' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v8
-        with:
-          name: ${{ inputs.artifact-name }}
-          run-id: ${{ inputs.run-id }}
-          github-token: ${{ github.token }}
-          path: ./_published
-
-      - name: Prepare release metadata
-        id: rel
-        shell: bash
-        env:
-          RELEASE_VERSION: ${{ inputs.release-version }}
-          RELEASE_NAME: ${{ inputs.release-name }}
-          RELEASE_TAG: ${{ inputs.release-tag }}
-        run: |
-          set -Eeuo pipefail
-
-          if [[ -n "${RELEASE_TAG}" ]]; then
-            TAG="${RELEASE_TAG}"
-          elif [[ -n "${RELEASE_VERSION}" ]]; then
-            TAG="site-v${RELEASE_VERSION}"
-          else
-            TAG="site"
-          fi
-
-          if [[ -n "${RELEASE_NAME}" ]]; then
-            NAME="${RELEASE_NAME}"
-          elif [[ -n "${RELEASE_VERSION}" ]]; then
-            NAME="Site v${RELEASE_VERSION}"
-          else
-            NAME="site"
-          fi
-
-          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
-          echo "name=${NAME}" >> "$GITHUB_OUTPUT"
-
-      - name: Package site
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          mkdir -p ./_release
-          tar -C ./_published -czf ./_release/site.tar.gz .
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: ${{ steps.rel.outputs.tag }}
-          name: ${{ steps.rel.outputs.name }}
-          files: ./_release/site.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
