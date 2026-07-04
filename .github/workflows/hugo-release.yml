@@ -5,9 +5,10 @@ on:
   push:
     branches:
       - main
-    paths:
-      - ".version"
-      - ".bumpversion.toml"
+      - fix/pipeline-behavior
+    # paths:
+    #   - ".version"
+    #   - ".bumpversion.toml"
 
   workflow_dispatch:
     inputs:
