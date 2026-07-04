@@ -9,7 +9,6 @@ The repository uses a [workflow defined in my PipelineTemplates repository](http
   - [General pipeline flow](#general-pipeline-flow)
   - [Hugo site file change path](#hugo-site-file-change-path)
   - [Manual build path](#manual-build-path)
-  - [Publish only path](#publish-only-path)
 - [Using the Github CLI to trigger releases](#using-the-github-cli-to-trigger-releases)
   - [Authenticating with Github CLI](#authenticating-with-github-cli)
 - [Test trigger with empty commit](#test-trigger-with-empty-commit)
@@ -45,11 +44,15 @@ Finally, the pipeline will download the latest release asset and deploy it to Gi
 
 ```mermaid
 flowchart LR
-  A[hugo-version-bump.yml] --> B[hugo-tag.yml]
-  B --> C[hugo-build.yml]
-  C --> D[hugo-release.yml]
-  D --> E[GitHub Release]
-  D --> F[GitHub Pages]
+  A[Hugo site file changes] --> B[hugo-version-bump.yml]
+  B --> C[Auto-merge bump PR to main]
+  C --> D[hugo-release.yml on push to main]
+  D --> E[hugo-build.yml]
+  E --> F[hugo-publish.yml target=github-release]
+  F --> G[Create Git tag site-vX.Y.Z]
+  F --> H[Create GitHub Release]
+  D --> I[hugo-publish.yml target=github-pages]
+  I --> J[Deploy Cloudflare Pages]
 ```
 
 ### Hugo site file change path
@@ -71,42 +74,30 @@ flowchart TD
   B --> C[Bump .version]
   C --> D[Open or update bump PR]
   D --> E[Auto-merge PR to main]
-  E --> F[tag workflow runs]
-  F --> G[Create tag site-vX.Y.Z]
-  G --> H[Dispatch build workflow explicitly]
+  E --> F[hugo-release.yml push trigger]
+  F --> G[Resolve release metadata from .version]
+  G --> H[Set name site-vX.Y.Z]
   H --> I[Build site]
-  I --> J[Release workflow]
-  J --> K[Download build artifact by run ID]
-  K --> L[Create GitHub Release]
-  L --> M[Deploy GitHub Pages if enabled]
+  I --> J[Download build artifact]
+  J --> K[Create Git tag site-vX.Y.Z]
+  J --> L[Create GitHub Release]
+  L --> M[Deploy Cloudflare Pages]
 ```
 
 ### Manual build path
 
 ```mermaid
 flowchart TD
-  A[Manual trigger: Hugo build] --> B[Build site]
-  B --> C{Create release?}
-  C -- No --> D[Stop]
-  C -- Yes --> E[Name release site-&ltcommit-hash&gt]
-  E --> F{Deploy Pages?}
-  F -- No --> G[Stop]
-  F -- Yes --> H[Release workflow]
-  H --> I[Download build artifact by run ID]
-  I --> J[Create GitHub Release]
-  J --> K[Deploy GitHub Pages]
-```
-
-### Publish only path
-
-```mermaid
-flowchart TD
-  A[Manual publish trigger] --> B[Select build run ID]
-  B --> C{Target}
-  C -- branch --> D[Deploy branch]
-  C -- github-pages --> E[Deploy GitHub Pages]
-  C -- cloudflare-pages --> F[Deploy Cloudflare Pages]
-  C -- github-release --> G[Create GitHub Release]
+  A[Manual workflow_dispatch on hugo-release.yml] --> B[Skip version bump]
+  B --> C[Resolve release metadata]
+  C --> D[Use site-commit-hash naming]
+  D --> E[Build site]
+  E --> F[Download build artifact]
+  F --> G[Create Git tag site-commit-hash]
+  F --> H[Create GitHub Release]
+  H --> I{Deploy Pages?}
+  I -- No --> J[Stop]
+  I -- Yes --> K[Deploy Cloudflare Pages]
 ```
 
 ## Using the Github CLI to trigger releases
