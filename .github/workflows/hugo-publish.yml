@@ -102,7 +102,8 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v7
+      - name: Checkout repo
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -112,22 +113,29 @@ jobs:
           name: ${{ inputs.artifact-name }}
           path: ./_published
 
-      - name: Check release exists
-        id: relcheck
+      - name: Resolve release state
+        id: state
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ needs.build.outputs.tag }}
         shell: bash
         run: |
           set -Eeuo pipefail
-          if gh release view "${TAG}" >/dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
+
+          if git ls-remote --tags origin "refs/tags/${TAG}" | grep -q "${TAG}"; then
+            echo "tag-exists=true" >> "$GITHUB_OUTPUT"
           else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "tag-exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            echo "release-exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "release-exists=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create tag
-        if: ${{ steps.relcheck.outputs.exists != 'true' }}
+        if: ${{ steps.state.outputs.tag-exists != 'true' }}
         shell: bash
         env:
           TAG: ${{ needs.build.outputs.tag }}
@@ -149,7 +157,7 @@ jobs:
           (cd ./_published && zip -r "../_release/${NAME}.zip" .)
 
       - name: Create GitHub Release
-        if: ${{ steps.relcheck.outputs.exists != 'true' }}
+        if: ${{ steps.state.outputs.release-exists != 'true' }}
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.build.outputs.tag }}
