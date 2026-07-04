@@ -6,9 +6,9 @@ on:
     branches:
       - main
       - fix/pipeline-behavior
-    paths:
-      - ".version"
-      - ".bumpversion.toml"
+    # paths:
+    #   - ".version"
+    #   - ".bumpversion.toml"
 
   workflow_dispatch:
     inputs:
