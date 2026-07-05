@@ -11,13 +11,7 @@ tags:
   - devops
 ---
 
-**TODO**:
-
-- Flesh out description
-- Break into more logical sections
-- Create commands cheatsheet
-
-The [Github CLI](https://cli.github.com) is a terminal interface for interacting with Github repositories.
+The [Github CLI](https://cli.github.com) is a terminal interface for interacting with Github repositories. You can use it within a pipeline/action to simplify interactions with your repositories, such as creating and merging pull requests, triggering pipelines, etc.
 
 ## Authenticating with Github CLI
 
