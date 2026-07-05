@@ -11,10 +11,6 @@ tags:
   - devops
 ---
 
-**TODO**:
-
-- Write introductory paragraph.
-
 ## Test trigger with empty commit
 
 For fully automatic pipelines, i.e. ones that run on PR open or merge, you can trigger the behavior by adding a `push` to your branch, then pushing an empty commit.
