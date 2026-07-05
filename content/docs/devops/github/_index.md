@@ -5,13 +5,8 @@ draft: true
 weight: 10
 toc: true
 keywords: []
-tags: []
+tags:
+  - github
+  - ci-cd
+  - devops
 ---
-
-**TODO**:
-
-- Link to Github Actions docs
-- Link to Github reusable workflow docs
-- Describe in brief
-- Show example Action file
-- Show example reusable workflow

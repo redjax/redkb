@@ -5,7 +5,10 @@ draft: true
 weight: 10
 toc: true
 keywords: []
-tags: []
+tags:
+  - github
+  - ci-cd
+  - devops
 ---
 
 **TODO**:

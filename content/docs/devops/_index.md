@@ -5,7 +5,10 @@ draft: true
 weight: 10
 toc: true
 keywords: []
-tags: []
+tags:
+  - github
+  - ci-cd
+  - devops
 ---
 
 Developer Operations (DevOps) is the integration and automation of software development and IT operations. It is primarily aimed at shortening the development process and improving the development lifecycle. The field has continued to evolve over the years, with sub-specializations such as Platform Engineering (maintaining the "platform" developers build on top of), Site Reliability Engineering (building the infrastructure for monitoring and alerting), Finance Operations (automating financial aspects of software development), Development Security Operations (integrating security steps into the development process), Release Engineering (building & maintaining the processes & automations around releasing software versions) & more.
