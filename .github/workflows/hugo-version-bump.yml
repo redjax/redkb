@@ -91,7 +91,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_BOT_PAT }}
           branch: bump/site-version
           base: main
           delete-branch: true
@@ -109,7 +109,7 @@ jobs:
       - name: Merge bump PR
         if: steps.cpr.outputs.pull-request-number != ''
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.RELEASE_BOT_PAT }}
           PR_NUMBER: ${{ steps.cpr.outputs.pull-request-number }}
         shell: bash
         run: |
