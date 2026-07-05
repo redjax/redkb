@@ -6,7 +6,6 @@ weight: 10
 toc: true
 keywords: []
 tags:
-  - github
   - ci-cd
   - devops
 ---
