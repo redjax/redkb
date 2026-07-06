@@ -46,30 +46,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Determine bump type
-        id: bump
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          base="${{ github.event.before }}"
-          head="${{ github.sha }}"
-          if [[ -z "${base}" || "${base}" =~ ^0+$ ]]; then
-            base="$(git rev-list --max-parents=0 HEAD | tail -n 1)"
-          fi
-
-          commits="$(git log --format=%B "${base}..${head}")"
-
-          bump="patch"
-          if grep -Eq 'BREAKING CHANGES|^feat!:' <<<"${commits}"; then
-            bump="major"
-          elif grep -Eq '^feat(\(.+\))?:' <<<"${commits}"; then
-            bump="minor"
-          elif grep -Eq '^fix(\(.+\))?:' <<<"${commits}"; then
-            bump="patch"
-          fi
-
-          echo "type=${bump}" >> "$GITHUB_OUTPUT"
-
       - name: Install bump-my-version
         run: python -m pip install --upgrade bump-my-version
 
@@ -77,11 +53,10 @@ jobs:
         shell: bash
         env:
           DRY_RUN: ${{ inputs.dry-run }}
-          BUMP_TYPE: ${{ steps.bump.outputs.type }}
         run: |
           set -Eeuo pipefail
           if [[ "${DRY_RUN:-false}" == "true" ]]; then
-            echo "[DRY RUN] Would bump ${BUMP_TYPE}."
+            echo "[DRY RUN] Would bump version files."
             exit 0
           fi
 
