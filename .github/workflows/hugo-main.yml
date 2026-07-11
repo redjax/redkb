@@ -48,7 +48,7 @@ jobs:
     uses: redjax/pipelinetemplates/.github/workflows/hugo-site-main.yml@topic/hugo-consolidated-pipelines
     # uses: redjax/pipelinetemplates/.github/workflows/hugo-site-main.yml@fix/hugo-pr-pipeline
     with:
-      site-root: "apps/hugo-site"
+      site-root: "."
       versioned: true
       version-file: ".version"
       artifact-name: "hugo-site"
@@ -56,7 +56,8 @@ jobs:
       branch-name: ${{ inputs.branch-name || 'gh-pages' }}
       publish-gh-pages: ${{ github.event_name == 'push' || inputs.publish-gh-pages || false }}
       publish-to-branch: ${{ inputs.publish-to-branch || false }}
-      publish-cf-pages: ${{ github.event_name == 'push' || inputs.publish-cf-pages || false }}
+      # publish-cf-pages: ${{ github.event_name == 'push' || inputs.publish-cf-pages || false }}
+      publish-cf-pages: ${{ inputs.publish-cf-pages || false }}
       cloudflare-pages-project: "pipelinetemplates-test"
       cloudflare-pages-branch: "topic/hugo-consolidated-pipelines"
       # cloudflare-pages-branch: "fix/hugo-pr-pipeline"
