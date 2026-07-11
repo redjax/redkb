@@ -96,3 +96,35 @@ The curly braces are optional in a lot of cases, and explicitly required in othe
 There is an argument that you should *always* surround Bash variable references in braces, the reason being it will almost never cause a problem, and it will always avoid specific edge cases.
 
 The times where curly braces are required are when concatenating a string, iterating over an array variable, positional parameters `10` and above, and when expanding or mutating a variable.
+
+### Curly braces and string concat
+
+Curly braces are required when concatenating string in a script, you must use curly braces to separate the variable from the rest of the word. If you do not surround the variable in braces, Bash will think the variable and the word you're concatenating are all 1 thing:
+
+```shell
+#!/usr/bin/env
+
+## Set a word to variable $word
+word="back"
+## Concatenate
+echo "$wordpack"
+
+```
+
+This code would echo an empty string because '$wordpack' was not declared.
+
+Instead, surround the variable name in braces:
+
+```shell
+#!/usr/bin/env bash
+
+word="back"
+
+## Surround variable in braces to separate it from the concatenated text
+echo "${word}pack"
+
+## Echoes: "backpack"
+
+```
+
+Since `"$var"` and `"${var}"` are equivalent, there is no real reason *not* to get into the habit of surrounding variable references in curly braces.
