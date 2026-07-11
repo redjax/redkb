@@ -1,5 +1,5 @@
 ---
-name: Test Hugo site build
+name: Build Hugo site
 
 on:
   # push:
@@ -34,11 +34,6 @@ on:
 
   workflow_dispatch:
     inputs:
-      # use-selfhosted-runner:
-      #   description: "Use a self-hosted runner."
-      #   required: false
-      #   type: boolean
-      #   default: false
       runner-img-or-label:
         description: "A runner image (i.e. ubuntu-latest) or self-hosted runner label (i.e. pipelinetemplates-test)"
         required: true
@@ -53,10 +48,9 @@ jobs:
   build:
     uses: redjax/pipelinetemplates/.github/workflows/hugo-build.yml@topic/hugo-consolidated-pipelines
     with:
-      site-root: "apps/hugo-site"
+      site-root: "."
       artifact-name: "hugo-site"
-      public-dir: "apps/hugo-site/public"
+      public-dir: "./public"
       build-flags: "--gc --minify --enableGitInfo"
-      # runner-image: ${{ inputs.use-selfhosted-runner && 'pipelinetemplates-test' || 'ubuntu-latest' }}
       runner-image: ${{ inputs.runner-img-or-label || 'ubuntu-latest' }}
     secrets: inherit
