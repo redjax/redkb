@@ -204,3 +204,17 @@ echo "The 10th parameter is: ${10}"
 ```
 
 This is because Bash reads `$10` as `$1`, followed by a literal `0`.
+
+### Parameter expansion
+
+Bash can "expand" parameters by using special symbols inside curly braces. For example, to set a default value for a script but allow reassignment later, you can write:
+
+```shell
+${var:-default_value}
+```
+
+Or to get the length/number of characters in a variable's value:
+
+```shell
+${#var}
+```
