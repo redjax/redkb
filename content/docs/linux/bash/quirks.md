@@ -218,3 +218,12 @@ Or to get the length/number of characters in a variable's value:
 ```shell
 ${#var}
 ```
+
+You can also convert the case of a string with expansion:
+
+| Example  | Casing                      |
+| -------- | --------------------------- |
+| ${var^^} | `UPPERCASE`                 |
+| ${var,,} | `lowercase`                 |
+| ${var^}  | `Uppercase first character` |
+| ${var,}  | `lowercase first character` |
