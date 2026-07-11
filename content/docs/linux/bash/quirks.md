@@ -1,0 +1,81 @@
+---
+title: "Quirks"
+date: 2026-07-11T16:07:13-04:00
+draft: true
+weight: 10
+toc: true
+keywords: []
+tags:
+  - linux
+  - bash
+---
+
+Bash is known to have many "sharp edges" and quirks. Because it is such an old language, its syntax may be unfamiliar, and data flow can be hard to understand when reading Bash scripts after learning a more modern language.
+
+One page in a hobbyist's documentation is nowhere near enough to cover the sheer number of edge cases, unexpected behavior, and arcane rules hidden deep within Bash, but I can still document some of the more common footguns.
+
+## Return types
+
+Bash beginners often find it difficult to master Bash return types. In other languages, you might be used to returning a value or object, but in Bash, the `return` keyword returns a numeric value meant to represent success with `0` or an error with `1` (or another number).
+
+As an example, say you want to echo a value to the command line. You might be inclined to write something like:
+
+```shell
+#!/usr/bin/env bash
+
+function say_hello() {
+    local name
+    name="$1"
+
+    echo "Hello, ${name}"
+}
+
+function get_name() {
+    read -r -p "What is your name? " _name
+
+    return "${_name}"
+}
+
+user_name=$(get_name)
+say_hello "${user_name}"
+
+```
+
+But this would result in an error like this:
+
+```shell
+$ ./ex.sh 
+What is your name? jack
+./ex.sh: line 13: return: jack: numeric argument required
+Hello,
+```
+
+This is because the `return` keyword expects a numeric value to indicate success/failure. You can still "return" strings from a function by echoing them and capturing them in a variable:
+
+```shell
+#!/usr/bin/env bash
+
+function say_hello() {
+  local name
+  name="$1"
+
+  echo "Hello, ${name}"
+}
+
+function get_name() {
+  read -r -p "What is your name? " _name
+
+  # return "${_name}"
+  echo "${_name}"
+}
+
+user_name=$(get_name)
+say_hello "${user_name}"
+
+```
+
+```shell
+$ ./ex.sh 
+What is your name? jack
+Hello, jack
+```
