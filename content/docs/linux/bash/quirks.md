@@ -180,3 +180,27 @@ test2
 ```
 
 Without the `[@]`, referencing an array like `${varname}` results in Bash treating it like a string, essentially.
+
+### For positional parameters
+
+When referencing positional parameters in a script, you must surround any value `10` or greater.
+
+For example, if you have a script like:
+
+```shell
+#!/usr/bin/env bash
+
+echo $1
+```
+
+This will echo the first value passed after the script, i.e. `./script_name.sh something` would echo "something."
+
+If you are passing 10 or more parameters, you must surround them in curly braces:
+
+```shell
+#!/usr/bin/env bash
+
+echo "The 10th parameter is: ${10}"
+```
+
+This is because Bash reads `$10` as `$1`, followed by a literal `0`.
