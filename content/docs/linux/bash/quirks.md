@@ -79,3 +79,20 @@ $ ./ex.sh
 What is your name? jack
 Hello, jack
 ```
+
+## Variables and curly braces
+
+One seemingly stylistic choice in Bash that actually has a specific purpose is surronding Bash variables in `${curly_braces}`. You will often see Bash variables referenced one of 4 ways:
+
+- `$var`
+- `${var}`
+- `"$var"`
+- `"${var}"`
+
+The curly braces are optional in a lot of cases, and explicitly required in others.
+
+## When to use curly braces when referencing a variable name
+
+There is an argument that you should *always* surround Bash variable references in braces, the reason being it will almost never cause a problem, and it will always avoid specific edge cases.
+
+The times where curly braces are required are when concatenating a string, iterating over an array variable, positional parameters `10` and above, and when expanding or mutating a variable.
