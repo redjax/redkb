@@ -128,3 +128,55 @@ echo "${word}pack"
 ```
 
 Since `"$var"` and `"${var}"` are equivalent, there is no real reason *not* to get into the habit of surrounding variable references in curly braces.
+
+### Iterating over array values
+
+In Bash, an array is a variable declared with values inside `(parentheses)`, like:
+
+> [!TIP] The declare -a keyword
+> It is generally good practice, but not required, to use `declare -a` before declaring a variable, like: `declare -a array_variable=()`.
+> Bash does not require this, but it helps with clarity when reading over a script later.
+
+```shell
+#!/usr/bin/env bash
+
+declare -a arrvar=(test test1 test2)
+echo "${arrvar}"
+
+```
+
+The above example is deceptive, because it will work, printing `test test1 test2`. This is because Bash prints the array as a string. However, if you were to try iterating over items in the array, like:
+
+```shell
+#!/usr/bin/env bash
+
+declare -a arrvar=(test test1 test2)
+
+for v in "${arrvar}"; do
+  echo "${v}"
+done
+
+```
+
+You would see only 1 iteration where it printed all 3 values on 1 line. This is because to iterate over an array, you have to expand it with `[@]`:
+
+```shell
+#!/usr/bin/env bash
+
+declare -a arrvar=(test test1 test2)
+
+for v in "${arrvar[@]}"; do
+  echo "${v}"
+done
+
+```
+
+This would print each value on a newline, i.e.:
+
+```shell
+test
+test1
+test2
+```
+
+Without the `[@]`, referencing an array like `${varname}` results in Bash treating it like a string, essentially.
