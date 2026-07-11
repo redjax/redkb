@@ -50,7 +50,7 @@ jobs:
     uses: redjax/pipelinetemplates/.github/workflows/hugo-site-main.yml@topic/hugo-consolidated-pipelines
     # uses: redjax/pipelinetemplates/.github/workflows/hugo-site-main.yml@fix/hugo-pr-pipeline
     with:
-      site-root: ""
+      site-root: "."
       versioned: true
       version-file: ".version"
       artifact-name: "hugo-site"
