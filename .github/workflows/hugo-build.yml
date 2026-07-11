@@ -50,7 +50,7 @@ jobs:
     with:
       site-root: "."
       artifact-name: "hugo-site"
-      public-dir: "./public"
+      public-dir: "public"
       build-flags: "--gc --minify --enableGitInfo"
       runner-image: ${{ inputs.runner-img-or-label || 'ubuntu-latest' }}
     secrets: inherit
