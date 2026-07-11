@@ -6,14 +6,14 @@ on:
   #   branches:
   #     - main
   #   paths:
-  #     - "apps/hugo-site/archetypes/**"
-  #     - "apps/hugo-site/content/**"
-  #     - "apps/hugo-site/data/**"
-  #     - "apps/hugo-site/i18n/**"
-  #     - "apps/hugo-site/static/**"
-  #     - "apps/hugo-site/hugo.yml"
-  #     - "apps/hugo-site/go.mod"
-  #     - "apps/hugo-site/go.sum"
+  #     - "archetypes/**"
+  #     - "content/**"
+  #     - "data/**"
+  #     - "i18n/**"
+  #     - "static/**"
+  #     - "hugo.yml"
+  #     - "go.mod"
+  #     - "go.sum"
 
   pull_request:
     branches:
@@ -23,14 +23,14 @@ on:
       - synchronize
       - reopened
     paths:
-      - "apps/hugo-site/archetypes/**"
-      - "apps/hugo-site/content/**"
-      - "apps/hugo-site/data/**"
-      - "apps/hugo-site/i18n/**"
-      - "apps/hugo-site/static/**"
-      - "apps/hugo-site/hugo.yml"
-      - "apps/hugo-site/go.mod"
-      - "apps/hugo-site/go.sum"
+      - "archetypes/**"
+      - "content/**"
+      - "data/**"
+      - "i18n/**"
+      - "static/**"
+      - "hugo.yml"
+      - "go.mod"
+      - "go.sum"
 
   workflow_dispatch:
     inputs:
