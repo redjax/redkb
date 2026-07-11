@@ -4,18 +4,16 @@ name: Hugo Site Main
 on:
   push:
     branches:
-      - feat/central-pipeline-file
-    # branches:
-    #   - main
-    # paths:
-    #   - "apps/hugo-site/archetypes/**"
-    #   - "apps/hugo-site/content/**"
-    #   - "apps/hugo-site/data/**"
-    #   - "apps/hugo-site/i18n/**"
-    #   - "apps/hugo-site/static/**"
-    #   - "apps/hugo-site/hugo.yml"
-    #   - "apps/hugo-site/go.mod"
-    #   - "apps/hugo-site/go.sum"
+      - main
+    paths:
+      - "apps/hugo-site/archetypes/**"
+      - "apps/hugo-site/content/**"
+      - "apps/hugo-site/data/**"
+      - "apps/hugo-site/i18n/**"
+      - "apps/hugo-site/static/**"
+      - "apps/hugo-site/hugo.yml"
+      - "apps/hugo-site/go.mod"
+      - "apps/hugo-site/go.sum"
 
   workflow_dispatch:
     inputs:
