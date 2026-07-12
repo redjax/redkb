@@ -1,4 +1,20 @@
 ---
+######################################################################################
+# Main Hugo site build/release pipeline.                                             #
+#                                                                                    #
+# This is a stub of the hugo-site-main.yml orchestrator pipeline in the              #
+# PipelineTemplates repository:                                                      #
+#   https://github.com/redjax/pipelinetemplates/.github/workflows/hugo-site-main.yml #
+#                                                                                    #
+# When any Hugo file has changed when a PR is merged into main, the pipeline will    #
+# initiate a version bump (i.e. v0.1.0 -> v0.1.1), rebuild the site, create a tagged #
+# release in Github, and publish the site to Github Pages.                           #
+#                                                                                    #
+# On manual runs, the pipeline will skip bumping version and will instead use the    #
+# current commit's shorthash, i.e. 466ce77d. The tag/release will be site-466ce77d,  #
+# and the pipeline will skip publishing to Github Pages.                             #
+######################################################################################
+
 name: Hugo Site Main
 
 on:
