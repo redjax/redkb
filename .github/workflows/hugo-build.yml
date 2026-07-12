@@ -1,4 +1,11 @@
 ---
+#################################################################
+# Build the Hugo site in a pipeline.                            #
+#                                                               #
+# Uploads the static files as an artifact to the pipeline.      #
+# Runs automatically on PR open to ensure site builds properly. #
+#################################################################
+
 name: Build Hugo site
 
 on:
