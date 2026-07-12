@@ -9,3 +9,5 @@ tags:
   - bash
   - reference
 ---
+
+Snippets, scripts, & 1-liners for Bash scripts.
