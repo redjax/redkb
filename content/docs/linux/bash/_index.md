@@ -8,6 +8,8 @@ tags:
     - bash
 ---
 
+[Bash](https://www.gnu.org/software/bash/) is the default shell for many ("most" may even be accurate) Linux distributions. The "**B**ourne **A**gain **SH**ell" was first released in 1989 by Brian Fox for UNIX-like operating systems, and is designed as an alternative for the older Bourne shell, `sh`. Bash is both a shell and a programming language. Scripts written in Bash are called "shell scripts," and facilitate automation by chaining commands and handling exit codes. [Read more about the history of Bash on Wikipedia](https://en.wikipedia.org/wiki/Bash_(Unix_shell)).
+
 ## Bash Cheat Sheet
 
 A table of common commands & variables I use.
