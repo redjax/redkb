@@ -14,6 +14,14 @@ Bash is known to have many "sharp edges" and quirks. Because it is such an old l
 
 One page in a hobbyist's documentation is nowhere near enough to cover the sheer number of edge cases, unexpected behavior, and arcane rules hidden deep within Bash, but I can still document some of the more common footguns.
 
+## Shebang
+
+Every Bash script should start with a "shebang," which is a string of text that tells the shell which interpreter to use. The most common example you've likely seen before is `#!/bin/bash`, or sometimes `#!/usr/bin/bash`.
+
+This works fine for the majority of scripts, but a string that's compatible with more environments and shells is `#!/usr/bin/env bash`. This string will find the `bash` executable for your environment, which may very well be `/bin/bash`, but could be in a different location. This shebang uses the `env` command to display environment variables, and select the first available location for Bash from the `$PATH` variable.
+
+`#!/usr/bin/env bash` will always resolve to a working Bash interpreter if one is installed, and so it's recommended for maximum compatibility.
+
 ## Return types
 
 Bash beginners often find it difficult to master Bash return types. In other languages, you might be used to returning a value or object, but in Bash, the `return` keyword returns a numeric value meant to represent success with `0` or an error with `1` (or another number).
