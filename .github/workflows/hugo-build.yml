@@ -53,7 +53,7 @@ permissions:
 
 jobs:
   build:
-    uses: redjax/pipelinetemplates/.github/workflows/hugo-build.yml@topic/hugo-consolidated-pipelines
+    uses: redjax/pipelinetemplates/.github/workflows/hugo-build.yml@main
     with:
       site-root: "."
       artifact-name: "hugo-site"
