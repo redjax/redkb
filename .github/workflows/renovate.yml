@@ -4,9 +4,6 @@ name: Run Renovate
 on:
   schedule:
     - cron: "0 3 * * *"
-  push:
-    branches:
-      - feat/renovate
   workflow_dispatch:
     inputs:
       mode:
