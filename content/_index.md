@@ -16,15 +16,20 @@ I frequently write Markdown notes in whatever Markdown notes app has most recent
 
 I mainly use Linux for my homelab, but work in a Windows environment. I code mainly in Python, Bash, and Powershell, and spend most of my time on the Linux side. The contents of this site skew more heavily towards Linux and the scripting languages I use, but there are also articles on cross-platform tools like SSH and Docker.
 
-> [!WARNING] DISCLAIMER
-> I make no guarantees regarding total accuracy, relevant/updated information, or topic depth for any of the content on this site. My goal is to keep reference notes for myself in a place accessible over the Internet in an easily-editable format (i.e. the [Github repository](https://github.com/redjax/redkb)).
->
-> I aim to be accurate, and notes I reference frequently will be updated more often. Each article on this site has a published and last modified timestamp at the bottom of the page, which you should take note of when referencing content.
+## DISCLAIMER
 
-> [!EXAMPLE] 🛠️ Built with
->
-> *This site was built with [`hugo`](https://gohugo.io) and [`Hextra` theme](https://github.com/imfing/hextra). Check out the source code on [Github](https://github.com/redjax/redkb)*
+These are personal notes based on my experiences, preferences, and opinions. While I generally follow best practices, you are responsible for using your own judgment when running any commands or code, or following any advice in this knowledgebase.
+
+I do not guarantee the accuracy, completeness, timeliness, or depth of any content on this site. All material is provided as-is, without warranties or assurances of any kind, including suitability for a particular purpose.
+
+While I strive for accuracy, content that I use more frequently is more likely to be reviewed and updated. Each page includes published and last modified timestamps at the bottom, which should be considered when evaluating the relevance of the information.
 
 ## Contributing
 
 Did you spot a spelling error or some other inaccuracy? Feel free to open a PR in [the repository for this site](https://github.com/redjax/redkb). I welcome contributions 😊
+
+---
+
+> [!EXAMPLE] 🛠️ Built with
+>
+> *This site was built with [`hugo`](https://gohugo.io) and [`Hextra` theme](https://github.com/imfing/hextra). Check out the source code on [Github](https://github.com/redjax/redkb)*
