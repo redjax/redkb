@@ -52,6 +52,10 @@ on:
       runner-img-or-label:
         type: string
         default: ubuntu-latest
+      pipelinetemplates-ref:
+        description: "Branch, tag, or commit SHA to use when checking out PipelineTemplates repository."
+        type: string
+        default: main
 
 jobs:
   pipeline:
@@ -72,7 +76,6 @@ jobs:
       publish-gh-pages: ${{ github.event_name == 'push' || inputs.publish-gh-pages || false }}
       publish-to-branch: ${{ inputs.publish-to-branch || false }}
       runner-image: ${{ inputs.runner-img-or-label || 'ubuntu-latest' }}
-      templates-ref: topic/hugo-consolidated-pipelines
-      # templates-ref: "fix/hugo-pr-pipeline"
+      templates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
     secrets:
       release-bot-pat: ${{ secrets.RELEASE_BOT_PAT }}
