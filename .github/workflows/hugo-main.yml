@@ -77,5 +77,6 @@ jobs:
       publish-to-branch: ${{ inputs.publish-to-branch || false }}
       runner-image: ${{ inputs.runner-img-or-label || 'ubuntu-latest' }}
       templates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
+      hugo-build-flags: "--gc --minify --enableGitInfo"
     secrets:
       release-bot-pat: ${{ secrets.RELEASE_BOT_PAT }}
