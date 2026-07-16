@@ -34,22 +34,14 @@ on:
   workflow_dispatch:
     inputs:
       publish-targets:
-        description: 'JSON array of publish targets, e.g. ["github-pages","cloudflare-pages","branch"]'
+        description: 'JSON array of publish targets, e.g. ["github-pages","branch"]'
         type: string
         required: false
-        default: '["github-pages","cloudflare-pages","branch"]'
+        default: '["github-pages","branch"]'
       branch-name:
         type: string
         required: false
         default: "gh-pages"
-      cloudflare-pages-project:
-        type: string
-        required: false
-        default: "pipelinetemplates-test"
-      cloudflare-pages-branch:
-        type: string
-        required: false
-        default: "main"
       runner-img-or-label:
         type: string
         default: ubuntu-latest
@@ -86,17 +78,15 @@ jobs:
       pull-requests: write
       pages: write
       id-token: write
-    uses: redjax/pipelinetemplates/.github/workflows/hugo-site-main.yml@topic/hugo-pipeline-refinement
+    uses: redjax/pipelinetemplates/.github/workflows/hugo-site-main.yml@feat/separate-hugo-publish-workflows
     with:
       site-root: "."
       versioned: true
       version-file: ".version"
       artifact-name: "hugo-site"
       release-prefix: "site"
-      publish-targets: ${{ inputs.publish-targets || '["github-pages","cloudflare-pages","branch"]' }}
+      publish-targets: ${{ inputs.publish-targets || '["github-pages","branch"]' }}
       branch-name: ${{ inputs.branch-name || 'gh-pages' }}
-      cloudflare-pages-project: ${{ inputs.cloudflare-pages-project || 'pipelinetemplates-test' }}
-      cloudflare-pages-branch: ${{ inputs.cloudflare-pages-branch || 'main' }}
       runner-image: ${{ inputs.runner-img-or-label || 'ubuntu-latest' }}
       templates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
       hugo-version: ${{ inputs.hugo-version || '0.161.1' }}
@@ -106,5 +96,3 @@ jobs:
       debug-hugo-build-state: ${{ inputs.debug-hugo-build-state || false }}
     secrets:
       release-bot-pat: ${{ secrets.RELEASE_BOT_PAT }}
-      cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
