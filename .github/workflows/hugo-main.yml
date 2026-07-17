@@ -95,8 +95,8 @@ jobs:
       templates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
       hugo-version: ${{ inputs.hugo-version || '0.161.1' }}
       hugo-build-flags: ${{ inputs.hugo-build-flags || '--gc --minify --enableGitInfo' }}
-      use-hugo-cache: ${{ inputs.use-hugo-cache || true }}
-      clean-hugo-cache: ${{ inputs.clean-hugo-cache || false }}
-      debug-hugo-build-state: ${{ inputs.debug-hugo-build-state || false }}
+      use-hugo-cache: ${{ inputs.use-hugo-cache == true && 'true' || 'false' }}
+      clean-hugo-cache: ${{ inputs.clean-hugo-cache == true && 'true' || 'false' }}
+      debug-hugo-build-state: ${{ inputs.debug-hugo-build-state == true && 'true' || 'false' }}
     secrets:
       release-bot-pat: ${{ secrets.RELEASE_BOT_PAT }}
