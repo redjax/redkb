@@ -50,13 +50,13 @@ on:
         type: string
         default: main
       use-hugo-cache:
-        type: string
+        type: boolean
         required: false
-        default: "true"
+        default: true
       clean-hugo-cache:
-        type: string
+        type: boolean
         required: false
-        default: "false"
+        default: false
       hugo-version:
         type: string
         required: false
@@ -66,9 +66,9 @@ on:
         required: false
         default: "--gc --minify --enableGitInfo"
       debug-hugo-build-state:
-        type: string
+        type: boolean
         required: false
-        default: "false"
+        default: false
 
 jobs:
   pipeline:
@@ -91,8 +91,8 @@ jobs:
       templates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
       hugo-version: ${{ inputs.hugo-version || '0.161.1' }}
       hugo-build-flags: ${{ inputs.hugo-build-flags || '--gc --minify --enableGitInfo' }}
-      use-hugo-cache: ${{ inputs.use-hugo-cache == true && 'true' || 'false' }}
-      clean-hugo-cache: ${{ inputs.clean-hugo-cache == true && 'true' || 'false' }}
-      debug-hugo-build-state: ${{ inputs.debug-hugo-build-state == true && 'true' || 'false' }}
+      use-hugo-cache: ${{ inputs.use-hugo-cache && true || false }}
+      clean-hugo-cache: ${{ inputs.clean-hugo-cache && true || false }}
+      debug-hugo-build-state: ${{ inputs.debug-hugo-build-state && true || false }}
     secrets:
       release-bot-pat: ${{ secrets.RELEASE_BOT_PAT }}
