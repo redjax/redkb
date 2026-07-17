@@ -70,6 +70,10 @@ on:
         required: false
         default: false
 
+permissions:
+  actions: write
+  contents: write
+
 jobs:
   pipeline:
     permissions:
