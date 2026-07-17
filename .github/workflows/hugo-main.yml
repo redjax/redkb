@@ -82,7 +82,7 @@ jobs:
       pull-requests: write
       pages: write
       id-token: write
-    uses: redjax/pipelinetemplates/.github/workflows/hugo-site-main.yml@feat/separate-hugo-publish-workflows
+    uses: redjax/pipelinetemplates/.github/workflows/hugo-site-main.yml@main
     with:
       site-root: "."
       versioned: true
