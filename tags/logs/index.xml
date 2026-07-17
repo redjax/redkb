@@ -1,0 +1,674 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>redkb – Logs</title><link>/tags/logs/</link><description>Recent content in Logs on redkb</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sat, 27 Jun 2026 00:56:48 -0400</lastBuildDate><atom:link href="/tags/logs/index.xml" rel="self" type="application/rss+xml"/><item><title>Cheatsheet</title><link>/docs/utilities/logrotate/cheatsheet/</link><pubDate>Sat, 27 Jun 2026 00:56:48 -0400</pubDate><guid>/docs/utilities/logrotate/cheatsheet/</guid><description>
+&lt;h2&gt;Logrotate Cheatsheet&lt;span class="hx:absolute hx:-mt-20" id="logrotate-cheatsheet"&gt;&lt;/span&gt;
+&lt;a href="#logrotate-cheatsheet" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Command&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;sudo logrotate -d /etc/logrotate.conf&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Validate config without making changes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;sudo logrotate -d /etc/logrotate.d/config-filename&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Validate a single policy file without making changes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;sudo logrotate -v /etc/logrotate.conf&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Enable verbose output&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;sudo logrotate -f /etc/logrotate.conf&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Force every log to rotate immediately&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;sudo logrotate -f /etc/logrotate.d/config-filename&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Force only 1 policy&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;sudo systemctl status logrotate.timer&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Check if &lt;code&gt;logrotate&lt;/code&gt; is running on a timer&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;Policy Options Cheatsheet&lt;span class="hx:absolute hx:-mt-20" id="policy-options-cheatsheet"&gt;&lt;/span&gt;
+&lt;a href="#policy-options-cheatsheet" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;You can configure new &lt;code&gt;logrotate&lt;/code&gt; policies by creating a file in &lt;code&gt;/etc/logrotate.d&lt;/code&gt; as root. Each policy begins with the path to the log file, and has a set of policies in &lt;code&gt;{braces}&lt;/code&gt;. These options control the actions &lt;code&gt;logrotate&lt;/code&gt; takes when it runs its schedule.&lt;/p&gt;
+&lt;p&gt;Some commonly used options:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Directive&lt;/th&gt;
+&lt;th&gt;Example&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;daily&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;daily&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Rotate logs every day.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;weekly&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;weekly&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Rotate logs every week.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;monthly&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;monthly&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Rotate logs every month.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;yearly&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;yearly&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Rotate logs every year.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;hourly&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;hourly&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Rotate every hour (if logrotate runs hourly).&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;minutes N&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;minutes 30&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Rotate every 30 minutes (supported in newer versions).&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;size&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;size 10M&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Rotate when the log reaches 10 MB. Supports &lt;code&gt;k&lt;/code&gt;, &lt;code&gt;M&lt;/code&gt;, and &lt;code&gt;G&lt;/code&gt; (e.g. &lt;code&gt;500k&lt;/code&gt;, &lt;code&gt;10M&lt;/code&gt;, &lt;code&gt;2G&lt;/code&gt;).&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;minsize&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;minsize 5M&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Rotate on the scheduled interval only if the log is at least 5 MB.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;maxsize&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;maxsize 100M&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Rotate immediately if the log exceeds 100 MB, regardless of schedule.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;rotate&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;rotate 7&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Keep the last 7 rotated logs.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;maxage&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;maxage 30&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Delete rotated logs older than 30 days.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;minage&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;minage 7&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Do not rotate logs newer than 7 days.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;compress&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;compress&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Compress rotated logs (gzip by default).&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;nocompress&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;nocompress&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Disable compression.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;compresscmd&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;compresscmd /usr/bin/xz&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Use a different compression program.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;uncompresscmd&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;uncompresscmd /usr/bin/unxz&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Program used to decompress logs.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;compressext&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;compressext .xz&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Extension for compressed logs.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;compressoptions&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;compressoptions -9&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Pass options to the compression program.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;delaycompress&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;delaycompress&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Compress starting with the second rotation.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;copy&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;copy&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Copy the log without modifying the original.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;copytruncate&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;copytruncate&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Copy the log, then truncate the original in place.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;renamecopy&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;renamecopy&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Rename, copy back, and remove the renamed file after rotation.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;nocopytruncate&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;nocopytruncate&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Disable copy-and-truncate behavior.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;create&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;create 0644 alice alice&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Create a new log file with the specified permissions and owner.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;nocreate&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;nocreate&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Do not create a new log after rotation.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;olddir&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;olddir /var/log/archive&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Store rotated logs in another directory.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;noolddir&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;noolddir&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Keep rotated logs beside the original log.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;missingok&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;missingok&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Ignore missing log files.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;nomissingok&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;nomissingok&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Treat a missing log as an error.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;notifempty&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;notifempty&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Do not rotate empty log files.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ifempty&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;ifempty&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Rotate logs even if they are empty.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;dateext&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;dateext&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Use date-based filenames (e.g. &lt;code&gt;app.log-20260627&lt;/code&gt;).&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;nodateext&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;nodateext&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Use numeric suffixes (&lt;code&gt;.1&lt;/code&gt;, &lt;code&gt;.2&lt;/code&gt;, etc.).&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;dateformat&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;dateformat -%Y%m%d&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Customize the date suffix format.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;dateyesterday&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;dateyesterday&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Use yesterday&amp;rsquo;s date in rotated filenames.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;datehourago&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;datehourago&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Use the previous hour in date-based filenames.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;extension&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;extension .log&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Preserve the &lt;code&gt;.log&lt;/code&gt; extension when rotating.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;addextension&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;addextension .bak&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Append an extra extension to rotated logs.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;start&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;start 5&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Start numbering rotated logs at &lt;code&gt;.5&lt;/code&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;mail&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;mail admin@example.com&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Email rotated logs.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;nomail&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;nomail&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Disable emailing logs.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;mailfirst&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;mailfirst&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Mail the newly rotated log.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;maillast&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;maillast&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Mail the oldest log before it is deleted.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;sharedscripts&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sharedscripts&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Run &lt;code&gt;prerotate&lt;/code&gt;/&lt;code&gt;postrotate&lt;/code&gt; only once for all logs in the block.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;nosharedscripts&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;nosharedscripts&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Run scripts once per log file.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;prerotate&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;prerotate ... endscript&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Run commands before rotation.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;firstaction&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;firstaction ... endscript&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Run commands once before any logs are rotated.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;postrotate&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;postrotate ... endscript&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Run commands after rotation (e.g. reload a service).&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;lastaction&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;lastaction ... endscript&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Run commands once after all rotations complete.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;preremove&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;preremove ... endscript&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Run commands before deleting an old log.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;su&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;su alice alice&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Rotate logs as the specified user and group.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;tabooext&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;tabooext + .rpmnew .bak&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Ignore files with these extensions.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;taboopat&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;taboopat + *.disabled&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Ignore files matching these patterns.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;include&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;include /etc/logrotate.d&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Include additional configuration files.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ignoreduplicates&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;ignoreduplicates&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Ignore duplicate log file definitions.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;shred&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;shred&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Securely overwrite logs before deletion.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;shredcycles&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;shredcycles 3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Overwrite logs three times before deleting them.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;allowhardlink&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;allowhardlink&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Allow rotation of logs with multiple hard links.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;noallowhardlink&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;noallowhardlink&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Refuse to rotate logs with multiple hard links.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;Example policy files&lt;span class="hx:absolute hx:-mt-20" id="example-policy-files"&gt;&lt;/span&gt;
+&lt;a href="#example-policy-files" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;General purpose config&lt;span class="hx:absolute hx:-mt-20" id="general-purpose-config"&gt;&lt;/span&gt;
+&lt;a href="#general-purpose-config" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;This is a good generic policy for most types of log files. The rules for this policy are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Rotates logs at 50MB&lt;/li&gt;
+&lt;li&gt;Rotates logs weekly&lt;/li&gt;
+&lt;li&gt;Keeps 3 months of rotated logs&lt;/li&gt;
+&lt;li&gt;Compresses rotated logs
+&lt;ul&gt;
+&lt;li&gt;Waits 1 rotation before compressing the most recently compressed log&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Skips missing target files and empty logs&lt;/li&gt;
+&lt;li&gt;Creates/initializes log file when it runs and sets ownership&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-plaintext" data-lang="plaintext"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/var/log/myapp.log {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; size 50M
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; weekly
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; maxage 90
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; rotate 12
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; compress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; delaycompress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; missingok
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; notifempty
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; #################################
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; # Choose 1 of the options below #
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; #################################
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ## Create log file &amp;amp; assign permissions if it doesn&amp;#39;t exist
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; create 0644 username groupname
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3&gt;Log in user&amp;rsquo;s $HOME&lt;span class="hx:absolute hx:-mt-20" id="log-in-users-home"&gt;&lt;/span&gt;
+&lt;a href="#log-in-users-home" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Rotate a file in a user &lt;code&gt;alice&lt;/code&gt;&amp;rsquo;s home directory when it reaches 10MB or every month, whichever comes first:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-plaintext" data-lang="plaintext"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/home/alice/.logs/some-logfile.log {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; size 10M
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; monthly
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; maxage 30
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; rotate 4
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; compress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; delaycompress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; missingok
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; notifempty
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; copytruncate
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3&gt;Daily rotate a busy app&amp;rsquo;s logs&lt;span class="hx:absolute hx:-mt-20" id="daily-rotate-a-busy-apps-logs"&gt;&lt;/span&gt;
+&lt;a href="#daily-rotate-a-busy-apps-logs" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Rotate logs for a busy app daily, but only if there&amp;rsquo;s at least 50MB of data in the log:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-plaintext" data-lang="plaintext"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/var/log/myapp.log {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; daily
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; minsize 50M
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; rotate 14
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; compress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; delaycompress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; missingok
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; notifempty
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; create 0640 myapp myapp
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3&gt;Rotate webserver logs when they reach 500MB&lt;span class="hx:absolute hx:-mt-20" id="rotate-webserver-logs-when-they-reach-500mb"&gt;&lt;/span&gt;
+&lt;a href="#rotate-webserver-logs-when-they-reach-500mb" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-plaintext" data-lang="plaintext"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/var/log/nginx/access.log {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; maxsize 500M
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; rotate 30
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; compress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; create 0640 www-data adm
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; postrotate
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; systemctl reload nginx
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; endscript
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3&gt;Create log archives&lt;span class="hx:absolute hx:-mt-20" id="create-log-archives"&gt;&lt;/span&gt;
+&lt;a href="#create-log-archives" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Archive logs weekly, keeping 3 months of weekly logs with date-based filenames. Produces log files like:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;archive.log&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;archive.log-2026-06-20.gz&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;archive.log-2026-06-13.gz&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-plaintext" data-lang="plaintext"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/var/log/archive.log {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; weekly
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; rotate 12
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; dateext
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; dateformat -%Y-%m-%d
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; compress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; create 0644 root root
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3&gt;Move old logs to another directory on rotate&lt;span class="hx:absolute hx:-mt-20" id="move-old-logs-to-another-directory-on-rotate"&gt;&lt;/span&gt;
+&lt;a href="#move-old-logs-to-another-directory-on-rotate" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-plaintext" data-lang="plaintext"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/var/log/myapp.log {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; weekly
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; rotate 8
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; olddir /var/log/archive
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; compress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; create 0644 myapp myapp
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3&gt;Apply policy to any .log file in /var/log&lt;span class="hx:absolute hx:-mt-20" id="apply-policy-to-any-log-file-in-varlog"&gt;&lt;/span&gt;
+&lt;a href="#apply-policy-to-any-log-file-in-varlog" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-plaintext" data-lang="plaintext"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/var/log/myapp/*.log {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; daily
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; rotate 7
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; compress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; sharedscripts
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; postrotate
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; systemctl reload myapp
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; endscript
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3&gt;Keep 1 year of monthly logs&lt;span class="hx:absolute hx:-mt-20" id="keep-1-year-of-monthly-logs"&gt;&lt;/span&gt;
+&lt;a href="#keep-1-year-of-monthly-logs" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-plaintext" data-lang="plaintext"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/var/log/audit.log {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; monthly
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; rotate 12
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; compress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; create 0600 root root
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3&gt;Delete old logs after 90 days&lt;span class="hx:absolute hx:-mt-20" id="delete-old-logs-after-90-days"&gt;&lt;/span&gt;
+&lt;a href="#delete-old-logs-after-90-days" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-plaintext" data-lang="plaintext"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/var/log/events.log {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; weekly
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; rotate 100
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; maxage 90
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; compress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3&gt;Rotate logs by time, regardless of size&lt;span class="hx:absolute hx:-mt-20" id="rotate-logs-by-time-regardless-of-size"&gt;&lt;/span&gt;
+&lt;a href="#rotate-logs-by-time-regardless-of-size" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-plaintext" data-lang="plaintext"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/var/log/cron.log {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; daily
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; rotate 30
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; compress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; missingok
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; notifempty
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; create 0644 root root
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3&gt;Rotate a large log at 2GB and archive with &lt;code&gt;xz&lt;/code&gt; compression&lt;span class="hx:absolute hx:-mt-20" id="rotate-a-large-log-at-2gb-and-archive-with-xz-compression"&gt;&lt;/span&gt;
+&lt;a href="#rotate-a-large-log-at-2gb-and-archive-with-xz-compression" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;/var/log/debug.log {
+size 2G
+rotate 10
+compress
+compresscmd /usr/bin/xz
+uncompresscmd /usr/bin/unxz
+compressext .xz
+compressoptions -9
+create 0644 root root
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3&gt;Perform an action after rotating&lt;span class="hx:absolute hx:-mt-20" id="perform-an-action-after-rotating"&gt;&lt;/span&gt;
+&lt;a href="#perform-an-action-after-rotating" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/var/log/mydaemon.log &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; weekly
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; rotate &lt;span class="m"&gt;8&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; compress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; create &lt;span class="m"&gt;0640&lt;/span&gt; mydaemon mydaemon
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; postrotate
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;kill&lt;/span&gt; -HUP &lt;span class="k"&gt;$(&lt;/span&gt;cat /run/mydaemon.pid&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; endscript
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

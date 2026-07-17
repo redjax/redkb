@@ -1,0 +1,69 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>redkb – Wireguard</title><link>/docs/utilities/wireguard/</link><description>Recent content in Wireguard on redkb</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 05 May 2026 00:21:36 -0400</lastBuildDate><atom:link href="/docs/utilities/wireguard/index.xml" rel="self" type="application/rss+xml"/><item><title>Firewalls</title><link>/docs/utilities/wireguard/firewalls/</link><pubDate>Tue, 05 May 2026 01:39:21 -0400</pubDate><guid>/docs/utilities/wireguard/firewalls/</guid><description>
+&lt;p&gt;Firewall rules for Wireguard.&lt;/p&gt;</description></item><item><title>Setup</title><link>/docs/utilities/wireguard/setup/</link><pubDate>Tue, 05 May 2026 01:26:48 -0400</pubDate><guid>/docs/utilities/wireguard/setup/</guid><description>
+&lt;h2&gt;Server setup&lt;span class="hx:absolute hx:-mt-20" id="server-setup"&gt;&lt;/span&gt;
+&lt;a href="#server-setup" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;...&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;Client setup&lt;span class="hx:absolute hx:-mt-20" id="client-setup"&gt;&lt;/span&gt;
+&lt;a href="#client-setup" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Download &amp;amp; install Wireguard
+&lt;ul&gt;
+&lt;li&gt;Debian/Ubuntu: &lt;code&gt;sudo apt install -y wireguard wireguard-tools&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Fedora: &lt;code&gt;sudo dnf install -y wireguard wireguard-tools&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Create &lt;code&gt;/etc/wireguard/wg0.conf&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;You can use any filename i.e. &lt;code&gt;my-connection-name.conf&lt;/code&gt;, wg0.conf` is just the default.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Example &lt;code&gt;wg0.conf&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;[Interface]
+PrivateKey = YOUR_PRIVATE_KEY
+Address = 10.0.0.2/24
+DNS = 1.1.1.1
+[Peer]
+PublicKey = SERVER_PUBLIC_KEY
+Endpoint = your.server.ip:51820
+## 0.0.0.0/0 for all IPs, or limit with
+# AllowedIPs = 10.xxx.xxx.xxx/32 192.168.1.0/24
+AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 25&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Secure the config with &lt;code&gt;sudo chmod 600 /etc/wireguard/wg0.conf&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Bring up the interface with &lt;code&gt;sudo wg-quick up wg0&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;If you named the file something other than &lt;code&gt;wg0.conf&lt;/code&gt;, use the name of the file without &lt;code&gt;.conf&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;i.e. &lt;code&gt;/etc/wireguard/my-connection-name.conf&lt;/code&gt; -&amp;gt; &lt;code&gt;sudo wg-quick up my-connection-name&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Bring the connection down with &lt;code&gt;sudo wg-quick down wg0&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;You can also control the connection with &lt;code&gt;sudo systemctl [start|stop|enable|disable] wg-quick@wg0&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;If you used a different filename, use &lt;code&gt;wg-quick@my-connnection-name&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Ensure port forwarding is enabled:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;echo &amp;quot;net.ipv4.ip_forward=1&amp;quot; | sudo tee -a /etc/sysctl.conf&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>
