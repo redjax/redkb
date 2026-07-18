@@ -41,11 +41,17 @@ on:
 
   workflow_dispatch:
     inputs:
-      runner-img-or-label:
-        description: "A runner image (i.e. ubuntu-latest) or self-hosted runner label (i.e. pipelinetemplates-test)"
-        required: true
+      runner-image:
         type: string
-        default: ubuntu-latest
+        default: "ubuntu-latest"
+      use-cache:
+        description: "Enable Hugo build cache"
+        type: boolean
+        default: true
+      clean-cache:
+        description: "Clean Hugo generated cache before build"
+        type: boolean
+        default: false
 
 permissions:
   actions: write
@@ -55,9 +61,18 @@ jobs:
   build:
     uses: redjax/pipelinetemplates/.github/workflows/hugo-build.yml@main
     with:
+      hugo-version: "0.164.0"
       site-root: "."
       artifact-name: "hugo-site"
       public-dir: "public"
+      check-changed: "false"
+      use-cache: ${{ inputs.use-cache == true && 'true' || 'false' }}
+      clean-cache: ${{ inputs.clean-cache == true && 'true' || 'false' }}
+      environment: "production"
       build-flags: "--gc --minify --enableGitInfo"
-      runner-image: ${{ inputs.runner-img-or-label || 'ubuntu-latest' }}
+      artifact-retention-days: 7
+      artifact-if-no-files-found: "error"
+      runner-image: ${{ inputs.runner-image || 'ubuntu-latest' }}
+      checkout-ref: ${{ github.sha }}
+      debug-build-state: false
     secrets: inherit

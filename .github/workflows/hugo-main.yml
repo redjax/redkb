@@ -33,22 +33,15 @@ on:
 
   workflow_dispatch:
     inputs:
-      publish-gh-pages:
-        type: boolean
+      publish-targets:
+        description: 'JSON array of publish targets, e.g. ["github-pages","branch"]'
+        type: string
         required: false
-        default: false
-      publish-to-branch:
-        required: false
-        default: false
-        type: boolean
+        default: '["github-pages","branch"]'
       branch-name:
         type: string
         required: false
         default: "gh-pages"
-      # publish-cf-pages:
-      #   required: false
-      #   default: false
-      #   type: boolean
       runner-img-or-label:
         type: string
         default: ubuntu-latest
@@ -56,6 +49,26 @@ on:
         description: "Branch, tag, or commit SHA to use when checking out PipelineTemplates repository."
         type: string
         default: main
+      use-hugo-cache:
+        type: boolean
+        required: false
+        default: true
+      clean-hugo-cache:
+        type: boolean
+        required: false
+        default: false
+      hugo-version:
+        type: string
+        required: false
+        default: "0.161.1"
+      hugo-build-flags:
+        type: string
+        required: false
+        default: "--gc --minify --enableGitInfo"
+      debug-hugo-build-state:
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   pipeline:
@@ -72,11 +85,14 @@ jobs:
       version-file: ".version"
       artifact-name: "hugo-site"
       release-prefix: "site"
+      publish-targets: ${{ inputs.publish-targets || '["github-pages","branch"]' }}
       branch-name: ${{ inputs.branch-name || 'gh-pages' }}
-      publish-gh-pages: ${{ github.event_name == 'push' || inputs.publish-gh-pages || false }}
-      publish-to-branch: ${{ inputs.publish-to-branch || false }}
       runner-image: ${{ inputs.runner-img-or-label || 'ubuntu-latest' }}
       templates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
-      hugo-build-flags: "--gc --minify --enableGitInfo"
+      hugo-version: ${{ inputs.hugo-version || '0.161.1' }}
+      hugo-build-flags: ${{ inputs.hugo-build-flags || '--gc --minify --enableGitInfo' }}
+      use-hugo-cache: ${{ inputs.use-hugo-cache && true || false }}
+      clean-hugo-cache: ${{ inputs.clean-hugo-cache && true || false }}
+      debug-hugo-build-state: ${{ inputs.debug-hugo-build-state && true || false }}
     secrets:
       release-bot-pat: ${{ secrets.RELEASE_BOT_PAT }}
