@@ -23,6 +23,9 @@ EOF
 ## Determine archetype from file path
 function get_kind() {
   case "$1" in
+  docs/unifi/*)
+    echo "unifi"
+    ;;
   docs/devops/github/*)
     echo "github"
     ;;
