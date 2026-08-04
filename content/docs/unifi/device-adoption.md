@@ -49,3 +49,9 @@ $> set-inform http://<controller-ip-or-hostname>:8080/inform
 ```
 
 Then, in the Unifi controller webUI, you should see a new device pending adoption. You can complete the adoption there and Unifi will start managing the device.
+
+## Forget & Re-Adopt Device
+
+If you're having trouble with one of your devices, you can forget (or "Remove" in newer versions) the device from the controller webUI, then SSH into it and run the same commands you would for [new device setup](#new-device-setup).
+
+This can sometimes fix configuration issues, or problems where a device continuously falls out of adoption, or is repeatedly rebooting.
