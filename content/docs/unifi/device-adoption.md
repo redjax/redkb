@@ -55,3 +55,8 @@ Then, in the Unifi controller webUI, you should see a new device pending adoptio
 If you're having trouble with one of your devices, you can forget (or "Remove" in newer versions) the device from the controller webUI, then SSH into it and run the same commands you would for [new device setup](#new-device-setup).
 
 This can sometimes fix configuration issues, or problems where a device continuously falls out of adoption, or is repeatedly rebooting.
+
+## Gotchas
+
+- [Unifi Flex Mini switches](https://store.ui.com/us/en/products/usw-flex-mini) do not have SSH capabilities, so the instructions above don't apply. You just have to hope really hard that it works.
+  - Often, you just have to leave the switch plugged info until the controller notices it's connected. It will work as a "dumb" switch in the meantime.
