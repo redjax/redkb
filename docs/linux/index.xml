@@ -1,0 +1,116 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>redkb – Linux</title><link>/docs/linux/</link><description>Recent content in Linux on redkb</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 14 Feb 2024 00:00:00 +0000</lastBuildDate><atom:link href="/docs/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>Redhat Family</title><link>/docs/linux/redhat_family/</link><pubDate>Sun, 28 Jun 2026 00:08:04 -0400</pubDate><guid>/docs/linux/redhat_family/</guid><description>
+&lt;p&gt;Descendents of &lt;a href="https://www.redhat.com"target="_blank" rel="noopener"&gt;RedHat&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt; Linux, or RedHat Enterprise Linux itself.&lt;/p&gt;</description></item><item><title>Debian Family</title><link>/docs/linux/deb_family/</link><pubDate>Thu, 05 Sep 2024 00:00:00 +0000</pubDate><guid>/docs/linux/deb_family/</guid><description>
+&lt;p&gt;Descendents of &lt;a href="https://debian.org/"target="_blank" rel="noopener"&gt;Debian&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt; Linux, or Debian itself.&lt;/p&gt;</description></item><item><title>Bash</title><link>/docs/linux/bash/</link><pubDate>Wed, 14 Feb 2024 00:00:00 +0000</pubDate><guid>/docs/linux/bash/</guid><description>
+&lt;p&gt;&lt;a href="https://www.gnu.org/software/bash/"target="_blank" rel="noopener"&gt;Bash&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt; is the default shell for many (&amp;ldquo;most&amp;rdquo; may even be accurate) Linux distributions. The &amp;ldquo;&lt;strong&gt;B&lt;/strong&gt;ourne &lt;strong&gt;A&lt;/strong&gt;gain &lt;strong&gt;SH&lt;/strong&gt;ell&amp;rdquo; was first released in 1989 by Brian Fox for UNIX-like operating systems, and is designed as an alternative for the older Bourne shell, &lt;code&gt;sh&lt;/code&gt;. Bash is both a shell and a programming language. Scripts written in Bash are called &amp;ldquo;shell scripts,&amp;rdquo; and facilitate automation by chaining commands and handling exit codes. &lt;a href="https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29"target="_blank" rel="noopener"&gt;Read more about the history of Bash on Wikipedia&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Bash Cheat Sheet&lt;span class="hx:absolute hx:-mt-20" id="bash-cheat-sheet"&gt;&lt;/span&gt;
+&lt;a href="#bash-cheat-sheet" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A table of common commands &amp;amp; variables I use.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:flex-col hx:rounded-lg hx:border hx:py-4 hx:px-4 hx:border-gray-200 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-green-200 hx:bg-green-100 hx:text-green-900 hx:dark:border-green-200/30 hx:dark:bg-green-900/30 hx:dark:text-green-200"&gt;
+&lt;p class="hx:flex hx:items-center hx:font-medium"&gt;&lt;svg height=16px class="hx:inline-block hx:align-middle hx:mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/&gt;&lt;/svg&gt;Tip&lt;/p&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;🔗 &lt;a href="/snippets/bash/"&gt;See more Bash snippets&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Command&lt;/th&gt;
+&lt;th&gt;Example&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;pwd&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;pwd # /path/where/shell/is&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;The current working directory, i.e. &amp;rsquo;this path&amp;rsquo; where your shell is.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;$CWD&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;CWD=$(pwd) &amp;amp;&amp;amp; echo &amp;quot;$CWD&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Create a variable &lt;code&gt;$CWD&lt;/code&gt;, which is your current working directory (the path where you shell is).&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;$THIS_DIR&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;THIS_DIR=&amp;quot;$(cd &amp;quot;$(dirname &amp;quot;${BASH_SOURCE[0]}&amp;quot;)&amp;quot; &amp;amp;&amp;amp; pwd)&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;A variable with the path where a script that is called exists. Different from &lt;code&gt;$CWD&lt;/code&gt;. Where &lt;code&gt;$CWD&lt;/code&gt; is the path the shell was called from, &lt;code&gt;$THIS_DIR&lt;/code&gt; is the actual path to the script that is being executed where the variable is declared.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;mkdir -p&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;mkdir -p ~/path/that/does-not/exist&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Create a nested directory path where some or all of the parents do not exist yet. Use &lt;code&gt;-pv&lt;/code&gt; to show verbose output.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;exec $SHELL&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;exec $SHELL&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Reload the current shell. Useful after modifying auto-sourced files like &lt;code&gt;~/.bashrc&lt;/code&gt;. Equivalent to &lt;code&gt;~/.bashrc&lt;/code&gt; and &lt;code&gt;source ~/.bashrc&lt;/code&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;while true; do &amp;lt;something&amp;gt;; done&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;while true; do echo &amp;quot;Loop!&amp;quot; &amp;amp;&amp;amp; sleep 2; done&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Loop/repeat a command or phrase until you cancel the command with &lt;code&gt;CTRL-D&lt;/code&gt; or &lt;code&gt;CTRL-C&lt;/code&gt;, or the loop finishes, exits, or errors.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</description></item><item><title>Tips &amp; Tricks</title><link>/docs/linux/tips--tricks/</link><pubDate>Wed, 14 Feb 2024 00:00:00 +0000</pubDate><guid>/docs/linux/tips--tricks/</guid><description>
+&lt;p&gt;Miscellaneous Linux tips &amp;amp; tricks. If an example would only work on a specific OS (i.e. Debian-family only), there will be a message stating so; otherwise, these commands should work across different Linux OSes.&lt;/p&gt;
+&lt;h2&gt;Configurations&lt;span class="hx:absolute hx:-mt-20" id="configurations"&gt;&lt;/span&gt;
+&lt;a href="#configurations" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Enable CLI boot (disable GUI)&lt;span class="hx:absolute hx:-mt-20" id="enable-cli-boot-disable-gui"&gt;&lt;/span&gt;
+&lt;a href="#enable-cli-boot-disable-gui" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Set your machine to &amp;ldquo;CLI&amp;rdquo; boot, where the computer will start at a shell prompt and without a GUI:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl set-default multi-user.target&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;To undo this change, run:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl set-default graphical.target&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3&gt;Allow passwordless sudo&lt;span class="hx:absolute hx:-mt-20" id="allow-passwordless-sudo"&gt;&lt;/span&gt;
+&lt;a href="#allow-passwordless-sudo" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:flex-col hx:rounded-lg hx:border hx:py-4 hx:px-4 hx:border-gray-200 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;p class="hx:flex hx:items-center hx:font-medium"&gt;&lt;svg height=16px class="hx:inline-block hx:align-middle hx:mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;Warning&lt;/p&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;This is not recommended! This configuration is insecure, and allows running all commands as root without entering a password.&lt;/p&gt;
+&lt;p&gt;There is almost no environment where this is suitable or advisable. The main reason this is documented is so you know where to undo it if you come across a machine that allows sudo commands without a password.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Allowing &lt;code&gt;sudo&lt;/code&gt; commands without a password is very risky and inadvisable. This is the state most Windows machines run in (the user is admin/root by default). With the guardrails off, you are free to mistakenly edit or delete files/directories, and your machine is highly insecure; any attacker able to access the user&amp;rsquo;s account could run any command as root without being prompted for a password.&lt;/p&gt;
+&lt;p&gt;To grant a user password-less &lt;code&gt;sudo&lt;/code&gt; rights, run the command &lt;code&gt;visudo&lt;/code&gt; (the &lt;code&gt;sudo&lt;/code&gt; package must be installed) as root/with &lt;code&gt;sudo&lt;/code&gt;, and add the following below the line that reads &lt;code&gt;# Allow members of group sudo to execute any command&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Allow passwordless sudo for specified user(s)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&amp;lt;username&amp;gt; &lt;span class="nv"&gt;ALL&lt;/span&gt;&lt;span class="o"&gt;=(&lt;/span&gt;ALL&lt;span class="o"&gt;)&lt;/span&gt; NOPASSWD:ALL&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

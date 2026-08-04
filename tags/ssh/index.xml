@@ -1,0 +1,347 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>redkb – Ssh</title><link>/tags/ssh/</link><description>Recent content in Ssh on redkb</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sat, 23 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="/tags/ssh/index.xml" rel="self" type="application/rss+xml"/><item><title>SSH</title><link>/docs/utilities/ssh/</link><pubDate>Wed, 14 Feb 2024 00:00:00 +0000</pubDate><guid>/docs/utilities/ssh/</guid><description>
+&lt;h2&gt;Understanding the difference between public and private keys&lt;span class="hx:absolute hx:-mt-20" id="understanding-the-difference-between-public-and-private-keys"&gt;&lt;/span&gt;
+&lt;a href="#understanding-the-difference-between-public-and-private-keys" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;I had a hard time understanding what to do with my private/public keys when I was learning SSH. I don&amp;rsquo;t know why it was a difficult concept for me, but I have worked with enough other people who were confused in the same way I was that I think it&amp;rsquo;s worth it to just spell out what to do with each key.&lt;/p&gt;
+&lt;h3&gt;Private key (id_rsa)&lt;span class="hx:absolute hx:-mt-20" id="private-key-id_rsa"&gt;&lt;/span&gt;
+&lt;a href="#private-key-id_rsa" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Your private key (default name is &lt;code&gt;id_rsa&lt;/code&gt;) should &lt;strong&gt;NEVER&lt;/strong&gt; leave the server it was created on, and should not be accessible to any other user (&lt;code&gt;chmod 600&lt;/code&gt;). There are exceptions to this, such as when uploading a keypair to an Azure or Hashicorp vault, or providing to a Docker container. But in general, when creating SSH tunnels between machines, the private key is meant to stay on the machine it was created on.&lt;/p&gt;
+&lt;h3&gt;Public key (id_rsa.pub)&lt;span class="hx:absolute hx:-mt-20" id="public-key-id_rsapub"&gt;&lt;/span&gt;
+&lt;a href="#public-key-id_rsapub" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Your public key can be freely shared. You can repeatedly derive the same public key from a given private key, but a private key cannot be derived from a public key.&lt;/p&gt;
+&lt;h3&gt;More on how it works&lt;span class="hx:absolute hx:-mt-20" id="more-on-how-it-works"&gt;&lt;/span&gt;
+&lt;a href="#more-on-how-it-works" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The math/algorithm involved allows your public key to encrypt data that only the private key it was derived from can decrypt. This is a one-way operation, meaning a message encrypted by a public key **cannot be decrypted by that same public key (or any other)*. Only the paired private key can decrypt messages encrypted by the public key.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:flex-col hx:rounded-lg hx:border hx:py-4 hx:px-4 hx:border-gray-200 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-green-200 hx:bg-green-100 hx:text-green-900 hx:dark:border-green-200/30 hx:dark:bg-green-900/30 hx:dark:text-green-200"&gt;
+&lt;p class="hx:flex hx:items-center hx:font-medium"&gt;&lt;svg height=16px class="hx:inline-block hx:align-middle hx:mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/&gt;&lt;/svg&gt;Which is better, ed25519 or RSA?&lt;/p&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;An SSH key can use one of 4 algorithms to generate a key: &lt;code&gt;RSA&lt;/code&gt;, &lt;code&gt;ECDSA&lt;/code&gt;, &lt;code&gt;Ed25519&lt;/code&gt;, and &lt;code&gt;DSA&lt;/code&gt; (but &lt;a href="https://linuxiac.com/openssh-announces-plan-to-phase-out-dsa-keys/"target="_blank" rel="noopener"&gt;don&amp;rsquo;t use &lt;code&gt;DSA&lt;/code&gt;&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;!). The default is &lt;code&gt;rsa 2048&lt;/code&gt;, but it is recommended to use a higher key size like &lt;code&gt;4096&lt;/code&gt;. The minimum is &lt;code&gt;1024&lt;/code&gt;. RSA is the most compatible key type, it will work with just about every SSH server, but has a larger key size and &lt;a href="https://www.technologyreview.com/2019/05/30/65724/how-a-quantum-computer-could-break-2048-bit-rsa-encryption-in-8-hours/"target="_blank" rel="noopener"&gt;the potential to be cracked by quantum computing&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt; if you use the standard &lt;code&gt;2048&lt;/code&gt; key size.&lt;/p&gt;
+&lt;p&gt;It is a hotly debated topic which is more secure, &lt;code&gt;ed25519&lt;/code&gt; or &lt;code&gt;rsa&lt;/code&gt;. &lt;a href="https://security.stackexchange.com/a/143086"target="_blank" rel="noopener"&gt;This StackExchange answer&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt; lays out a high level overview of why &lt;code&gt;ed25519&lt;/code&gt; may be better in theory, but after a certain point you are competing against &amp;ldquo;cannot now and will not for the foreseeable future be broken,&amp;rdquo; which becomes a meaningless endeavor.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Short version&lt;/strong&gt;: use &lt;code&gt;rsa&lt;/code&gt; with &lt;code&gt;4096&lt;/code&gt; bytes.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Read more about SSH key algorithms on &lt;a href="https://wiki.archlinux.org/title/SSH_keys#Choosing_the_authentication_key_type"target="_blank" rel="noopener"&gt;the Arch Linux wiki&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The public key is what you can send to the remote you want to connect to. For example, to add an SSH key to a Github repository, you copy the contents of your &lt;code&gt;id_rsa.pub&lt;/code&gt; and paste them into Github, then tell your SSH client to use your &lt;code&gt;id_rsa&lt;/code&gt; private key. When you connect, Github compares your public and private key and allows you to connect if you use the private key the public was derived from.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:flex-col hx:rounded-lg hx:border hx:py-4 hx:px-4 hx:border-gray-200 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;p class="hx:flex hx:items-center hx:font-medium"&gt;&lt;svg height=16px class="hx:inline-block hx:align-middle hx:mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;Note&lt;/p&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;Your keys are never sent in full, instead an algorithm reassembles a key that will be identical when derived from the same public/private key. This type of encryption is known as &lt;a href="https://www.digitalocean.com/community/tutorials/understanding-the-ssh-encryption-and-connection-process#asymmetrical-encryption"target="_blank" rel="noopener"&gt;asymettrical encryption&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;When you&amp;rsquo;re setting up an SSH connection to a remote host, you copy the public key using a command like &lt;code&gt;ssh-copy-id -i .ssh/id_rsa.pub user@host&lt;/code&gt;, and you can then use your private key to connect instead of a password with &lt;code&gt;ssh -i .ssh/id_rsa user@host&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Create an SSH key pair&lt;span class="hx:absolute hx:-mt-20" id="create-an-ssh-key-pair"&gt;&lt;/span&gt;
+&lt;a href="#create-an-ssh-key-pair" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;You can create a keypair using the &lt;code&gt;ssh-keygen&lt;/code&gt; utility. This is installed with SSH (&lt;code&gt;openssh-server&lt;/code&gt; on Linux, see &lt;a href="https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=gui"target="_blank" rel="noopener"&gt;installation instructions for Windows&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;), and is available cross-platform.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:flex-col hx:rounded-lg hx:border hx:py-4 hx:px-4 hx:border-gray-200 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;p class="hx:flex hx:items-center hx:font-medium"&gt;&lt;svg height=16px class="hx:inline-block hx:align-middle hx:mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;Note&lt;/p&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;You can run &lt;code&gt;ssh-keygen --help&lt;/code&gt; on any platform to see a list of available commands. &lt;code&gt;--help&lt;/code&gt; is not a valid flag, so you will see a warning &lt;code&gt;unknown option -- -&lt;/code&gt;, but the purpose of this is to show available commands.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;If you run &lt;code&gt;ssh-keygen&lt;/code&gt; without any arguments, you will be guided through a series of prompts, after which 2 files will be created (assuming you chose the defaults): &lt;code&gt;id_rsa&lt;/code&gt; (your private key) and &lt;code&gt;id_rsa.pub&lt;/code&gt; (your public key).&lt;/p&gt;
+&lt;p&gt;You can also pass some parameters to automatically answer certain prompts:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;code&gt;-f&lt;/code&gt; parameter specifies the output file. This will skip the prompt &lt;code&gt;Enter file in which to save the key&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ssh-keygen -f /path/to/&amp;lt;ssh_key_filename&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;When using &lt;code&gt;-f&lt;/code&gt;, a private and public (&lt;code&gt;.pub&lt;/code&gt;) key will be created&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;-t&lt;/code&gt; parameter allows you to specify a key type
+&lt;ul&gt;
+&lt;li&gt;To generate an rsa key (the default key type): &lt;code&gt;ssh-keygen -t rsa&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Other types of key types are:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;dsa&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ecdsa&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ecdsa-sk&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ed25519&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ed25519-sk&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;-b&lt;/code&gt; option allows you to specify the number of bits. For rsa keys, the minimum is &lt;code&gt;1024&lt;/code&gt; and the default is &lt;code&gt;3072&lt;/code&gt;.
+&lt;ul&gt;
+&lt;li&gt;You can set a stronger value like &lt;code&gt;4096&lt;/code&gt; with: &lt;code&gt;ssh-keygen -b 4096&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Example ssh-keygen commands&lt;span class="hx:absolute hx:-mt-20" id="example-ssh-keygen-commands"&gt;&lt;/span&gt;
+&lt;a href="#example-ssh-keygen-commands" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;## Generate a 4096-bit RSA key named example_key&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh-keygen -t rsa -b &lt;span class="m"&gt;4096&lt;/span&gt; -f ~/.ssh/example_key&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;## Generate a 4096-bit RSA key named example_key, skip password prompt&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh-keygen -t rsa -b &lt;span class="m"&gt;4096&lt;/span&gt; -f ~/.ssh/id_rsa -N &lt;span class="s2"&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;## Generate an ed25519 key, skip password prompt.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Default key name: id_ed25519&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N &lt;span class="s2"&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2&gt;Install an SSH key on a remote machine for passwordless ssh login&lt;span class="hx:absolute hx:-mt-20" id="install-an-ssh-key-on-a-remote-machine-for-passwordless-ssh-login"&gt;&lt;/span&gt;
+&lt;a href="#install-an-ssh-key-on-a-remote-machine-for-passwordless-ssh-login" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;You can (and should) use your SSH key to authenticate as a user on a remote system. There are 2 ways of adding keys for this type of authentication.&lt;/p&gt;
+&lt;h3&gt;Method 1: Using ssh-copy-id&lt;span class="hx:absolute hx:-mt-20" id="method-1-using-ssh-copy-id"&gt;&lt;/span&gt;
+&lt;a href="#method-1-using-ssh-copy-id" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;You can copy your public key to a remote using the &lt;code&gt;ssh-copy-id&lt;/code&gt; utility.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;## Note: If you get a message about trusting the host, hit yes.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# You will need to type the remote user&amp;#39;s password the first time&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh-copy-id -i ~/.ssh/your_key.pub test@example&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3&gt;Method 2: Manual method&lt;span class="hx:absolute hx:-mt-20" id="method-2-manual-method"&gt;&lt;/span&gt;
+&lt;a href="#method-2-manual-method" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;You can also manually copy your public keyfile (&lt;code&gt;.pub&lt;/code&gt;) to a remote host and &lt;code&gt;cat&lt;/code&gt; the contents into &lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt;. The most straightforward way of accomplishing this is to use &lt;code&gt;scp&lt;/code&gt; to copy the keyfile to your remote host, typing the password to authenticate, then following up by logging in directly with &lt;code&gt;ssh&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Instructions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Copy your &lt;code&gt;.pub&lt;/code&gt; keyfile
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;scp /path/on/local/to/id_rsa.pub &amp;lt;remote-user&amp;gt;@example.com:/home/&amp;lt;remote-user&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;SSH into the remote
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ssh &amp;lt;remote-user&amp;gt;@example.com&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;You will need to type the user&amp;rsquo;s password this time, but once the key is added you can simply use &lt;code&gt;ssh example.com&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Make sure you configure a &lt;code&gt;~/.ssh/config&lt;/code&gt; file, using the instruction in the note in &lt;a href="#install-an-ssh-key-on-a-remote-machine-for-passwordless-ssh-login"&gt;&amp;ldquo;Install an SSH key on a Remote Machine for passwordless login&amp;rdquo;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Move the &lt;code&gt;.pub&lt;/code&gt; keyfile from the user&amp;rsquo;s home into &lt;code&gt;.ssh&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;If the &lt;code&gt;.ssh&lt;/code&gt; directory does not exist, create it with &lt;code&gt;mkdir .ssh&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mv id_rsa.pub .ssh&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Change directory to &lt;code&gt;.ssh&lt;/code&gt; and &lt;code&gt;cat&lt;/code&gt; the contents of &lt;code&gt;id_rsa.pub&lt;/code&gt; into &lt;code&gt;authorized_keys&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cd .ssh &amp;amp;&amp;amp; cat id_rsa.pub authorized_keys&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Remove the &lt;code&gt;id_rsa.pub&lt;/code&gt; key. Now that it&amp;rsquo;s in &lt;code&gt;authorized_keys&lt;/code&gt;, you don&amp;rsquo;t need the keyfile on the remote machine anymore.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Add connection to your ~/.ssh/config file&lt;span class="hx:absolute hx:-mt-20" id="add-connection-to-your-sshconfig-file"&gt;&lt;/span&gt;
+&lt;a href="#add-connection-to-your-sshconfig-file" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;To connect to a remote server using a key, you have to pass &lt;code&gt;-i path/to/&amp;lt;key_name&amp;gt;&lt;/code&gt; every time, i.e. &lt;code&gt;ssh -i ~/.ssh/id_rsa&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;You can create/modify a &lt;code&gt;~/.ssh/config&lt;/code&gt; file to set which user and key to use for various remote hosts. The &lt;code&gt;ssh&lt;/code&gt; command can use this file to configure connections with SSH keys so you don&amp;rsquo;t have to specify &lt;code&gt;ssh -i /path/to/key&lt;/code&gt; each time you connect to a remote you&amp;rsquo;ve already copied a key to.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;## You can set $Host to whatever you want.
+# You will connect with: ssh $Host
+Host example.com
+## The actual FQDN/IP address of the server
+HostName example.com
+## If the remote SSH server is running on a
+# port other than the default 22, set here
+# Port 222
+## The remote user your key is paired to
+User test
+## The public key exists on the remote.
+# You provide the private key to complete the pair
+IdentityFile ~/.ssh/&amp;lt;your_ssh_key&amp;gt;
+## On Windows, set &amp;#34;ForwardAgent yes&amp;#34; for VSCode remote editing.
+# Uncomment the line below if on Windows
+# ForwardAgent yes&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;For example, after copying a public key to Github, add this to your &lt;code&gt;~/.ssh/config&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;Host github.com
+HostName github.com
+User git
+IdentityFile ~/.ssh/id_rsa&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Now, instead of connecting like &lt;code&gt;ssh -i ~/.ssh/id_rsa git@github.com:&amp;lt;user&amp;gt;/&amp;lt;repo&amp;gt;&lt;/code&gt;, you can just run &lt;code&gt;ssh github.com&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Note that your &lt;code&gt;Host&lt;/code&gt; and &lt;code&gt;HostName&lt;/code&gt; do not need to match. For example, say you have a machine named &lt;code&gt;callisto&lt;/code&gt; with an IP address of &lt;code&gt;192.168.1.12&lt;/code&gt;, you can connect using &lt;code&gt;ssh callisto&lt;/code&gt; by adding this to your &lt;code&gt;~/.ssh/config&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;Host callisto
+HostName 192.168.1.12
+User &amp;lt;user-on-callisto&amp;gt;
+IdentityFile ~/.ssh/id_rsa
+## Set this if you are on Windows
+ForwardAgent yes&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2&gt;~/.ssh chmod permissions&lt;span class="hx:absolute hx:-mt-20" id="ssh-chmod-permissions"&gt;&lt;/span&gt;
+&lt;a href="#ssh-chmod-permissions" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;It is crucial your &lt;code&gt;chmod&lt;/code&gt; permissions are set properly on the &lt;code&gt;~/.ssh&lt;/code&gt; directory. Invalid permissions will lead to errors when trying to &lt;code&gt;ssh&lt;/code&gt; into remote machines.&lt;/p&gt;
+&lt;p&gt;Check the table below for the &lt;code&gt;chmod&lt;/code&gt; values you should use. To set a value (for example on the &lt;code&gt;.ssh&lt;/code&gt; directory itself and the keypair):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;chmod &lt;span class="m"&gt;700&lt;/span&gt; ~/.ssh
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;chmod &lt;span class="m"&gt;644&lt;/span&gt; ~/.ssh/id_rsa&lt;span class="o"&gt;{&lt;/span&gt;.pub&lt;span class="o"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Dir/File&lt;/th&gt;
+&lt;th&gt;Man Page&lt;/th&gt;
+&lt;th&gt;Recommended Permission&lt;/th&gt;
+&lt;th&gt;Mandatory Permission&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;~/.ssh/&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;There is no general requirement to keep the entire contents of this directory secret, but the recommended permissions are read/write/execute for the user, and not accessible by others.&lt;/td&gt;
+&lt;td&gt;700&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;This file is not highly sensitive, but the recommended permissions are read/write for the user, and not accessible by others|&lt;/td&gt;
+&lt;td&gt;600&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;~/.ssh/config&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Because of the potential for abuse, this file must have strict permissions: read/write for the user, and not writable by others&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;600&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;~/.ssh/identity&lt;/code&gt; &lt;br&gt;&lt;code&gt;~/.ssh/id_dsa&lt;/code&gt; &lt;br&gt;&lt;code&gt;~/.ssh/id_rsa&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;These files contain sensitive data and should be readable by the user but not accessible by others (read/write/execute)&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;600&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;~/.ssh/identity.pub&lt;/code&gt; &lt;br&gt;&lt;code&gt;~/.ssh/id_dsa.pub&lt;/code&gt; &lt;br&gt;&lt;code&gt;~/.ssh/id_rsa.pub&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Contains the public key for authentication. These files are not sensitive and can (but need not) be readable by anyone.&lt;/td&gt;
+&lt;td&gt;644&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;em&gt;(table data source: &lt;a href="https://superuser.com/a/1559867"target="_blank" rel="noopener"&gt;Superuser.com answer&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;)&lt;/em&gt;&lt;/p&gt;</description></item><item><title>SSH</title><link>/docs/utilities/ansible/ssh/</link><pubDate>Sat, 23 Nov 2024 00:00:00 +0000</pubDate><guid>/docs/utilities/ansible/ssh/</guid><description>
+&lt;p&gt;Ansible uses SSH to connect to remote machines and run tasks. It is advisable to create an SSH key just for executing Ansible playbooks, and an Ansible service account on the remote, i.e. &lt;code&gt;ansible_svc&lt;/code&gt;. This user account is not meant to be logged into on the remote, but can be granted permissions so Ansible can run and do things like install software, update packages, etc.&lt;/p&gt;
+&lt;p&gt;Creating a service account for Ansible to use is easily automated. I always create an &lt;code&gt;onboard&lt;/code&gt; inventory, which is where I declare machines temporarily to run any base/common setup steps, including creating my Ansible service user.&lt;/p&gt;
+&lt;p&gt;After running my onboarding playbook, I remote the host from the inventory file and add it to whatever other &amp;ldquo;permanent&amp;rdquo; inventories it will exist in. This step allows me to quickly set up a new host by passing an SSH password for when I have not already copied my Ansible SSH keys.&lt;/p&gt;
+&lt;h2&gt;Create SSH key&lt;span class="hx:absolute hx:-mt-20" id="create-ssh-key"&gt;&lt;/span&gt;
+&lt;a href="#create-ssh-key" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Create an SSH key just for Ansible execution. You will copy the public key to your remote manually, then Ansible will use this key to authenticate.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh-keygen -t rsa -b &lt;span class="m"&gt;4096&lt;/span&gt; -f ~/.ssh/ansible_id_rsa -N &lt;span class="s2"&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;This will create 2 keys, &lt;code&gt;~/.ssh/ansible_id_rsa&lt;/code&gt; (the private key, do not copy this to the remote), and &lt;code&gt;~/.ssh/ansible_id_rsa.pub&lt;/code&gt; (this is the key you copy to the remote).&lt;/p&gt;
+&lt;p&gt;In your &lt;code&gt;~/.ssh/config&lt;/code&gt;, add your hosts by the same name you use in your Ansible inventory file.&lt;/p&gt;
+&lt;h2&gt;Playbook: Create ansible_svc user&lt;span class="hx:absolute hx:-mt-20" id="playbook-create-ansible_svc-user"&gt;&lt;/span&gt;
+&lt;a href="#playbook-create-ansible_svc-user" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nn"&gt;---&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;- &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;Setup service account for Ansible&amp;#34;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;hosts&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;all&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;vars&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;service_account_name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;{{ ansible_svc_account_name | default(&amp;#39;ansible_svc&amp;#39;) }}&amp;#34;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;service_account_shell&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;{{ ansible_svc_account_shell | default(&amp;#39;/bin/bash&amp;#39;) }}&amp;#34;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;local_&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;tasks&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;- &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;Gather facts&amp;#34;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;ansible.builtin.package_facts&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;manager&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;auto&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>
