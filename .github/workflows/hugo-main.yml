@@ -30,6 +30,7 @@ on:
       - "hugo.yml"
       - "go.mod"
       - "go.sum"
+      - "**/*.css"
 
   workflow_dispatch:
     inputs:
