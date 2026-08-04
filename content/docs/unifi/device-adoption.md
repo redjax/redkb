@@ -1,7 +1,7 @@
 ---
 title: "Device Adoption"
 date: 2026-08-03T21:34:57-04:00
-draft: true
+draft: false
 weight: 10
 toc: true
 keywords: []
