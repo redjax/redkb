@@ -1,6 +1,6 @@
 [tools]
-hugo = "0.164.0"
-hugo-extended = "0.164.0"
+hugo = "0.165.0"
+hugo-extended = "0.165.0"
 direnv = "latest"
 
 gh = "latest"
