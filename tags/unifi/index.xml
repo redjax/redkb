@@ -1,0 +1,70 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>redkb – Unifi</title><link>/tags/unifi/</link><description>Recent content in Unifi on redkb</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Mon, 03 Aug 2026 21:34:57 -0400</lastBuildDate><atom:link href="/tags/unifi/index.xml" rel="self" type="application/rss+xml"/><item><title>Device Adoption</title><link>/docs/unifi/device-adoption/</link><pubDate>Mon, 03 Aug 2026 21:34:57 -0400</pubDate><guid>/docs/unifi/device-adoption/</guid><description>
+&lt;p&gt;Adopting Unifi devices can be a challenge sometimes. When you first get a new Ubiquiti Unifi device, or something happens and your device and controller fall out of sync, it can be painful to re-adopt previous devices.&lt;/p&gt;
+&lt;p&gt;This section details my personal notes and situations I&amp;rsquo;ve encountered/resolved. If you don&amp;rsquo;t find what you&amp;rsquo;re looking for here, make sure to check the &lt;a href="https://help.ui.com/hc/en-us/articles/360012622613-UniFi-Device-Adoption"target="_blank" rel="noopener"&gt;Unifi device adoption documentation&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;New Device Setup&lt;span class="hx:absolute hx:-mt-20" id="new-device-setup"&gt;&lt;/span&gt;
+&lt;a href="#new-device-setup" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Depending on your controller setup (I run mine in Docker), it may be as easy as pluggin your new device in and letting the controller find it. Adoption can be finicky sometimes; if your controller fails to adopt the device, try SSHing into it and running the &lt;code&gt;set-inform&lt;/code&gt; command.&lt;/p&gt;
+&lt;p&gt;The default Unifi device credentials are:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Username&lt;/th&gt;
+&lt;th&gt;Password&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ubnt&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;ubnt&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;If you configure a local admin user (Unifi has &lt;a href="https://help.ui.com/hc/en-us/articles/28692158912279-Adding-Admins-in-UniFi"target="_blank" rel="noopener"&gt;documentation for this&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;), use that username/password instead.&lt;/p&gt;
+&lt;p&gt;The full command is: &lt;code&gt;set-inform http://&amp;lt;controller-ip-or-hostname&amp;gt;:8080/inform&lt;/code&gt;. If you use a hostname, i.e. &lt;code&gt;unifi.example.com&lt;/code&gt;, you could run &lt;code&gt;set-inform http://unifi.example.com:8080/inform&lt;/code&gt;, otherwise use the device&amp;rsquo;s IP address, i.e. &lt;code&gt;set-inform http://192.168.1.1:8080/inform&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;If you configured your Unifi controller to run on a port other than &lt;code&gt;:8080&lt;/code&gt;, use that port instead.&lt;/p&gt;
+&lt;p&gt;To force device adoption, SSH into the remote machine and run the &lt;code&gt;set-inform&lt;/code&gt; command:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$&amp;gt; ssh ubnt@192.168.1.102 &lt;span class="c1"&gt;# or whatever IP address the DHCP server assigned to the new device&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Welcome to EdgeOS
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;By logging in, accessing, or using the Ubiquiti product, you
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;acknowledge that you have &lt;span class="nb"&gt;read&lt;/span&gt; and understood the Ubiquiti
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;License Agreement &lt;span class="o"&gt;(&lt;/span&gt;available in the Web UI at, by default,
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;http://192.168.1.1&lt;span class="o"&gt;)&lt;/span&gt; and agree to be bound by its terms.
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ubnt@192.168.1.1&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;s password: ubnt
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;## Run the set-inform command to tell the device where to request adoption&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$&amp;gt; set-inform http://&amp;lt;controller-ip-or-hostname&amp;gt;:8080/inform&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Then, in the Unifi controller webUI, you should see a new device pending adoption. You can complete the adoption there and Unifi will start managing the device.&lt;/p&gt;
+&lt;h2&gt;Forget &amp;amp; Re-Adopt Device&lt;span class="hx:absolute hx:-mt-20" id="forget--re-adopt-device"&gt;&lt;/span&gt;
+&lt;a href="#forget--re-adopt-device" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;If you&amp;rsquo;re having trouble with one of your devices, you can forget (or &amp;ldquo;Remove&amp;rdquo; in newer versions) the device from the controller webUI, then SSH into it and run the same commands you would for &lt;a href="#new-device-setup"&gt;new device setup&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This can sometimes fix configuration issues, or problems where a device continuously falls out of adoption, or is repeatedly rebooting.&lt;/p&gt;
+&lt;h2&gt;Gotchas&lt;span class="hx:absolute hx:-mt-20" id="gotchas"&gt;&lt;/span&gt;
+&lt;a href="#gotchas" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://store.ui.com/us/en/products/usw-flex-mini"target="_blank" rel="noopener"&gt;Unifi Flex Mini switches&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt; do not have SSH capabilities, so the instructions above don&amp;rsquo;t apply. You just have to hope really hard that it works.
+&lt;ul&gt;
+&lt;li&gt;Often, you just have to leave the switch plugged info until the controller notices it&amp;rsquo;s connected. It will work as a &amp;ldquo;dumb&amp;rdquo; switch in the meantime.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Unifi</title><link>/docs/unifi/</link><pubDate>Mon, 03 Aug 2026 21:05:08 -0400</pubDate><guid>/docs/unifi/</guid><description>
+&lt;p&gt;&lt;img src="/docs/unifi/unifi-logo.png" alt="Ubiquiti Unifi logo" data-zoomable loading="lazy" /&gt;&lt;/p&gt;
+&lt;p&gt;Unifi is a line of &amp;ldquo;prosumer&amp;rdquo; products by &lt;a href="https://ui.com"target="_blank" rel="noopener"&gt;Ubiquiti&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;, aimed at both enterprise users and consumers.&lt;/p&gt;</description></item></channel></rss>

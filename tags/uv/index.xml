@@ -1,0 +1,139 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>redkb – Uv</title><link>/tags/uv/</link><description>Recent content in Uv on redkb</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 21 Aug 2026 01:12:39 -0400</lastBuildDate><atom:link href="/tags/uv/index.xml" rel="self" type="application/rss+xml"/><item><title>Troubleshooting</title><link>/docs/programming/python/uv/troubleshooting/</link><pubDate>Fri, 21 Aug 2026 01:12:39 -0400</pubDate><guid>/docs/programming/python/uv/troubleshooting/</guid><description>
+&lt;p&gt;If you run into errors or unexpected functionality, the best first place to check is the &lt;a href="https://github.com/astral-sh/uv/issues"target="_blank" rel="noopener"&gt;&lt;code&gt;uv&lt;/code&gt; Github repository&amp;rsquo;s issues&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;. Search for parts of error messages, status codes, or package/tool names, and if you don&amp;rsquo;t see anything related to your problem, create a new issue. Include details about your system (OS, release, Linux distribution, etc.), the command you ran, and the command&amp;rsquo;s output.&lt;/p&gt;
+&lt;h2&gt;SSL, TLS, &amp;amp; Certificate Issues&lt;span class="hx:absolute hx:-mt-20" id="ssl-tls--certificate-issues"&gt;&lt;/span&gt;
+&lt;a href="#ssl-tls--certificate-issues" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In a locked-down corporate environment where you have a firewall or AV doing SSL inspection, you will likely see errors when trying to perform network operations in WSL, like cURL-ing files or running &lt;code&gt;apt update&lt;/code&gt;/&lt;code&gt;dnf update&lt;/code&gt;. The error will look something like:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;SSL peer certificate or SSH remote key was not OK &lt;span class="k"&gt;for&lt;/span&gt; &amp;lt;URL&amp;gt; &lt;span class="o"&gt;[&lt;/span&gt;SSL certificate problem: self-signed certificate in certificate chain&lt;span class="o"&gt;]&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The solution for this problem is to export your Trusted Root CA certificate from the Windows side, and import it into the WSL side.&lt;/p&gt;
+&lt;p&gt;Windows side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Open &lt;code&gt;certmgr.msc&lt;/code&gt; and navigate to &amp;ldquo;Certificates - Current User &amp;gt; Trusted Root Certification Authorities &amp;gt; Certificates&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Find your machine&amp;rsquo;s Trusted Root CA (it might be named after your company, or your firewall provider)&lt;/li&gt;
+&lt;li&gt;Double-click the entry, go to the &amp;ldquo;Details&amp;rdquo; tab, and click the &amp;ldquo;Copy to File&amp;hellip;&amp;rdquo; button
+&lt;ul&gt;
+&lt;li&gt;You may see more than 1 root CA with the same name; do these steps for both of them&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Choose &amp;ldquo;Base-64 encoded X.509 (.CER)&amp;rdquo; for the file format&lt;/li&gt;
+&lt;li&gt;Save the file to a location on your machine, i.e. the Downloads folder&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;WSL side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Copy the exported cert(s) to &lt;code&gt;/etc/pki/ca-trust/source/anchors/etc-root-1.crt&lt;/code&gt; (use &lt;code&gt;-2.crt&lt;/code&gt; if there are 2 certificates)&lt;/li&gt;
+&lt;li&gt;On RedHat-based distributions:
+&lt;ul&gt;
+&lt;li&gt;Run &lt;code&gt;sudo update-ca-trust extract&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;sudo dnf clean all &amp;amp;&amp;amp; sudo dnf makecache&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;On Debian-based distributions:
+&lt;ul&gt;
+&lt;li&gt;Run &lt;code&gt;sudo update-ca-certificates&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;sudo apt clean &amp;amp;&amp;amp; sudo apt upgrade&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Then retry the network operation that failed&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Invalid peer certificate when installing dependencies&lt;span class="hx:absolute hx:-mt-20" id="invalid-peer-certificate-when-installing-dependencies"&gt;&lt;/span&gt;
+&lt;a href="#invalid-peer-certificate-when-installing-dependencies" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;When installing dependencies or Python with uv, you might see an error like:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;...
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Caused by: client error &lt;span class="o"&gt;(&lt;/span&gt;Connect&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Caused by: invalid peer certificate: UnknownIssuer&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;In a corporate environment, you need to &lt;a href="#ssl-tls--certificate-issues"&gt;install the Trusted Root CA&lt;/a&gt;, but &lt;code&gt;uv&lt;/code&gt; might still throw this error when installing dependencies. To fix this, try running the install command with &lt;code&gt;--system-certs&lt;/code&gt;, and if that resolves the issue, add this to your &lt;code&gt;~/.bashrc&lt;/code&gt; or &lt;code&gt;~/.zshrc&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;UV_SYSTEM_CERTS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;true&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;This will tell &lt;code&gt;uv&lt;/code&gt; to load TLS certificates from the platform&amp;rsquo;s native certificate store, instead of the bundled Mozilla root certificates.&lt;/p&gt;</description></item><item><title>Uv</title><link>/docs/programming/python/uv/</link><pubDate>Fri, 21 Aug 2026 00:32:41 -0400</pubDate><guid>/docs/programming/python/uv/</guid><description>
+&lt;p&gt;&lt;a href="https://docs.astral.sh/uv"target="_blank" rel="noopener"&gt;&lt;code&gt;uv&lt;/code&gt;&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt; is a Python project manager. It consolidates functionality of many different tools into 1 convenient CLI. The tool is written in Rust, and is extremely fast. It uses a custom dependency solver so dependency search/install from Pypi is faster, too.&lt;/p&gt;
+&lt;p&gt;The tool handles the following (and more):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Project initialization
+&lt;ul&gt;
+&lt;li&gt;The &lt;a href="https://docs.astral.sh/uv/reference/cli/#uv-init"target="_blank" rel="noopener"&gt;&lt;code&gt;uv init&lt;/code&gt;&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt; command initializes a directory path for developing Python programs.&lt;/li&gt;
+&lt;li&gt;It has &lt;code&gt;--app&lt;/code&gt; and &lt;code&gt;--lib&lt;/code&gt; options, scaffolding the directory for developing an &lt;a href="https://docs.astral.sh/uv/reference/cli/#uv-init--app"target="_blank" rel="noopener"&gt;app&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt; or &lt;a href="https://docs.astral.sh/uv/reference/cli/#uv-init--lib"target="_blank" rel="noopener"&gt;library&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;You can use the &lt;a href="https://docs.astral.sh/uv/reference/cli/#uv-init--bare"target="_blank" rel="noopener"&gt;&lt;code&gt;--bare&lt;/code&gt;&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt; option to create only a &lt;code&gt;pyproject.toml&lt;/code&gt; file, which tracks the project&amp;rsquo;s build configuration &amp;amp; dependencies, but does not create any project scaffolding.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;uv&lt;/code&gt; can also manage individual scripts with the &lt;a href="https://docs.astral.sh/uv/reference/cli/#uv-init--script"target="_blank" rel="noopener"&gt;&lt;code&gt;--script&lt;/code&gt;&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt; option.
+&lt;ul&gt;
+&lt;li&gt;Initializes a single &lt;code&gt;.py&lt;/code&gt; file, adding a docstring at the top of the file in accordance with &lt;a href="https://peps.python.org/pep-0723/"target="_blank" rel="noopener"&gt;PEP 723 - Inline script metadata&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Virtual environments
+&lt;ul&gt;
+&lt;li&gt;When you run a &lt;code&gt;uv&lt;/code&gt; command, a &lt;code&gt;.venv/&lt;/code&gt; directoy is created automatically.&lt;/li&gt;
+&lt;li&gt;Whenever you run a command prefixed with &lt;code&gt;uv&lt;/code&gt;, i.e. &lt;code&gt;uv python main.py&lt;/code&gt;, the tool will use the virtual environment&amp;rsquo;s Python/Pip.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://docs.astral.sh/uv/guides/install-python/"target="_blank" rel="noopener"&gt;Manage your Python install&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;, allowing you to install multiple versions scoped to individual &lt;code&gt;uv&lt;/code&gt;-managed projects.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://docs.astral.sh/uv/concepts/projects/dependencies/"target="_blank" rel="noopener"&gt;Manage your project dependencies&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;.
+&lt;ul&gt;
+&lt;li&gt;Can also install &lt;a href="https://docs.astral.sh/uv/concepts/projects/dependencies/#development-dependencies"target="_blank" rel="noopener"&gt;dev depenencies&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt;, which are available locally during development but are not packaged with the app.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://docs.astral.sh/uv/guides/tools/"target="_blank" rel="noopener"&gt;&lt;code&gt;uvx&lt;/code&gt;&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt; runs a tool in an isolated environment, i.e. &lt;code&gt;uvx ruff&lt;/code&gt;, without installing it or adding it to the project.
+&lt;ul&gt;
+&lt;li&gt;You can &lt;a href="https://docs.astral.sh/uv/guides/tools/#installing-tools"target="_blank" rel="noopener"&gt;install tools to the system&lt;svg class="hx:inline hx:rtl:rotate-270 hx:align-baseline" height="1em" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path d="m9.1716 7.7574h7.0711m0 0v7.0711m0-7.0711-8.4853 8.4853" stroke-linecap="round" stroke-linejoin="round"/&gt;
+&lt;/svg&gt;&lt;/a&gt; with &lt;code&gt;uv tool install &amp;lt;tool-name&amp;gt;&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

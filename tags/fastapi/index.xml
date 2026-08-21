@@ -1,0 +1,24 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>redkb – Fastapi</title><link>/tags/fastapi/</link><description>Recent content in Fastapi on redkb</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Mon, 22 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="/tags/fastapi/index.xml" rel="self" type="application/rss+xml"/><item><title>Fastapi</title><link>/docs/programming/python/fastapi/</link><pubDate>Mon, 22 Jul 2024 00:00:00 +0000</pubDate><guid>/docs/programming/python/fastapi/</guid><description>
+&lt;h2&gt;Common Fixes&lt;span class="hx:absolute hx:-mt-20" id="common-fixes"&gt;&lt;/span&gt;
+&lt;a href="#common-fixes" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&amp;hellip;&lt;/p&gt;
+&lt;h3&gt;Fix: &amp;ldquo;Failed to load API Definition. Not found /api/v1/openapi.json&amp;rdquo;&lt;span class="hx:absolute hx:-mt-20" id="fix-failed-to-load-api-definition-not-found-apiv1openapijson"&gt;&lt;/span&gt;
+&lt;a href="#fix-failed-to-load-api-definition-not-found-apiv1openapijson" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;When running behind a proxy (and in some other circumstances) you will get an error when trying to load the &lt;code&gt;/docs&lt;/code&gt; endpoint. The error will say &amp;ldquo;Failed to load API definition. Fetch error Not Found /api/v1/openapi.json&amp;rdquo;:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/docs/programming/python/fastapi/fastapi_openapi_fetch_err.png" alt="openapi docs route error" data-zoomable loading="lazy" /&gt;&lt;/p&gt;
+&lt;p&gt;To fix this, simply modify your &lt;code&gt;app = FastAPI()&lt;/code&gt; line, adding `openapi_url=&amp;quot;/docs/openapi&amp;quot;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-py" data-lang="py"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# app = FastAPI(openapi_url=&amp;#34;/docs/openapi&amp;#34;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;FastAPI&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;openapi_url&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/docs/openapi&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>
