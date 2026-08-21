@@ -14,7 +14,7 @@ tags:
 
 If you run into errors or unexpected functionality, the best first place to check is the [`uv` Github repository's issues](https://github.com/astral-sh/uv/issues). Search for parts of error messages, status codes, or package/tool names, and if you don't see anything related to your problem, create a new issue. Include details about your system (OS, release, Linux distribution, etc.), the command you ran, and the command's output.
 
-## SSL/TLS Issues
+## SSL, TLS, & Certificate Issues
 
 In a locked-down corporate environment where you have a firewall or AV doing SSL inspection, you will likely see errors when trying to perform network operations in WSL, like cURL-ing files or running `apt update`/`dnf update`. The error will look something like:
 
@@ -43,3 +43,22 @@ WSL side:
   - Run `sudo update-ca-certificates`
   - Run `sudo apt clean && sudo apt upgrade`
 - Then retry the network operation that failed
+
+## Invalid peer certificate when installing dependencies
+
+When installing dependencies or Python with uv, you might see an error like:
+
+```shell
+...
+
+Caused by: client error (Connect)
+Caused by: invalid peer certificate: UnknownIssuer
+```
+
+In a corporate environment, you need to [install the Trusted Root CA](#ssl-tls--certificate-issues), but `uv` might still throw this error when installing dependencies. To fix this, try running the install command with `--system-certs`, and if that resolves the issue, add this to your `~/.bashrc` or `~/.zshrc`:
+
+```shell
+export UV_SYSTEM_CERTS=true
+```
+
+This will tell `uv` to load TLS certificates from the platform's native certificate store, instead of the bundled Mozilla root certificates.
