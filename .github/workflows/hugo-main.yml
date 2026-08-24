@@ -38,11 +38,19 @@ on:
         description: 'JSON array of publish targets, e.g. ["github-pages","branch"]'
         type: string
         required: false
-        default: '["github-pages","branch"]'
-      branch-name:
+        default: '["cloudflare-pages"]'
+      # branch-name:
+      #   type: string
+      #   required: false
+      #   default: "gh-pages"
+      cloudflare-pages-project:
         type: string
         required: false
-        default: "gh-pages"
+        default: "redkb"
+      cloudflare-pages-branch:
+        type: string
+        required: false
+        default: "main"
       runner-img-or-label:
         type: string
         default: ubuntu-latest
@@ -86,8 +94,10 @@ jobs:
       version-file: ".version"
       artifact-name: "hugo-site"
       release-prefix: "site"
-      publish-targets: ${{ inputs.publish-targets || '["github-pages","branch"]' }}
-      branch-name: ${{ inputs.branch-name || 'gh-pages' }}
+      publish-targets: ${{ inputs.publish-targets || '["cloudflare-pages"]' }}
+      # branch-name: ${{ inputs.branch-name || 'gh-pages' }}
+      cloudflare-pages-project: ${{ inputs.cloudflare-pages-project || 'redkb' }}
+      cloudflare-pages-branch: ${{ inputs.cloudflare-pages-branch || 'main' }}
       runner-image: ${{ inputs.runner-img-or-label || 'ubuntu-latest' }}
       templates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
       hugo-version: ${{ inputs.hugo-version || '0.161.1' }}
@@ -97,3 +107,5 @@ jobs:
       debug-hugo-build-state: ${{ inputs.debug-hugo-build-state && true || false }}
     secrets:
       release-bot-pat: ${{ secrets.RELEASE_BOT_PAT }}
+      cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
