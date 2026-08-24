@@ -195,3 +195,25 @@ By default, the WSL distribution's hostname will be the same as the Windows host
 [network]
 hostname="your-hostname"
 ```
+
+## Git in WSL
+
+### Use host's Git Credential Manager
+
+- [Microsoft Docs: Getting started using Git on WSL - GCM Setup](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-git#git-credential-manager-setup)
+
+```shell
+git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
+```
+
+- **NOTE**: If Git was installed to user's AppData directory, use this command (make sure to replace "`<username>`" with the Windows user where Git was installed)
+
+```shell
+git config --global credential.helper "/mnt/c/Users/<username>/AppData/Local/Programs/Git/mingw64/bin/git-credential-manager.exe"
+```
+
+- If your git remote is Azure DevOps, also run:
+
+```shell
+git config --global credential.https://dev.azure.com.useHttpPath true
+```
