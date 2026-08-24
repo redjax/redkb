@@ -220,7 +220,7 @@ git config --global credential.https://dev.azure.com.useHttpPath true
 
 ### Azure DevOps PAT Authentication
 
-Instructions for interacting with Azure DevOps using a Personal Access Token (PAT) and HTTPS URLs, i.e. `git clone https://dev.azure.com/companyName/projectName/_git/repo-name`.
+Instructions for interacting with Azure DevOps using a Personal Access Token (PAT) and HTTPS URLs, i.e. `git clone https://dev.azure.com/companyName/projectName/_git/repo-name`. You do **not** need these instructions if [using the host's GCM](#use-hosts-git-credential-manager).
 
 > [!WARNING]
 > This approach is simpler and works well on headless machines, but is less secure because the PAT is stored as plaintext in your shell profile and is available to processes launched from that shell.
@@ -311,27 +311,3 @@ git clone https://dev.azure.com/companyName/projectName/_git/repo-name
 ```
 
 The same setup applies to subsequent `git pull`, `git fetch`, and `git push` operations against Azure DevOps.
-
-> [!NOTE]
-> Storing a PAT in a file and sourcing it for GCM like this is not very secure. You will see warnings when running git commands, like:
->
-> ```shell
-> fatal: No credential store has been selected
->
-> Set the GCM_CREDENTIAL_STORE environment variable or the credential.credentialStore Git configuration setting to one of the following options:
-> 
->   secretservice  : freedesktop.org Secret Service (requires graphical interface)
->   gpg            : GNU `pass` compatible credential storage (requires GPG and `pass`)
->   cache          : Git's in-memory credential cache
->   plaintext      : store credentials in plain-text files (UNSECURE)
->   none           : disable internal credential storage
->
-> See https://aka.ms/gcm/credstores for more information.
-> ```
->
-> To resolve these errors, run these commands to tell Git not to invoke the global GCM helper for `dev.azure.com`:
->
-> ```shell
-> git config --global credential.https://dev.azure.com.helper ""
-> git config --global credential.https://dev.azure.com.helper ~/.git-credential-azure
-> ```
