@@ -217,3 +217,121 @@ git config --global credential.helper "/mnt/c/Users/<username>/AppData/Local/Pro
 ```shell
 git config --global credential.https://dev.azure.com.useHttpPath true
 ```
+
+### Azure DevOps PAT Authentication
+
+Instructions for interacting with Azure DevOps using a Personal Access Token (PAT) and HTTPS URLs, i.e. `git clone https://dev.azure.com/companyName/projectName/_git/repo-name`.
+
+> [!WARNING]
+> This approach is simpler and works well on headless machines, but is less secure because the PAT is stored as plaintext in your shell profile and is available to processes launched from that shell.
+
+Add your PAT to `~/.bash_profile` or some other file that gets sourced by `~/.bashrc`:
+
+```plaintext
+export AZURE_DEVOPS_PAT="your-ado-pat"
+```
+
+Protect the profile:
+
+```shell
+chmod 600 ~/.bash_profile
+```
+
+Reload your profile:
+
+```shell
+source ~/.bash_profile
+
+# Or run exec $SHELL
+```
+
+Verify that the PAT is set without displaying it:
+
+```shell
+if [[ -n "${AZURE_DEVOPS_PAT:-}" ]]; then
+    echo "AZURE_DEVOPS_PAT is set"
+else
+    echo "AZURE_DEVOPS_PAT is not set"
+fi
+```
+
+Create `~/.git-credential-azure`:
+
+```shell
+#!/usr/bin/env bash
+
+if [[ "$1" == "get" ]]; then
+    echo "protocol=https"
+    echo "host=dev.azure.com"
+    echo "username=pat"
+    echo "password=$AZURE_DEVOPS_PAT"
+fi
+```
+
+Protect the credential helper:
+
+```shell
+chmod 700 ~/.git-credential-azure
+```
+
+Configure the PAT helper specifically for Azure DevOps. Because GCM is already configured as the global Git credential helper, first reset the helper list for Azure DevOps and then add the PAT helper:
+
+```shell
+git config --global --unset-all credential.https://dev.azure.com.helper 2>/dev/null || true
+git config --global --add credential.https://dev.azure.com.helper ""
+git config --global --add credential.https://dev.azure.com.helper ~/.git-credential-azure
+```
+
+The empty helper value is intentional. It prevents the global GCM helper from being invoked for Azure DevOps. Verify the credential-helper configuration:
+
+```shell
+git config --global --get-regexp 'credential.*helper'
+```
+
+You should see something similar to:
+
+```shell
+credential.helper /usr/local/bin/git-credential-manager
+credential.https://dev.azure.com.helper
+credential.https://dev.azure.com.helper ~/.git-credential-azure
+```
+
+The blank `credential.https://dev.azure.com.helper` entry is intentional.
+
+Verify that the credential helper can retrieve the PAT without displaying it, the output should contain protocol, host, username, and password:
+
+```shell
+printf "protocol=https\nhost=dev.azure.com\n\n" | ~/.git-credential-azure get
+```
+
+You can now clone repositories without being prompted for the PAT:
+
+```shell
+git clone https://dev.azure.com/companyName/projectName/_git/repo-name
+```
+
+The same setup applies to subsequent `git pull`, `git fetch`, and `git push` operations against Azure DevOps.
+
+> [!NOTE]
+> Storing a PAT in a file and sourcing it for GCM like this is not very secure. You will see warnings when running git commands, like:
+>
+> ```shell
+> fatal: No credential store has been selected
+>
+> Set the GCM_CREDENTIAL_STORE environment variable or the credential.credentialStore Git configuration setting to one of the following options:
+> 
+>   secretservice  : freedesktop.org Secret Service (requires graphical interface)
+>   gpg            : GNU `pass` compatible credential storage (requires GPG and `pass`)
+>   cache          : Git's in-memory credential cache
+>   plaintext      : store credentials in plain-text files (UNSECURE)
+>   none           : disable internal credential storage
+>
+> See https://aka.ms/gcm/credstores for more information.
+> ```
+>
+> To resolve these errors, run these commands to tell Git not to invoke the global GCM helper for `dev.azure.com`:
+>
+> ```shell
+> git config --global credential.https://dev.azure.com.helper ""
+> git config --global credential.https://dev.azure.com.helper ~/.git-credential-azure
+> ```
