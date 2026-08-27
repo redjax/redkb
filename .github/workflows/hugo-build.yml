@@ -30,7 +30,7 @@ on:
       - synchronize
       - reopened
     paths:
-      - "archetypes/**"
+      # - "archetypes/**"
       - "content/**"
       - "data/**"
       - "i18n/**"
