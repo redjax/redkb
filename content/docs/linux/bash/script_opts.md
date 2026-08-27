@@ -143,4 +143,4 @@ AGE="${2:-}"
 SPECIES="${3:-dog}"
 ```
 
-In the example above, the `:-` sets a default value if no positional option is passed when calling the script. Using `:-` with no value following it defaults to an empty value. In the above example, if no option is passed in position `2`, then the value of `AGE` would be empty. Empty is not zero/null in Bash, it's just...nothing. It can't be used for comparisons, echoing the value would return nothing, etc.
+In the example above, the `:-` sets a default value if no positional argument is passed when calling the script. Using `:-` with no value following it defaults to an empty value. In the above example, if no argument is passed in position `2`, then the value of `AGE` would be empty. Bash does not have a true "null" type like Python or Javascript; instead, unset values are empty strings, i.e. `""`. To check for a null value, you would use `[ -z "${VAR_NAME}" ]` or `if [[ "${VAR_NAME}" == "" ]]` to check for a null/empty value.
