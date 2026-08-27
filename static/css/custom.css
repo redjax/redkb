@@ -29,6 +29,6 @@ img[src$='#floatright'] {
 }
 
 /* Page title spacing */
-main>h1 {
+main > h1 {
     margin-bottom: 1.5rem;
 }
