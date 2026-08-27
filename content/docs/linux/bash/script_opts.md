@@ -121,3 +121,17 @@ else
   done
 fi
 ```
+
+## Positional Arguments
+
+In a Bash script, the first argument (`$0`) is the script itself; if you called `./path/to/script.sh`, then `$0` would equal `./path/to/script.sh`. Each argument after that has a number based on its position. For example, if you called `./path/to/script.sh option1 option2 option3`, then `$1` would equal `option1`, `$2` would be `option2`, and `$3` would be `option3`. These are called "positional arguments," or "posargs."
+
+You can use these values during variable assignment, i.e.:
+
+```shell
+NAME="${1:-default name}"
+AGE="${2:-}"
+SPECIES="${3:-dog}"
+```
+
+In the example above, the `:-` sets a default value if no positional option is passed when calling the script. Using `:-` with no value following it defaults to an empty value. In the above example, if no option is passed in position `2`, then the value of `AGE` would be empty. Empty is not zero/null in Bash, it's just...nothing. It can't be used for comparisons, echoing the value would return nothing, etc.
