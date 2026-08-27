@@ -1,7 +1,7 @@
 ---
 title: "Script Options"
 date: 2026-08-26T21:23:30-04:00
-draft: true
+draft: false
 weight: 30
 toc: true
 keywords: []
