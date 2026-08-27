@@ -1,7 +1,7 @@
 ---
 title: "Quirks"
 date: 2026-07-11T16:07:13-04:00
-draft: true
+draft: false
 weight: 10
 toc: true
 keywords: []
