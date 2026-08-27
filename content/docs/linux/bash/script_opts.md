@@ -144,3 +144,107 @@ SPECIES="${3:-dog}"
 ```
 
 In the example above, the `:-` sets a default value if no positional argument is passed when calling the script. Using `:-` with no value following it defaults to an empty value. In the above example, if no argument is passed in position `2`, then the value of `AGE` would be empty. Bash does not have a true "null" type like Python or Javascript; instead, unset values are empty strings, i.e. `""`. To check for a null value, you would use `[ -z "${VAR_NAME}" ]` or `if [[ "${VAR_NAME}" == "" ]]` to check for a null/empty value.
+
+## Parse with getopts
+
+`getopts` is a Bash builtin that provides a standardized way to parse command-line options. Unlike manually parsing arguments with a `while` loop and `case` statement, `getopts` handles much of the option parsing for you, including determining whether an option requires a value and handling invalid options.
+
+`getopts` is primarily designed for short options, such as `-h`, `-n NAME`, and `-p PATH`. Standard `getopts` does not support long options such as `--help` or `--name`.
+
+A basic `getopts` loop looks like this:
+
+```shell
+while getopts "hn:p:" opt; do
+  case "$opt" in
+    h)
+      echo "This is where you'd print a help menu"
+      exit 0
+      ;;
+
+    n)
+      NAME="$OPTARG"
+      ;;
+
+    p)
+      PATHS+=("$OPTARG")
+      ;;
+
+    \?)
+      echo "[ERROR] Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+
+    :)
+      echo "[ERROR] Option -$OPTARG requires an argument" >&2
+      exit 1
+      ;;
+  esac
+done
+```
+
+The `hn:p` string passed to `getopts` describes the accepted options. Each character represents a short option:
+
+- `h`: accepts no value.
+- `n`: accepts a value. The `:` after `n` tells getopts that `-n` requires an argument.
+- `p`: also accepts a value.
+
+For example, the script could be called with:
+
+```shell
+## No value
+./script.sh -h
+## Expects a value
+./script.sh -n Bob
+## Expects a value
+./script.sh -p /tmp/foo
+```
+
+The value associated with an option is made available through the special `$OPTARG` variable. For example:
+
+```shell
+-n)
+  NAME="$OPTARG"
+  ;;
+```
+
+When the script is called like `./script.sh -n Bob`, `getopts` sets `OPTARG="Bob"`.
+
+### Repeatable options
+
+Because `getopts` processes options one at a time, you can easily make an option repeatable by appending each `$OPTARG` to an array:
+
+```shell
+PATHS=()
+
+while getopts "p:" opt; do
+  case "$opt" in
+    p)
+      PATHS+=("$OPTARG")
+      ;;
+  esac
+done
+```
+
+Running `./script.sh -p path1 -p path2 -p path3` results in `PATHS=("path1" "path2" "path3")`. You can then iterate over the array:
+
+```shell
+for path in "${PATHS[@]}"; do
+  echo "Path: $path"
+done
+```
+
+### Processing positional arguments
+
+`getopts` uses the special `OPTIND` variable to keep track of which argument it is currently processing. After the `getopts` loop finishes, you can use `shift` to remove the options that were already processed, like: `shift "$((OPTIND - 1))"`.
+
+Any remaining arguments are then available as normal positional parameters. For example:
+
+```shell
+./script.sh -n Bob file1.txt file2.txt
+```
+
+In this example, `getops` would parse the following:
+
+- `NAME="Bob"`
+- `$1="file1.txt"`
+- `$2="file2.txt"`
