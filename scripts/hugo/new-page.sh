@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v hugo >/dev/null 2>&1; then
-  echo "[ERROR] hugo is not installed."
-  exit 1
-fi
-
 function usage() {
   cat <<EOF
+Description:
+  Create a new page in the content/ directory. Provide 1 input, the path to the new page
+  relative to the root of content/.
 
-Usage: $0 path/to/page.md
+  For example, to start a new page in content/docs/bash/new_page.md, you would run:
+    ${0} docs/bash/new_page.md.
+
+Usage:
+  $0 path/to/page.md
+
+Options:
+  -h, --help    Show this help message and exit
 
 Examples:
   $0 docs/windows/wsl/example.md
@@ -19,6 +24,24 @@ Examples:
 
 EOF
 }
+
+## Handle options
+case "${1:-}" in
+-h | --help)
+  usage
+  exit 0
+  ;;
+esac
+
+if [[ $# -ne 1 ]]; then
+  usage
+  exit 1
+fi
+
+if ! command -v hugo >/dev/null 2>&1; then
+  echo "[ERROR] hugo is not installed."
+  exit 1
+fi
 
 ## Determine archetype from file path
 function get_kind() {
@@ -43,11 +66,6 @@ function get_kind() {
     ;;
   esac
 }
-
-if [[ $# -ne 1 ]]; then
-  usage
-  exit 1
-fi
 
 page="$1"
 kind="$(get_kind "$page")"
