@@ -31,6 +31,7 @@ on:
       - reopened
     paths:
       # - "archetypes/**"
+      - "assets/**"
       - "content/**"
       - "data/**"
       - "i18n/**"

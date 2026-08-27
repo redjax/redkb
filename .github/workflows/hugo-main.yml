@@ -23,6 +23,7 @@ on:
       - main
     paths:
       # - "archetypes/**"
+      - "assets/**"
       - "content/**"
       - "data/**"
       - "i18n/**"
