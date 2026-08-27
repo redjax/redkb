@@ -27,3 +27,8 @@ img[src$='#floatright'] {
     /* this margin is totally up to you */
     /* whatever else styles you fancy here */
 }
+
+/* Page title spacing */
+main>h1 {
+    margin-bottom: 1.5rem;
+}
