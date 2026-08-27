@@ -16,6 +16,15 @@ If you have used CI tools or run Bash scripts before, you have almost certainly 
 
 Bash scripts support parsing these options a number of different ways, from using `getopts` to parse short options exclusively, to using the `"${@}"` array, which contains all options passed after `"${0}"`, the "self" script call, to simply using positional arguments like `$1`, `$2`, etc.
 
+> [!NOTE] Argument vs Option
+> You will often see the terms "argument" (or "arg") and "option" (or "opt") used interchangeably. While they are not the same thing, the difference between them is subtle enough that either term will make sense in the grander context of the script/program.
+>
+> An argument is anything you pass to a command; an option is a particular kind of argument that modifies how the command behaves.
+>
+> In Bash, an option is passed with `-` or `--`, like `-h` or `--help`, while an argument is a positional input given when calling a script, like `./script-name.sh filename.txt`. The filename **argument** is not meant to change the behavior of the script, it's providing a file the script can act on. The `-h`/`--help` **option** alters the behavior of the script, telling it to print a help menu and exit immediately.
+>
+> In practice, either term makes essentially the same amount of sense, and most people understand what is being referenced when either term is used.
+
 ## Manual Parsing with While Loop and Case Statement
 
 You can parse long/short options passed to a Bash script using a `while` loop and a `case` statement. This allows for finer control over the accepted inputs, and allows early exits on invalid input. The beginning of the loop, `while [[ $# -gt 0 ]]; do` checks that 1 or more options were passed to the script (`$#`), then iterates over each position. The `case $1 in` part of the loop checks if the current evaluation matches one of the case switch patterns; when a match is found, the `shift` keyword tells Bash to "shift to the next option."
