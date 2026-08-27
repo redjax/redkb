@@ -22,7 +22,7 @@ on:
     branches:
       - main
     paths:
-      - "archetypes/**"
+      # - "archetypes/**"
       - "content/**"
       - "data/**"
       - "i18n/**"
