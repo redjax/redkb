@@ -49,14 +49,47 @@ function get_kind() {
   docs/unifi/*)
     echo "unifi"
     ;;
+  docs/linux/bash/*)
+    echo "bash"
+    ;;
+  docs/linux/deb_family/*)
+    echo "deb_family"
+    ;;
+  docs/linux/redhat_family/*)
+    echo "redhat_family"
+    ;;
+  docs/linux/*)
+    echo "linux"
+    ;;
   docs/devops/github/*)
     echo "github"
     ;;
   docs/devops/*)
     echo "devops"
     ;;
+  docs/programming/git/*)
+    echo "programming_git"
+    ;;
+  docs/programming/python/*)
+    echo "programming_python"
+    ;;
+  docs/programming/powershell/*)
+    echo "programming_powershell"
+    ;;
+  docs/programming/*)
+    echo "programming"
+    ;;
   docs/*)
     echo "docs"
+    ;;
+  snippets/bash/*)
+    echo "snippets_bash"
+    ;;
+  snippets/powershell/*)
+    echo "snippets_powershell"
+    ;;
+  snippets/python/*)
+    echo "snippets_python"
     ;;
   snippets/*)
     echo "snippets"
