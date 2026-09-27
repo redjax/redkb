@@ -11,7 +11,7 @@ tags:
 
 - Read about enhancing your Powershell sessions with a [profile](/docs/programming/powershell/profiles/).
 - Check the [snippets page](/snippets/powershell/) for code examples with little/no explanation.
-- Learn more about grouping a collection of related scripts into [a Powershell module](/programming/powershll/modules/)
+- Learn more about grouping a collection of related scripts into [a Powershell module](/programming/powershell/modules/)
 
 > [!TODO]
 >
