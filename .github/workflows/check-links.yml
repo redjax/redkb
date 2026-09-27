@@ -131,6 +131,8 @@ jobs:
 
       - name: Install Lychee
         shell: bash
+        env:
+          LYCHEE_VERSION: v0.24.2
         run: |
           set -euo pipefail
 
@@ -138,10 +140,10 @@ jobs:
 
           case "${architecture}" in
           x86_64)
-            target="x86_64-unknown-linux-gnu"
+            target="x86_64-unknown-linux-musl"
             ;;
           aarch64|arm64)
-            target="aarch64-unknown-linux-gnu"
+            target="aarch64-unknown-linux-musl"
             ;;
           *)
             echo "::error::Unsupported architecture: ${architecture}"
@@ -149,9 +151,11 @@ jobs:
             ;;
           esac
 
+          release_tag="lychee-${LYCHEE_VERSION}"
           archive="lychee-${target}.tar.gz"
-          url="https://github.com/lycheeverse/lychee/releases/latest/download/${archive}"
-          temporary_directory="$(mktemp -d)"
+          url="https://github.com/lycheeverse/lychee/releases/download/${release_tag}/${archive}"
+          temporary_directory="$(mktemp --directory)"
+          install_directory="${HOME}/.local/bin"
 
           trap 'rm -rf "${temporary_directory}"' EXIT
 
@@ -176,13 +180,16 @@ jobs:
             exit 1
           fi
 
+          mkdir --parents "${install_directory}"
+
           install \
             --mode 0755 \
             "${lychee_binary}" \
-            "${HOME}/.local/bin/lychee"
+            "${install_directory}/lychee"
 
-          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
-          "${HOME}/.local/bin/lychee" --version
+          echo "${install_directory}" >> "${GITHUB_PATH}"
+
+          "${install_directory}/lychee" --version
 
       - name: Build Hugo site
         shell: bash
