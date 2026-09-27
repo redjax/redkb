@@ -12,14 +12,14 @@ tags:
 
 ## Articles & Help Links
 
-| Title                                            | URL                                                                                                                                                        |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| The Art of Scripting HTTP Requests Using cURL    | [https://curl.se/docs/httpscripting.html](https://curl.se/docs/httpscripting.html)                                                                         |
-| cURL Docs                                        | [https://curl.se/docs/manpage.html](https://curl.se/docs/manpage.html)                                                                                     |
-| The cURL guide to HTTP requests                  | [https://flaviocopes.com/http-curl/](https://flaviocopes.com/http-curl/)                                                                                   |
-| The simplest guide to cURL for REST API requests | [https://dev.to/ritaly/the-simplest-guide-to-curl-for-rest-api-requests-35ii](https://dev.to/ritaly/the-simplest-guide-to-curl-for-rest-api-requests-35ii) |
-| cURL - The Ultimate Reference Guide              | [https://www.petergirnus.com/blog/curl-command-line-ultimate-reference-guide](https://www.petergirnus.com/blog/curl-command-line-ultimate-reference-guide) |
-| How to use cURL on Windows                       | [https://4sysops.com/archives/how-to-use-curl-on-windows/#rtoc-2](https://4sysops.com/archives/how-to-use-curl-on-windows/#rtoc-2)                         |
+| Title                                                           | URL                                                                                                                                                        |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The Art of Scripting HTTP Requests Using cURL                   | [https://curl.se/docs/httpscripting.html](https://curl.se/docs/httpscripting.html)                                                                         |
+| cURL Docs                                                       | [https://curl.se/docs/manpage.html](https://curl.se/docs/manpage.html)                                                                                     |
+| The cURL guide to HTTP requests                                 | [https://flaviocopes.com/http-curl/](https://flaviocopes.com/http-curl/)                                                                                   |
+| The simplest guide to cURL for REST API requests                | [https://dev.to/ritaly/the-simplest-guide-to-curl-for-rest-api-requests-35ii](https://dev.to/ritaly/the-simplest-guide-to-curl-for-rest-api-requests-35ii) |
+| The Complete cURL Command Guide: Every Flag You'll Actually Use | [https://www.onlinehandytools.com/guides/curl-guide/](https://www.onlinehandytools.com/guides/curl-guide/)                                                 |
+| How to use cURL on Windows                                      | [https://4sysops.com/archives/how-to-use-curl-on-windows/#rtoc-2](https://4sysops.com/archives/how-to-use-curl-on-windows/#rtoc-2)                         |
 
 > [!NOTE]
 > The Windows `curl` command does not use `-X` to denote request methods. For example, instead of `-X POST`, Windows expects `-XPOST`.
