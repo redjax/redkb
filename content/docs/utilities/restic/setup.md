@@ -29,12 +29,12 @@ Create a directory at `~/.restic`. This is where you will store your Restic conf
 Create the following directories in `~/.restic`:
 
 - `~/.restic/ignores/`: This directory will store "restic ignore" files, which you can pass with `restic src/ --exclude-file ~/.restic/ignores/ignore_filename`
-  - Read more in the [ignore/exclude docs](exclude.md)
+  - Read more in the [ignore/exclude docs](/docs/utilities/restic/exclude.md)
 - `~/.restic/passwords/`:
   - Storing a repository password in a file is not the most secure, but can be used for smaller/non-sensitive backups, or while you're still learning Restic.
   - When creating a repository, you're prompted for a password. Paste the password you used into a file in `~/.restic/passwords/password_filename` (you can use any filename).
   - You can then set the env var (either in `~/.bashrc` or in a script before executing a `restic` command) `RESTIC_PASSWORD_FILE="~/.restic/passwords/password_filename`
-  - Read more in the [handling repository passwords docs](passwords.md)
+  - Read more in the [handling repository passwords docs](/docs/utilities/restic/passwords.md)
 - `~/.restic/repo/`: (optional) You can create a symlink to your backup directory if you want, so you can use `restic -r ~/.restic/repo`:
   - `ln -s /path/to/restic_repo /home/$USER/.restic/repo`
 
