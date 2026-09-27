@@ -10,7 +10,7 @@ tags:
  - database
 ---
 
-[Alembic](https://alembic.sqlalchemy.org/en/latest/) is a database migration tool, meant to be used with the [SQLAlchemy](../SQLAlchemy/index.md) package. The tool has a bit of a learning curve, but making changes to your database models using a migration tool is highly recommended, especially for long-lived projects.
+[Alembic](https://alembic.sqlalchemy.org/en/latest/) is a database migration tool, meant to be used with the [SQLAlchemy](../sqlalchemy) package. The tool has a bit of a learning curve, but making changes to your database models using a migration tool is highly recommended, especially for long-lived projects.
 
 > [!NOTE] What is a database migration?
 >
