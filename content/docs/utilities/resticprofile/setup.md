@@ -26,7 +26,7 @@ tags:
       - Use it only when required, i.e. for creating new keys. Once you've setup the repository the first time and added your user access key, you should delete the file containing the master password (`rm ~/.restic/password/main`)
     - `resticprofile generate --random-key 4096 > ~/.restic/password/user_access`
     - (Optional) Generate any other passwords you want to use, just make sure you save all of them in a password manager/vault somewhere.
-- Create a file `~/profiles.yaml` (read more about profiles on the [profiles.yaml page](profiles.md)).
+- Create a file `~/profiles.yaml` (read more about profiles on the [profiles.yaml page](/docs/utilities/resticprofile/profiles/)).
   - We will start small with [a simple backup profile](#basic-profile), and other sections of this documentation will detail adding more profiles later.
 - After creating your `profiles.yaml`, run `resticprofile -c ~/profiles.yaml --name <backup-profile-name> init`
 - Next, add your `~/.restic/passwords/user_acces` key with `resticprofile -c ~/profiles.yaml key add --new-password-file ~/.restic/passwords/user_access`
@@ -38,7 +38,7 @@ tags:
     - `*.tmp`
     - `*.bak`
     - `*.log.*`
-  - Read more in the [Excludes patterns section](excludes.md)
+  - Read more in the [Excludes patterns section](/docs/utilities/resticprofile/excludes/)
 
 ## Use resticprofile with an existing repository
 

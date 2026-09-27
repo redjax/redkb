@@ -11,7 +11,7 @@ tags:
 
 `restic` can be used as a CLI utility that you run manually when you want to create backups, but you can also script its usage, making it great for scheduled backups. The documentation in this section is not complete, but the Restic docs have [an entry for scripting `restic`](https://restic.readthedocs.io/en/latest/075_scripting.html) that is worth reading.
 
-The documentation on this page assumes you are using [my Restic setup docs](setup.md). If not, you should be able to adapt the scripts for your own setup.
+The documentation on this page assumes you are using [my Restic setup docs](/docs/utilities/restic/setup/). If not, you should be able to adapt the scripts for your own setup.
 
 > [!WARNING]
 >
@@ -21,7 +21,7 @@ The documentation on this page assumes you are using [my Restic setup docs](setu
 
 ### Generic backup script
 
-If you did not [follow my Restic setup guide](setup.md), or you want to create a more 'self contained' script that does not rely on it, you can use something like the script below.
+If you did not [follow my Restic setup guide](/docs/utilities/restic/setup/), or you want to create a more 'self contained' script that does not rely on it, you can use something like the script below.
 
 ```shell title="restic_backup.sh" linenums="1"
 #!/bin/bash

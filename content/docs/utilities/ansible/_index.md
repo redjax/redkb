@@ -27,7 +27,7 @@ tags:
 
 The [Ansible installation docs](https://docs.ansible.com/ansible-core/devel/installation_guide/intro_installation.html) are a good place to read more about the different installation methods for Ansible. I personally install it as a Python module. I initialize a project, i.e. `mkdir ansible_project && cd ansible_project && git init -b main`, initialize a Python project with `pdm init` (if I'm using [`pdm`](https://pdm-project.org)) or `uv init` (if I'm using [`uv`](https://docs.astral.sh/uv)), and add Ansible dependencies.
 
-Whether you use a Python project manager, a virtual environment, or [`pipx`](https://pipx.pypa.io/latest/installation/), the Python dependencies I install for Ansible are:
+Whether you use a Python project manager, a virtual environment, or [`pipx`](https://pipx.pypa.io/tutorial/install-applications.html), the Python dependencies I install for Ansible are:
 
 - [`ansible-core`](https://github.com/ansible/ansible/)
   - The core Ansible package

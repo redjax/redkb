@@ -15,7 +15,7 @@ tags:
 
 For fully automatic pipelines, i.e. ones that run on PR open or merge, you can trigger the behavior by adding a `push` to your branch, then pushing an empty commit.
 
-For example, in the [`hugo-release.yml` pipeline](../.github/workflows/hugo-release.yml), the pipeline watches for changes to `.version` and `.bumpversion.toml` on pull requests that are merged to the `main` branch:
+For example, in the [`hugo-main.yml` pipeline](https://github.com/redjax/redkb/blob/main/.github/workflows/hugo-main.yml), the pipeline watches for changes to `.version` and `.bumpversion.toml` on pull requests that are merged to the `main` branch:
 
 ```yaml
 ---
