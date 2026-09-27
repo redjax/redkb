@@ -27,16 +27,10 @@ on:
         default: false
 
       site-url:
-        description: Live site URL used to exclude first-party URLs from online checks
-        required: true
+        description: Optional live site URL; defaults to https://DOMAIN_NAME
+        required: false
         type: string
-        default: https://techobyte.cc
-
-      hugo-version:
-        description: Hugo version to install
-        required: true
-        type: string
-        default: 0.166.0
+        default: ""
 
 permissions:
   contents: read
@@ -68,15 +62,25 @@ jobs:
             exit 1
           fi
 
-      - name: Derive first-party hostname
+      - name: Resolve live site URL
         id: site
         shell: bash
         env:
-          SITE_URL: ${{ inputs.site-url }}
+          INPUT_SITE_URL: ${{ inputs.site-url }}
+          DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
         run: |
           set -euo pipefail
 
-          site_url="${SITE_URL%/}"
+          if [[ -n "${INPUT_SITE_URL}" ]]; then
+            site_url="${INPUT_SITE_URL%/}"
+          else
+            if [[ -z "${DOMAIN_NAME}" ]]; then
+              echo "::error::site-url was not supplied and repository Actions variable DOMAIN_NAME is not set."
+              exit 1
+            fi
+
+            site_url="https://${DOMAIN_NAME%/}"
+          fi
 
           if [[ ! "${site_url}" =~ ^https?:// ]]; then
             echo "::error::site-url must begin with http:// or https://"
@@ -89,10 +93,11 @@ jobs:
           )"
 
           if [[ -z "${site_host}" ]]; then
-            echo "::error::Unable to derive a hostname from site-url: ${SITE_URL}"
+            echo "::error::Unable to derive a hostname from site URL: ${site_url}"
             exit 1
           fi
 
+          echo "url=${site_url}" >> "${GITHUB_OUTPUT}"
           echo "host=${site_host}" >> "${GITHUB_OUTPUT}"
 
           {
@@ -105,7 +110,6 @@ jobs:
             echo "| GitHub | \`${{ inputs.run-github }}\` |"
             echo "| Site URL | \`${site_url}\` |"
             echo "| Derived host | \`${site_host}\` |"
-            echo "| Hugo version | \`${{ inputs.hugo-version }}\` |"
           } >> "${GITHUB_STEP_SUMMARY}"
 
   check-links:
@@ -120,7 +124,8 @@ jobs:
       - name: Set up Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: ${{ inputs.hugo-version }}
+          # renovate: datasource=github-releases depName=gohugoio/hugo versioning=semver-coerced
+          hugo-version: 0.166.0
           extended: true
 
       - name: Verify Hugo installation
@@ -132,6 +137,7 @@ jobs:
       - name: Install Lychee
         shell: bash
         env:
+          # renovate: datasource=github-releases depName=lycheeverse/lychee versioning=semver-coerced
           LYCHEE_VERSION: v0.24.2
         run: |
           set -euo pipefail
@@ -140,10 +146,10 @@ jobs:
 
           case "${architecture}" in
           x86_64)
-            target="x86_64-unknown-linux-gnu"
+            target="x86_64-unknown-linux-musl"
             ;;
           aarch64|arm64)
-            target="aarch64-unknown-linux-gnu"
+            target="aarch64-unknown-linux-musl"
             ;;
           *)
             echo "::error::Unsupported architecture: ${architecture}"
@@ -151,9 +157,11 @@ jobs:
             ;;
           esac
 
-          archive="lychee-${LYCHEE_VERSION}-${target}.tar.gz"
-          url="https://github.com/lycheeverse/lychee/releases/download/lychee-${LYCHEE_VERSION}/${archive}"
-          temporary_directory="$(mktemp -d)"
+          release_tag="lychee-${LYCHEE_VERSION}"
+          archive="lychee-${target}.tar.gz"
+          url="https://github.com/lycheeverse/lychee/releases/download/${release_tag}/${archive}"
+          temporary_directory="$(mktemp --directory)"
+          install_directory="${HOME}/.local/bin"
 
           trap 'rm -rf "${temporary_directory}"' EXIT
 
@@ -178,13 +186,16 @@ jobs:
             exit 1
           fi
 
+          mkdir --parents "${install_directory}"
+
           install \
             --mode 0755 \
             "${lychee_binary}" \
-            "${HOME}/.local/bin/lychee"
+            "${install_directory}/lychee"
 
-          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
-          "${HOME}/.local/bin/lychee" --version
+          echo "${install_directory}" >> "${GITHUB_PATH}"
+
+          "${install_directory}/lychee" --version
 
       - name: Build Hugo site
         shell: bash
