@@ -1,0 +1,221 @@
+---
+#####################################
+# Check links on site using Lychee. #
+#####################################
+
+name: Check links
+
+on:
+  push:
+    branches:
+      - feat/link-check-ci
+  workflow_dispatch:
+    inputs:
+      run-offline:
+        description: Check local links, generated routes, assets, and fragments
+        required: true
+        type: boolean
+        default: true
+
+      run-online:
+        description: Check non-GitHub external HTTP(S) links
+        required: true
+        type: boolean
+        default: false
+
+      run-github:
+        description: Check GitHub links only
+        required: true
+        type: boolean
+        default: false
+
+      site-url:
+        description: Live site URL used to exclude first-party URLs from online checks
+        required: true
+        type: string
+        default: https://techobyte.cc
+
+      hugo-version:
+        description: Hugo version to install
+        required: true
+        type: string
+        default: 0.166.0
+
+permissions:
+  contents: read
+
+jobs:
+  validate-inputs:
+    name: Validate selected checks
+    runs-on: ubuntu-latest
+
+    outputs:
+      site-host: ${{ steps.site.outputs.host }}
+
+    steps:
+      - name: Validate selected checks
+        shell: bash
+        env:
+          RUN_OFFLINE: ${{ inputs.run-offline }}
+          RUN_ONLINE: ${{ inputs.run-online }}
+          RUN_GITHUB: ${{ inputs.run-github }}
+        run: |
+          set -euo pipefail
+
+          if [[ \
+            "${RUN_OFFLINE}" != "true" &&
+            "${RUN_ONLINE}" != "true" &&
+            "${RUN_GITHUB}" != "true"
+          ]]; then
+            echo "::error::Select at least one link-check mode."
+            exit 1
+          fi
+
+      - name: Derive first-party hostname
+        id: site
+        shell: bash
+        env:
+          SITE_URL: ${{ inputs.site-url }}
+        run: |
+          set -euo pipefail
+
+          site_url="${SITE_URL%/}"
+
+          if [[ ! "${site_url}" =~ ^https?:// ]]; then
+            echo "::error::site-url must begin with http:// or https://"
+            exit 1
+          fi
+
+          site_host="$(
+            printf '%s\n' "${site_url}" |
+              sed -E 's#^https?://([^/:?#]+).*#\1#'
+          )"
+
+          if [[ -z "${site_host}" ]]; then
+            echo "::error::Unable to derive a hostname from site-url: ${SITE_URL}"
+            exit 1
+          fi
+
+          echo "host=${site_host}" >> "${GITHUB_OUTPUT}"
+
+          {
+            echo "### Link-check configuration"
+            echo
+            echo "| Setting | Value |"
+            echo "|---|---|"
+            echo "| Offline | \`${{ inputs.run-offline }}\` |"
+            echo "| Online | \`${{ inputs.run-online }}\` |"
+            echo "| GitHub | \`${{ inputs.run-github }}\` |"
+            echo "| Site URL | \`${site_url}\` |"
+            echo "| Derived host | \`${site_host}\` |"
+            echo "| Hugo version | \`${{ inputs.hugo-version }}\` |"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  check-links:
+    name: Build site and run selected checks
+    needs: validate-inputs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: ${{ inputs.hugo-version }}
+          extended: true
+
+      - name: Verify Hugo installation
+        shell: bash
+        run: |
+          set -euo pipefail
+          hugo version
+
+      - name: Install Lychee
+        shell: bash
+        env:
+          LYCHEE_VERSION: v0.24.2
+        run: |
+          set -euo pipefail
+
+          architecture="$(uname -m)"
+
+          case "${architecture}" in
+          x86_64)
+            target="x86_64-unknown-linux-gnu"
+            ;;
+          aarch64|arm64)
+            target="aarch64-unknown-linux-gnu"
+            ;;
+          *)
+            echo "::error::Unsupported architecture: ${architecture}"
+            exit 1
+            ;;
+          esac
+
+          archive="lychee-${LYCHEE_VERSION}-${target}.tar.gz"
+          url="https://github.com/lycheeverse/lychee/releases/download/lychee-${LYCHEE_VERSION}/${archive}"
+          temporary_directory="$(mktemp -d)"
+
+          trap 'rm -rf "${temporary_directory}"' EXIT
+
+          curl \
+            --fail \
+            --location \
+            --retry 3 \
+            --retry-all-errors \
+            --output "${temporary_directory}/${archive}" \
+            "${url}"
+
+          tar \
+            --extract \
+            --gzip \
+            --file "${temporary_directory}/${archive}" \
+            --directory "${temporary_directory}"
+
+          lychee_binary="$(find "${temporary_directory}" -type f -name lychee -print -quit)"
+
+          if [[ -z "${lychee_binary}" ]]; then
+            echo "::error::Lychee executable was not found in the release archive."
+            exit 1
+          fi
+
+          install \
+            --mode 0755 \
+            "${lychee_binary}" \
+            "${HOME}/.local/bin/lychee"
+
+          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+          "${HOME}/.local/bin/lychee" --version
+
+      - name: Build Hugo site
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./scripts/hugo/build.sh
+
+      - name: Check offline links
+        if: ${{ inputs.run-offline }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./scripts/lychee/check-links.sh --offline
+
+      - name: Check non-GitHub external links
+        if: ${{ inputs.run-online }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./scripts/lychee/check-links.sh \
+            --online \
+            --site-host "${{ needs.validate-inputs.outputs.site-host }}"
+
+      - name: Check GitHub links
+        if: ${{ inputs.run-github }}
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ./scripts/lychee/check-links.sh --github
