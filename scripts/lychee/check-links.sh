@@ -28,14 +28,18 @@ Modes:
       This is the default.
 
   --online
-      Validate external HTTP(S) URLs. Runs a general external scan and a
-      separate GitHub-only scan.
+      Validate non-GitHub external HTTP(S) URLs.
+
+  --github
+      Validate GitHub URLs only. This may take longer because GitHub can
+      rate-limit automated checks.
 
 Options:
   -b, --build                  Build the Hugo site before checking links
   -o, --output-dir DIRECTORY   Hugo output directory
       --offline                Check local site links only (default)
-      --online                 Check external HTTP(S) links only
+      --online                 Check non-GitHub external HTTP(S) links only
+      --github                 Check GitHub links only
       --site-host HOST         First-party hostname to exclude in online mode
       --github-token TOKEN     GitHub API token for GitHub URL validation
   -h, --help                   Print this help menu
@@ -46,7 +50,8 @@ Environment:
 Examples:
   ${0##*/} --build
   ${0##*/} --build --online --site-host example.com
-  GITHUB_TOKEN="\$GITHUB_TOKEN" ${0##*/} --build --online --site-host example.com
+  ${0##*/} --build --github
+  GITHUB_TOKEN="\$GITHUB_TOKEN" ${0##*/} --build --github
 EOF
 }
 
@@ -119,6 +124,10 @@ while [[ $# -gt 0 ]]; do
     CHECK_MODE="online"
     shift
     ;;
+  --github)
+    CHECK_MODE="github"
+    shift
+    ;;
   --site-host)
     [[ $# -ge 2 ]] || error "$1 requires a hostname argument"
     [[ -n "$2" ]] || error "$1 requires a non-empty hostname argument"
@@ -189,15 +198,12 @@ offline)
 
 online)
   SITE_HOST_REGEX="$(escape_ere "${SITE_HOST}")"
-  GENERAL_LINK_CHECK_EXIT_CODE=0
-  GITHUB_LINK_CHECK_EXIT_CODE=0
+  ONLINE_LINK_CHECK_EXIT_CODE=0
 
   echo
-  echo "[ Running Lychee against external HTTP(S) links ]"
+  echo "[ Running Lychee against non-GitHub external HTTP(S) links ]"
   echo "Excluding first-party host: ${SITE_HOST}"
-
   echo
-  echo "[+] Checking non-GitHub external links"
 
   lychee \
     --scheme http \
@@ -219,9 +225,20 @@ online)
     --cache \
     --max-cache-age 7d \
     "${HTML_FILES[@]}" \
-    2>&1 || GENERAL_LINK_CHECK_EXIT_CODE=$?
+    2>&1 || ONLINE_LINK_CHECK_EXIT_CODE=$?
+
+  if [[ "${ONLINE_LINK_CHECK_EXIT_CODE}" -ne 0 ]]; then
+    error "Lychee found broken non-GitHub external links"
+  fi
+  ;;
+
+github)
+  GITHUB_LINK_CHECK_EXIT_CODE=0
 
   echo
+  echo "[ Running Lychee against GitHub links only ]"
+  echo
+
   echo "[+] Collecting GitHub URLs from generated HTML"
   echo
 
@@ -233,55 +250,48 @@ online)
 
   if [[ "${#GITHUB_URLS[@]}" -eq 0 ]]; then
     echo "No GitHub URLs found"
-  else
-    GITHUB_URL_FILE="$(write_github_url_file)"
-
-    echo "[+] Checking ${#GITHUB_URLS[@]} GitHub URL(s) serially"
-
-    if [[ -n "${GITHUB_TOKEN_VALUE}" ]]; then
-      echo "Passing GitHub token to Lychee for github.com link checks"
-
-      lychee \
-        --github-token "${GITHUB_TOKEN_VALUE}" \
-        --scheme http \
-        --scheme https \
-        --timeout 30 \
-        --max-retries 0 \
-        --max-concurrency 1 \
-        --max-redirects 10 \
-        --accept '200..=299,429' \
-        --cache \
-        --max-cache-age 30d \
-        "${GITHUB_URL_FILE}" \
-        2>&1 || GITHUB_LINK_CHECK_EXIT_CODE=$?
-    else
-      echo "[WARN] No GitHub token provided; checking GitHub links without authentication" >&2
-
-      lychee \
-        --scheme http \
-        --scheme https \
-        --timeout 30 \
-        --max-retries 0 \
-        --max-concurrency 1 \
-        --max-redirects 10 \
-        --accept '200..=299,429' \
-        --cache \
-        --max-cache-age 30d \
-        "${GITHUB_URL_FILE}" \
-        2>&1 || GITHUB_LINK_CHECK_EXIT_CODE=$?
-    fi
+    exit 0
   fi
 
-  if [[ "${GENERAL_LINK_CHECK_EXIT_CODE}" -ne 0 ]]; then
-    echo "[ERROR] Lychee found broken non-GitHub external links" >&2
+  GITHUB_URL_FILE="$(write_github_url_file)"
+
+  echo "[+] Checking ${#GITHUB_URLS[@]} GitHub URL(s) serially"
+
+  if [[ -n "${GITHUB_TOKEN_VALUE}" ]]; then
+    echo "Passing GitHub token to Lychee for github.com link checks"
+
+    lychee \
+      --github-token "${GITHUB_TOKEN_VALUE}" \
+      --scheme http \
+      --scheme https \
+      --timeout 15 \
+      --max-retries 0 \
+      --max-concurrency 1 \
+      --max-redirects 10 \
+      --accept '200..=299,429' \
+      --cache \
+      --max-cache-age 30d \
+      "${GITHUB_URL_FILE}" \
+      2>&1 || GITHUB_LINK_CHECK_EXIT_CODE=$?
+  else
+    echo "[WARN] No GitHub token provided; checking GitHub links without authentication" >&2
+
+    lychee \
+      --scheme http \
+      --scheme https \
+      --timeout 15 \
+      --max-retries 0 \
+      --max-concurrency 1 \
+      --max-redirects 10 \
+      --accept '200..=299,429' \
+      --cache \
+      --max-cache-age 30d \
+      "${GITHUB_URL_FILE}" \
+      2>&1 || GITHUB_LINK_CHECK_EXIT_CODE=$?
   fi
 
   if [[ "${GITHUB_LINK_CHECK_EXIT_CODE}" -ne 0 ]]; then
-    echo "[ERROR] Lychee found broken GitHub links" >&2
-  fi
-
-  if [[ "${GENERAL_LINK_CHECK_EXIT_CODE}" -ne 0 || "${GITHUB_LINK_CHECK_EXIT_CODE}" -ne 0 ]]; then
-    exit 1
+    error "Lychee found broken GitHub links"
   fi
   ;;
 
