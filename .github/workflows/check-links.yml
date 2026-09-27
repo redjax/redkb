@@ -6,9 +6,6 @@
 name: Check links
 
 on:
-  # push:
-  #   branches:
-  #     - feat/link-check-ci
   workflow_dispatch:
     inputs:
       run-offline:
