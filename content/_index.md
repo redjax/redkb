@@ -10,7 +10,7 @@ Documentation from my notes on a range of computing topics. Check the [tags sect
 
 ## About
 
-This is a hobby project, something I maintain as I have time/interest. The notes on this site are mostly for myself, but are sometimes helpful to others. The site is loosely based on the concept of a [mind garden](https://elizabethbutlermd.com/personal-knowledge-management/).
+This is a hobby project, something I maintain as I have time/interest. The notes on this site are mostly for myself, but are sometimes helpful to others. The site is loosely based on the concept of a [mind garden](https://nesslabs.com/mind-garden).
 
 I frequently write Markdown notes in whatever Markdown notes app has most recently caught my attention (honorable mentions to [Obsidian](https://obsidian.md) and [Logseq](https://logseq.com)). I will occasionally dump pages/sections into this KB.
 
