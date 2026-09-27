@@ -30,7 +30,7 @@ on:
         description: Live site URL used to exclude first-party URLs from online checks
         required: true
         type: string
-        default: https://techobyte.cc
+        default: https://redkb.fyi
 
       hugo-version:
         description: Hugo version to install
