@@ -17,3 +17,6 @@ Every now and then I inherit maintenance of a new repository and want to get a q
 
 - The [short survey](./survey-short.md) only uses `git` commands, and that is its only real dependency.
 - The [long survey](./survey-long.md) requires extra tooling, and is split up into commands I run against all repositories, and language-specific commands and tools for repositories containing Python, Bash, Java, and Go code (I may add more over time).
+
+> [!NOTE]
+> The "long" survey is very detailed, but assumes you have a general idea of what you're working with and which tools you'll need to use to help understand a Git repository. You should not need to run *every* command listed on the page, and much of the tooling is optional.
