@@ -4,3 +4,4 @@ hugo-extended = "0.166.0"
 direnv = "latest"
 
 gh = "latest"
+lychee = "0.24.2"
