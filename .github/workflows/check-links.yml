@@ -131,8 +131,6 @@ jobs:
 
       - name: Install Lychee
         shell: bash
-        env:
-          LYCHEE_VERSION: v0.24.2
         run: |
           set -euo pipefail
 
@@ -151,8 +149,8 @@ jobs:
             ;;
           esac
 
-          archive="lychee-${LYCHEE_VERSION}-${target}.tar.gz"
-          url="https://github.com/lycheeverse/lychee/releases/download/lychee-${LYCHEE_VERSION}/${archive}"
+          archive="lychee-${target}.tar.gz"
+          url="https://github.com/lycheeverse/lychee/releases/latest/download/${archive}"
           temporary_directory="$(mktemp -d)"
 
           trap 'rm -rf "${temporary_directory}"' EXIT
