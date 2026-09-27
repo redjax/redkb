@@ -236,7 +236,7 @@ ROOT_PASSWORD=Super-Secure-Root-Password
 
 ### Set in a Dockerfile's ENV directive
 
-When [writing a Dockerfile](./writing-dockerfiles.md), you can set environment variables at build time with the `ENV` directive. This is called "hardcoding" environment variables. Variables defined this way are [evaluated last](#environment-variable-loading-precedence), if a value is defined in any of the previous places, it will be overridden in the Dockerfile.
+When [writing a Dockerfile](/docs/programming/docker/writing-dockerfiles/), you can set environment variables at build time with the `ENV` directive. This is called "hardcoding" environment variables. Variables defined this way are [evaluated last](#environment-variable-loading-precedence), if a value is defined in any of the previous places, it will be overridden in the Dockerfile.
 
 ```dockerfile title="Example Dockerfile with an ENV value" linenums="1"
 FROM image:latest
