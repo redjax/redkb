@@ -1,7 +1,7 @@
 ---
 title: "Survey Long"
 date: 2026-09-27T13:29:55-04:00
-draft: true
+draft: false
 weight: 10
 toc: true
 keywords: []
