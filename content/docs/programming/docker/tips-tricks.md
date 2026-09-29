@@ -160,3 +160,31 @@ If everything looks good, you can remove the backup you created:
 ```shell
 sudo rm -rf /var/lib/docker.bak
 ```
+
+## Limit container resource usage
+
+You can use the `cpus:` and `mem_limit:` config keys to [control the maximum CPU and memory usage a container can use](https://docs.docker.com/engine/containers/resource_constraints/). This is useful in resource-constrained environments, or when running resource-intensive containers to keep from locking the host up.
+
+```yaml
+---
+services:
+  some-service:
+    image: example/img:latest
+    restart unless-stopped
+    environment:
+      EXAMPLE="value:
+
+    cpus: ${MAX_CPU:-4}
+    mem_limit: ${MEM_LIMIT:-8g}
+```
+
+- `cpus` sets the maximum amount of CPU the container can use.
+  - `cpus: 4` allows the container to use up to the equivalent of 4 CPU cores.
+  - This is not a reservation; the host will allocate *up to* the configured number of CPUs.
+- `mem_limit` sets the maximum amount of memory the container can use.
+  - Valid units are:
+    - `b`: bytes
+    - `k`: kilobytes
+    - `m`: megabytes
+    - `g`: gigabytes
+  - Examples: `512m`, `1.5g`, `256m`
