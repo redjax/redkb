@@ -31,6 +31,54 @@ exit $?
 
 ```
 
+If you are using Git worktrees, you might see an error like:
+
+```plaintext
+error: cannot delete branch 'example/branch-name; use by worktree at '/path/to/worktree-name'
+```
+
+This version skips any branches checked out by a worktree:
+
+```shell title="prune_local_branches.sh" linenums="1"
+
+#!/usr/bin/env bash
+
+set -e
+
+## Prune remote-tracking references that no longer exist.
+git fetch --prune
+
+## Check whether a branch is checked out in any worktree.
+is_branch_in_worktree() {
+  local branch="$1"
+
+  git worktree list --porcelain |
+    grep -Fqx "branch refs/heads/$branch"
+}
+
+## Find local branches whose upstream has been deleted.
+git for-each-ref \
+  --format='%(refname:short)%09%(upstream:track)' \
+  refs/heads |
+  awk -F '\t' '$2 == "[gone]" { print $1 }' |
+  while IFS= read -r branch; do
+    if is_branch_in_worktree "$branch"; then
+      echo "Skipping '$branch' (checked out in a worktree)"
+    else
+      ## Use git branch -d for extra protection, but you will
+      #  need to manually delete some branches.
+      git branch -D "$branch"
+    fi
+  done
+
+```
+
+As an alternative, you can use this one-liner:
+
+```shell
+git fetch --prune && git for-each-ref --format='%(refname:short)%09%(upstream:track)' refs/heads | awk -F '\t' '$2 == "[gone]" {print $1}' | while IFS= read -r branch; do if git worktree list --porcelain | grep -Fqx "branch refs/heads/$branch"; then echo "Skipping '$branch' (checked out in a worktree)"; else git branch -D "$branch"; fi; done
+```
+
 ### PowerShell version
 
 ```powershell title="Run-GitBranchPrune.ps1" linenums="1"
