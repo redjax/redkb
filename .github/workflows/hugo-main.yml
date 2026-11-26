@@ -71,7 +71,7 @@ on:
         type: string
         required: false
         # renovate: datasource=github-releases depName=gohugoio/hugo versioning=semver-coerced
-        default: "0.161.1"
+        default: "0.170.1"
       hugo-build-flags:
         type: string
         required: false
