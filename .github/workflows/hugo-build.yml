@@ -62,6 +62,7 @@ jobs:
   build:
     uses: redjax/pipelinetemplates/.github/workflows/hugo-build.yml@main
     with:
+      # renovate: datasource=github-releases depName=gohugoio/hugo versioning=semver-coerced
       hugo-version: "0.164.0"
       site-root: "."
       artifact-name: "hugo-site"
