@@ -17,3 +17,7 @@
 - term: knowledgebase
   abbr: KB
   definition: "A knowledge base is a centralized source of information"
+
+- term: terminal user interface
+  abbr: TUI
+  definition: An interactive, text-based user interface that runs inside a terminal but behaves more like a GUI application
